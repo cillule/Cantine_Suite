@@ -58,16 +58,6 @@ CREATE TABLE IF NOT EXISTS `enfant` (
   `type_inscription` varchar(30) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
---
--- Contenu de la table `enfant`
---
-
-INSERT INTO `enfant` (`id_enfant`, `id_famille`, `nom`, `prenom`, `classe`, `regime_alimentaire`, `allergie`, `type_inscription`) VALUES
-(1, 12, 'Foster', 'Sammy', 'CE2', 'Végétarien', '', 'Annuelle'),
-(2, 12, 'Foster', 'Fancy', 'CP', 'Végétarien', '', 'Occasionnelle'),
-(3, 12, 'Foster', 'Peter', 'CM1', 'Rien de particulier', 'Botox', 'Occasionnelle'),
-(4, 11, 'Goura', 'Nacim', 'CE2', 'Végétarien', '', 'Annuelle'),
-(5, 13, 'Guillot', 'Jeannine', 'CM2', 'Végétarien', '', 'Annuelle');
 
 -- --------------------------------------------------------
 
@@ -89,16 +79,6 @@ CREATE TABLE IF NOT EXISTS `facture` (
 --
 
 INSERT INTO `facture` (`id_facture`, `montant`, `mois`, `année`, `id_enfant`, `reglee`) VALUES
-(1, 14, 3, 2015, 1, 1),
-(2, 17.5, 4, 2015, 1, 1),
-(3, 3.5, 2, 2015, 1, 1),
-(4, 24.5, 3, 2015, 1, 1),
-(5, 10.5, 3, 2015, 3, 1),
-(6, 17.5, 4, 2015, 1, 1),
-(7, 3.5, 2, 2015, 1, 1),
-(8, 24.5, 3, 2015, 1, 1),
-(9, 10.5, 3, 2015, 3, 1),
-(10, 17.5, 4, 2015, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -117,9 +97,7 @@ CREATE TABLE IF NOT EXISTS `famille` (
 --
 
 INSERT INTO `famille` (`id_famille`, `nom_famille`, `id_resp_1`) VALUES
-(11, 'Francis', 3),
-(12, 'Foster', 5),
-(13, 'Guillot', 6);
+
 
 -- --------------------------------------------------------
 
@@ -177,159 +155,7 @@ CREATE TABLE IF NOT EXISTS `repas` (
   `prix` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Contenu de la table `repas`
---
 
-INSERT INTO `repas` (`date`, `id_enfant_repas`, `present`, `prix`) VALUES
-('2015-02-01', 1, 0, 3.5),
-('2015-03-01', 3, 0, 3.5),
-('2015-03-10', 3, 0, 3.5),
-('2015-03-12', 4, 0, 3.5),
-('2015-03-12', 5, 0, 3.5),
-('2015-03-13', 5, 0, 3.5),
-('2015-03-16', 1, 1, 3.5),
-('2015-03-16', 2, 1, 4.5),
-('2015-03-16', 3, 1, 4.5),
-('2015-03-16', 4, 1, 4.5),
-('2015-03-16', 5, 1, 3.5),
-('2015-03-17', 1, 0, 3.5),
-('2015-03-17', 4, 0, 3.5),
-('2015-03-17', 5, 0, 3.5),
-('2015-03-18', 1, 1, 4.5),
-('2015-03-18', 4, 0, 3.5),
-('2015-03-18', 5, 0, 3.5),
-('2015-03-19', 1, 0, 3.5),
-('2015-03-19', 4, 0, 3.5),
-('2015-03-19', 5, 0, 3.5),
-('2015-03-20', 5, 0, 3.5),
-('2015-03-23', 1, 0, 3.5),
-('2015-03-23', 5, 0, 3.5),
-('2015-03-24', 4, 0, 3.5),
-('2015-03-24', 5, 0, 3.5),
-('2015-03-25', 4, 0, 3.5),
-('2015-03-25', 5, 0, 3.5),
-('2015-03-26', 4, 0, 3.5),
-('2015-03-26', 5, 0, 3.5),
-('2015-03-27', 1, 0, 3.5),
-('2015-03-30', 1, 0, 3.5),
-('2015-03-30', 5, 0, 3.5),
-('2015-03-31', 4, 0, 3.5),
-('2015-03-31', 5, 0, 3.5),
-('2015-04-01', 4, 0, 3.5),
-('2015-04-01', 5, 0, 3.5),
-('2015-04-02', 4, 0, 3.5),
-('2015-04-02', 5, 0, 3.5),
-('2015-04-03', 5, 0, 3.5),
-('2015-04-06', 1, 0, 3.5),
-('2015-04-06', 5, 0, 3.5),
-('2015-04-07', 1, 0, 3.5),
-('2015-04-07', 4, 0, 3.5),
-('2015-04-07', 5, 0, 3.5),
-('2015-04-08', 1, 0, 3.5),
-('2015-04-08', 4, 0, 3.5),
-('2015-04-08', 5, 0, 3.5),
-('2015-04-09', 1, 0, 3.5),
-('2015-04-09', 4, 0, 3.5),
-('2015-04-09', 5, 0, 3.5),
-('2015-04-10', 1, 0, 3.5),
-('2015-04-10', 5, 0, 3.5),
-('2015-04-13', 5, 0, 3.5),
-('2015-04-14', 4, 0, 3.5),
-('2015-04-14', 5, 0, 3.5),
-('2015-04-15', 4, 0, 3.5),
-('2015-04-15', 5, 0, 3.5),
-('2015-04-16', 4, 0, 3.5),
-('2015-04-16', 5, 0, 3.5),
-('2015-04-17', 5, 0, 3.5),
-('2015-04-20', 5, 0, 3.5),
-('2015-04-21', 4, 0, 3.5),
-('2015-04-21', 5, 0, 3.5),
-('2015-04-22', 4, 0, 3.5),
-('2015-04-22', 5, 0, 3.5),
-('2015-04-23', 4, 0, 3.5),
-('2015-04-23', 5, 0, 3.5),
-('2015-04-24', 5, 0, 3.5),
-('2015-04-27', 5, 0, 3.5),
-('2015-04-28', 4, 0, 3.5),
-('2015-04-28', 5, 0, 3.5),
-('2015-04-29', 4, 0, 3.5),
-('2015-04-29', 5, 0, 3.5),
-('2015-04-30', 4, 0, 3.5),
-('2015-04-30', 5, 0, 3.5),
-('2015-05-01', 5, 0, 3.5),
-('2015-05-04', 5, 0, 3.5),
-('2015-05-05', 4, 0, 3.5),
-('2015-05-05', 5, 0, 3.5),
-('2015-05-06', 4, 0, 3.5),
-('2015-05-06', 5, 0, 3.5),
-('2015-05-07', 4, 0, 3.5),
-('2015-05-07', 5, 0, 3.5),
-('2015-05-08', 5, 0, 3.5),
-('2015-05-11', 5, 0, 3.5),
-('2015-05-12', 4, 0, 3.5),
-('2015-05-12', 5, 0, 3.5),
-('2015-05-13', 4, 0, 3.5),
-('2015-05-13', 5, 0, 3.5),
-('2015-05-14', 4, 0, 3.5),
-('2015-05-14', 5, 0, 3.5),
-('2015-05-15', 5, 0, 3.5),
-('2015-05-18', 5, 0, 3.5),
-('2015-05-19', 4, 0, 3.5),
-('2015-05-19', 5, 0, 3.5),
-('2015-05-20', 4, 0, 3.5),
-('2015-05-20', 5, 0, 3.5),
-('2015-05-21', 4, 0, 3.5),
-('2015-05-21', 5, 0, 3.5),
-('2015-05-22', 5, 0, 3.5),
-('2015-05-25', 5, 0, 3.5),
-('2015-05-26', 4, 0, 3.5),
-('2015-05-26', 5, 0, 3.5),
-('2015-05-27', 4, 0, 3.5),
-('2015-05-27', 5, 0, 3.5),
-('2015-05-28', 4, 0, 3.5),
-('2015-05-28', 5, 0, 3.5),
-('2015-05-29', 5, 0, 3.5),
-('2015-06-01', 5, 0, 3.5),
-('2015-06-02', 4, 0, 3.5),
-('2015-06-02', 5, 0, 3.5),
-('2015-06-03', 4, 0, 3.5),
-('2015-06-03', 5, 0, 3.5),
-('2015-06-04', 4, 0, 3.5),
-('2015-06-04', 5, 0, 3.5),
-('2015-06-05', 5, 0, 3.5),
-('2015-06-08', 5, 0, 3.5),
-('2015-06-09', 4, 0, 3.5),
-('2015-06-09', 5, 0, 3.5),
-('2015-06-10', 4, 0, 3.5),
-('2015-06-10', 5, 0, 3.5),
-('2015-06-11', 4, 0, 3.5),
-('2015-06-11', 5, 0, 3.5),
-('2015-06-12', 5, 0, 3.5),
-('2015-06-15', 5, 0, 3.5),
-('2015-06-16', 4, 0, 3.5),
-('2015-06-16', 5, 0, 3.5),
-('2015-06-17', 4, 0, 3.5),
-('2015-06-17', 5, 0, 3.5),
-('2015-06-18', 4, 0, 3.5),
-('2015-06-18', 5, 0, 3.5),
-('2015-06-19', 5, 0, 3.5),
-('2015-06-22', 5, 0, 3.5),
-('2015-06-23', 4, 0, 3.5),
-('2015-06-23', 5, 0, 3.5),
-('2015-06-24', 4, 0, 3.5),
-('2015-06-24', 5, 0, 3.5),
-('2015-06-25', 4, 0, 3.5),
-('2015-06-25', 5, 0, 3.5),
-('2015-06-26', 5, 0, 3.5),
-('2015-06-29', 5, 0, 3.5),
-('2015-06-30', 4, 0, 3.5),
-('2015-06-30', 5, 0, 3.5),
-('2015-07-01', 4, 0, 3.5),
-('2015-07-01', 5, 0, 3.5),
-('2015-07-02', 4, 0, 3.5),
-('2015-07-02', 5, 0, 3.5),
-('2015-07-03', 5, 0, 3.5);
 
 -- --------------------------------------------------------
 
@@ -359,31 +185,10 @@ CREATE TABLE IF NOT EXISTS `responsable` (
 --
 
 INSERT INTO `responsable` (`id_responsable`, `identité`, `nom`, `prenom`, `adresse`, `ville`, `mode_payement`, `rib`, `mail`, `mdp`, `tel_mobile`, `tel_travail`, `admin`, `gestionnaire`) VALUES
-(1, 0, 'admin', 'admin', '', '', '', 0, 'admin@yahoo.fr', '12345678', '0607050609', '0474653219', 1, 0),
-(2, 0, 'responsable', 'responsable', '', '', '', 0, 'gestionnaire@yahoo.fr', '12345', '', '', 0, 1),
-(3, 0, 'Pages', 'Francis', 'Sud', '', '', 0, 'francis.pages@yahoo.fr', '6r7KysDmvWTm', '02458596', '', 0, 0),
-(5, 0, 'Foster', '', '', '', '', 0, 'foster_fam@yahoo.fr', 'GTErmRz8XBXm', '', '', 0, 0),
-(6, 0, 'Guillot', 'Lucille', '1, allée des écoliers', '', '', 0, 'lucille.guillot@gmail.com', 'ysw51NIIb1bE', '04-74-51-39-03', '', 0, 0);
-
+(1, 0, 'admin', 'admin', '', '', '', 0, 'admin@yahoo.fr', '$2y$10$Uv9ayjoVOU07jcVLLCwwdOf94P0yq3UT1X8KTV07TCDJH77wh1esy', '0607050609', '0474653219', 1, 0),
+(2, 0, 'responsable', 'responsable', '', '', '', 0, 'gestionnaire@yahoo.fr', '$2y$10$Uv9ayjoVOU07jcVLLCwwdOf94P0yq3UT1X8KTV07TCDJH77wh1esy', '', '', 0, 1);
 -- --------------------------------------------------------
 
---
--- Structure de la table `tarifs`
---
-
-CREATE TABLE IF NOT EXISTS `tarifs` (
-  `id` int(8) NOT NULL,
-  `prixAetM` float NOT NULL,
-  `prixO` float NOT NULL,
-  `prixHD` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Contenu de la table `tarifs`
---
-
-INSERT INTO `tarifs` (`id`, `prixAetM`, `prixO`, `prixHD`) VALUES
-(1, 3.5, 4, 4.5);
 
 --
 -- Index pour les tables exportées
@@ -548,3 +353,69 @@ MODIFY `id_vacances` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+DROP TABLE IF EXISTS `classe`;
+CREATE TABLE IF NOT EXISTS `classe` (
+`id_classe` int(11) NOT NULL,
+  `niveau` varchar(50) NOT NULL,
+  `nom_enseignant` varchar(50) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+
+--
+-- Structure de la table `schema_inscription_annuelle`
+--
+
+DROP TABLE IF EXISTS `schema_inscription_annuelle`;
+CREATE TABLE IF NOT EXISTS `schema_inscription_annuelle` (
+`schem_id` int(11) NOT NULL,
+  `schem_id_enfant` int(11) NOT NULL,
+  `schem_lundi` tinyint(1) NOT NULL DEFAULT '0',
+  `schem_mardi` tinyint(1) NOT NULL DEFAULT '0',
+  `schem_mercredi` tinyint(1) NOT NULL DEFAULT '0',
+  `schem_jeudi` tinyint(1) NOT NULL DEFAULT '0',
+  `schem_vendredi` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+
+
+--
+-- Structure de la table `tarifs`
+--
+
+DROP TABLE IF EXISTS `tarifs`;
+CREATE TABLE IF NOT EXISTS `tarifs` (
+  `id` int(8) NOT NULL,
+  `prixAetM` float NOT NULL,
+  `prixHebdo` float NOT NULL,
+  `prixHD` float NOT NULL,
+  `prixPasInscrit` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `tarifs` (`id`, `prixAetM`, `prixHebdo`, `prixHD`,`prixPasInscrit` ) VALUES
+(1, 3.5, 4, 4.5, 4.65);
+
+--
+-- Index pour la table `classe`
+--
+ALTER TABLE `classe`
+ ADD PRIMARY KEY (`id_classe`);
+
+--
+-- Index pour la table `schema_inscription_annuelle`
+--
+ALTER TABLE `schema_inscription_annuelle`
+ ADD PRIMARY KEY (`schem_id`), ADD UNIQUE KEY `schem_id_enfant` (`schem_id_enfant`);
+
+--
+-- AUTO_INCREMENT pour la table `classe`
+--
+ALTER TABLE `classe`
+MODIFY `id_classe` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT pour la table `schema_inscription_annuelle`
+--
+ALTER TABLE `schema_inscription_annuelle`
+MODIFY `schem_id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=18;
+
