@@ -26,10 +26,7 @@
 
 </div>
 
-<br/>    
-<br/>    
-
-<div class="row text-center">
+<div class="row">
     <?php
     $somme_due = 0;
     if ($affiche_tuille == 1)://gestion de l'affichage de la tuille 
@@ -100,19 +97,20 @@
                 <?php
             endforeach;
         } else {
-
-            echo'Pas de factures associées à cette famille..';
+            ?>
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <span class="glyphicon glyphicon-info-sign"></span> Pas de factures associées à cette famille !
+                </div>  
+            <?php
         }
         ?>
         <div class="panel panel-info">
-            <div class="panel-heading">
-                <h3 class="panel-title"> <i class="fa fa-info-circle"></i>  Situation au <?php echo date("d-m-Y"); ?> </h3>
-
+            <div class="panel-heading text-center">
+                <h3 class="panel-title"> Situation au <?php echo date("d-m-Y"); ?> <i class="fa fa-info-circle"></i></h3>
             </div> 
-            <br/>
-            <h4> Somme due: <?php echo abs($somme_due) . " Euros" ?>  </h4>
             <div class="panel-body">
-
+                <h4> Somme due: <?php echo abs($somme_due) . " Euros" ?>  </h4>    
             </div>
         </div>
         <?php
@@ -121,27 +119,29 @@
 
 </div>
 
-<div class="panel panel-primary">
-    <div class="panel-heading text-center">
-        <h3 class="panel-title">Générer le récapitulatif des prélèvements <i class="fa fa-euro"></i></h3>
-    </div>
+<div class="row">
+    
+    <div class="panel panel-primary">
+        <div class="panel-heading text-center">
+            <h3 class="panel-title">Générer le récapitulatif des prélèvements <i class="fa fa-euro"></i></h3>
+        </div>
 
-    <div class="panel-body">
-        <form class="form-horizontal" role="form" method="post" action="<?php echo base_url('admin_control/generer_echeancier'); ?>">
-            <fieldset>
-                <label> Sélectionnez une famille : </label>
-                <div class="panel-body">
-                    <div class="input-group">
-                        <input required type="text" id="date_suivi_inscrit" name="date_echeancier" class="form-control"/>
-                        <span class="input-group-btn">
-                            <input type="submit" name="generer_excel" class="btn btn-success"  value="Générer Excel">
-                        </span>
+        <div class="panel-body">
+            <form class="form-horizontal" role="form" method="post" action="<?php echo base_url('admin_control/generer_echeancier'); ?>">
+                <fieldset>
+                    <label> Sélectionnez une famille : </label>
+                    <div class="panel-body">
+                        <div class="input-group">
+                            <input required type="text" id="date_suivi_inscrit" name="date_echeancier" class="form-control"/>
+                            <span class="input-group-btn">
+                                <input type="submit" name="generer_excel" class="btn btn-success"  value="Générer Excel">
+                            </span>
+                        </div>
                     </div>
-                </div>
 
-            </fieldset>
-        </form>
+                </fieldset>
+            </form>
+        </div>
     </div>
-
+    
 </div>
-

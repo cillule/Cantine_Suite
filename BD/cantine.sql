@@ -78,8 +78,6 @@ CREATE TABLE IF NOT EXISTS `facture` (
 -- Contenu de la table `facture`
 --
 
-INSERT INTO `facture` (`id_facture`, `montant`, `mois`, `année`, `id_enfant`, `reglee`) VALUES
-
 -- --------------------------------------------------------
 
 --
@@ -96,7 +94,6 @@ CREATE TABLE IF NOT EXISTS `famille` (
 -- Contenu de la table `famille`
 --
 
-INSERT INTO `famille` (`id_famille`, `nom_famille`, `id_resp_1`) VALUES
 
 
 -- --------------------------------------------------------

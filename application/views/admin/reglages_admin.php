@@ -94,71 +94,70 @@
             </div>
         </div>
         <div id="collapse2" class="panel-collapse collapse">
-            <br/>
-            <table class="table table-hover table-responsive table-bordered">
-                <tr class="info">
-
-                    <th>Nom enseignant</th>
-                    <th>Niveau</th>
-                    <th>Supprimer</th>
-
-
-                </tr>
-                <?php foreach ($classes as $row): ?>
-                    <tr>
-                        <td><?php echo $row->nom_enseignant; ?></td>
-                        <td><?php echo $row->niveau; ?></td>
-                        <td><a href="<?php echo base_url("admin_control/supprimer_classe/" . $row->id_classe); ?>"><i class="fa fa-2x fa-trash"></i></a></td>
-                    </tr>
-                <?php endforeach; ?>
-
-            </table>
-            <br/>
-            <form role="form" class="form-inline" method="post" action="<?php echo base_url('admin_control/enregistrer_classe'); ?>">
-
-                <fieldset>
-                    <input type="text" class="form-control" name="InputNomEnseignant" name="nom" placeholder="Nom de l'enseignant">
-                    <input type="test" name="InputNiveau" class="form-control" placeholder="Niveau" required>
-                    <input type="submit" name="sauvegarder" class="btn btn-success form-control"  value="Ajouter">
-                </fieldset>
-
-            </form>
-            <br/>
-
-        </div>
-    </div>
-
-
-
-
-
-    <div class=" col-md-6">
-        <div class="panel panel-primary">
-            <div class="panel-heading text-center">
-                <h3 class="panel-title text-capitalize">Changement mot de passe côté admin <i class="fa fa-shield"></i></h3>
-            </div>
+            
             <div class="panel-body">
+                <table class="table table-hover table-responsive table-bordered">
+                    <tr class="info">
+
+                        <th>Nom enseignant</th>
+                        <th>Niveau</th>
+                        <th>Supprimer</th>
 
 
-                <form role="form" method="post" action="<?php echo base_url('admin_control/changer_mdp'); ?>">
+                    </tr>
+                    <?php foreach ($classes as $row): ?>
+                        <tr>
+                            <td><?php echo $row->nom_enseignant; ?></td>
+                            <td><?php echo $row->niveau; ?></td>
+                            <td><a href="<?php echo base_url("admin_control/supprimer_classe/" . $row->id_classe); ?>"><i class="fa fa-2x fa-trash"></i></a></td>
+                        </tr>
+                    <?php endforeach; ?>
+
+                </table>
+                <form role="form" class="form-inline" method="post" action="<?php echo base_url('admin_control/enregistrer_classe'); ?>">
+
                     <fieldset>
-                        <div class="form-group">    
-                            <label class="control-label" for="password_1">Entrer votre nouveau mot de passe: </label>
-                            <input type="password" name="password_1" class="form-control"  minlength="8" maxlength="16"  required="true">
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" for="password_2">Répéter le mot de passe: </label>
-                            <input type="password" name="password_2"  class="form-control"  minlength="8" maxlength="16" required="true">
-                        </div>
-                        <input type="submit" name="submit" class="btn btn-success pull-right" value="Valider">
+                        <input type="text" class="form-control" name="InputNomEnseignant" name="nom" placeholder="Nom de l'enseignant">
+                        <input type="test" name="InputNiveau" class="form-control" placeholder="Niveau" required>
+                        <input type="submit" name="sauvegarder" class="btn btn-success form-control"  value="Ajouter">
                     </fieldset>
+
                 </form>
             </div>
+
         </div>
     </div>
+    
+    
+        <div class="panel panel-primary">
+            <div class="panel-heading text-center">
+                <h3 class="panel-title text-capitalize"><a data-toggle="collapse" data-parent="#accordion" href="#collapse3"> Changement mot de passe côté admin</a> <i class="fa fa-shield"></i></h3>
+            </div>
+            <div id="collapse3" class="panel-collapse collapse">
+                <div class="panel-body">     
 
-
+                    <form role="form" method="post" action="<?php echo base_url('admin_control/changer_mdp'); ?>">
+                        <fieldset>
+                            <div class="form-group">    
+                                <label class="control-label" for="password_1">Entrer votre nouveau mot de passe: </label>
+                                <input type="password" name="password_1" class="form-control"  minlength="8" maxlength="16"  required="true">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="password_2">Répéter le mot de passe: </label>
+                                <input type="password" name="password_2"  class="form-control"  minlength="8" maxlength="16" required="true">
+                            </div>
+                            <input type="submit" name="submit" class="btn btn-success pull-right" value="Valider">
+                        </fieldset>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
 
 </div>
+
+
+
+
 
 
