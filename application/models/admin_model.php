@@ -1,0 +1,403 @@
+<?php
+
+class Admin_model extends CI_Model {
+
+    protected $table_responsable = 'responsable';
+
+    public function get_familles() {
+        $this->db->select('famille.id_famille, famille.nom_famille, id_resp_1, count(id_enfant) as nb_enfants')
+                ->from('famille')
+                ->join('enfant', 'famille.id_famille = enfant.id_famille', 'left')
+                ->group_by('famille.id_famille')
+                ->order_by('nom_famille');
+
+        $query = $this->db->get();
+        return $query;
+    }
+
+    //get_info_famille: Recupérer les informations utiles lors de l'affichage
+    public function get_info_famille($id_famille) {
+
+        $this->db->select('id_resp_1')
+                ->from('famille')
+                ->where('id_famille', $id_famille);
+
+        $row = $this->db->get()->result();
+
+        $id_resp1 = $row[0]->id_resp_1;
+
+        $this->db->select('id_responsable, nom, prenom, adresse,tel_mobile, ville')
+                ->from('responsable')
+                ->where('id_responsable', $id_resp1);
+
+        $result["resp_1"] = $this->db->get()->result();
+
+        $this->db->select('id_enfant, nom, prenom, niveau, nom_enseignant, regime_alimentaire, allergie, type_inscription')
+                ->from('enfant')
+                ->where('id_famille', $id_famille)
+                ->join('classe',"enfant.classe=classe.id_classe");
+
+        $result["enfants"] = $this->db->get()->result();
+
+        return $result;
+    }
+
+    // delete_famille: détruire les données reliée à l'id_famille passé en paramètre dans le base Cantine
+    public function delete_famille($id_famille) {
+
+        //on récupère l'id des responsables de la famille
+        $this->db->select('id_resp_1')
+                ->from('famille')
+                ->where('id_famille', $id_famille);
+
+        $row = $this->db->get()->result();
+
+        $id_resp1 = $row[0]->id_resp_1;
+
+        $this->db->delete('responsable', array('id_responsable' => $id_resp1));
+
+        $this->db->delete('famille', array('id_famille' => $id_famille)); //on supprime les entrées correspondantes dans la table famille
+
+        $this->db->delete('enfant', array('id_famille' => $id_famille)); //on supprime les enfants correspondants dans la table enfants
+    }
+
+    // add_famille: Ajouter une famille
+    public function add_famille($nom, $mail, $rib) {
+
+        //on récupère deux id pour les responsables
+        $this->db->select('max(id_responsable) as id_max')
+                ->from('responsable');
+
+        $row = $this->db->get()->result();
+        $id_resp_1 = ($row[0]->id_max) + 1; //pour le responsable 1
+        //on prépare les données à inserer dans la table famille
+        $to_insert = array(
+            'id_famille' => "",
+            'nom_famille' => $nom,
+            'id_resp_1' => $id_resp_1,
+        );
+
+        $this->db->insert('famille', $to_insert); //et on les insert
+        //on genère un mdp au hasard et on le crypte
+        $mdp = password_hash($this->generer_mot_de_passe(), PASSWORD_BCRYPT);
+
+
+        //On prépare les données à insérer pour le responsable 1
+        $insert_resp_1 = array(
+            'id_responsable' => $id_resp_1,
+            'nom' => $nom,
+            'rib' => $rib,
+            'mail' => $mail,
+            'mdp' => $mdp,
+        );
+
+        //On les ajoute à la base
+        $this->db->insert('responsable', $insert_resp_1);
+        //et on envoie le mail
+        // $this->mail_ajout_famille($mail, $mdp);
+    }
+
+    private function mail_ajout_famille($mail, $mdp) {
+
+        print_r($mail);
+        $this->load->library('email');
+
+        $this->email->from('admin@yahoo.com', 'Cantine');
+        $this->email->to("g.lucille01@yahoo.fr");
+
+        $this->email->subject('Inscription Cantine');
+        $this->email->message("Voici votre mot de passe: " . $mdp);
+
+        $this->email->send();
+
+        echo $this->email->print_debugger();
+    }
+
+// delete_enfant: détruire les données reliée à l'id_enfant passé en paramètre dans le base Cantine
+    public function delete_enfant($id_enfant) {
+
+        $this->db->delete('enfant', array('id_enfant' => $id_enfant)); //on supprime les enfants correspondants dans la table enfants
+        $this->db->delete('repas', array('id_enfant_repas' => $id_enfant));
+        $this->db->delete('facture', array('id_enfant' => $id_enfant));
+    }
+
+    public function is_enfant($id_enfant) {
+
+        $this->db->select('*')
+                ->from('enfant')
+                ->where('id_enfant', $id_enfant);
+
+        $query = $this->db->get();
+        $row = $query->result();
+
+        if (empty($row)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function is_famille($id_famille) {
+
+        //on vérifie que l'id passé en paramètre est dans la base
+        $this->db->select('*')
+                ->from('famille')
+                ->where('id_famille', $id_famille);
+
+        $query = $this->db->get();
+        $row = $query->result();
+
+        if (empty($row)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function is_facture($id_facture) {
+
+        //on vérifie qu'une facture corespondant à l'id passé en paramètres se trouve dans la base
+        $this->db->select('*')
+                ->from('facture')
+                ->where('id_facture', $id_facture);
+
+        $query = $this->db->get();
+        $row = $query->result();
+
+        if (empty($row)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function enregitrer_nouveau_mdp($new_mdp) {
+
+        $mdp = password_hash($new_mdp, PASSWORD_BCRYPT);
+
+        $this->db->query("UPDATE responsable set mdp='$mdp' where id_responsable = 1");
+    }
+
+    public function get_facturation_famille($id_famille) {
+
+        $this->db->select('id_enfant, prenom, classe, type_inscription')
+                ->from('enfant')
+                ->where('id_famille', $id_famille);
+
+        $row = $this->db->get()->result();
+
+        $to_return = array();
+        if (!empty($row)) {
+
+            foreach ($row as $it) {
+
+                $array1 = Array(
+                    "id_enfant" => $it->id_enfant,
+                    "prenom" => $it->prenom,
+                    "classe" => $it->classe,
+                    "type_inscription" => $it->type_inscription,
+                );
+
+                $to_return[$it->id_enfant]["info_enfant"] = $array1;
+                $to_return[$it->id_enfant]["factures_associées"] = $this->get_factures_enfant($it->id_enfant);
+            }
+        }
+
+        return $to_return;
+    }
+
+    public function generer_factures() {
+
+        $this->db->select('YEAR(date) as annee, MONTH(date) as mois, id_enfant_repas as id_enfant, sum(prix) as montant ')
+                ->from('repas')
+                ->group_by(array("YEAR(date)", "MONTH(date)", "id_enfant_repas"));
+        $listes_factures = $this->db->get()->result();
+
+
+        foreach ($listes_factures as $it) {
+
+            $to_insert = array(
+                "montant" => $it->montant,
+                "mois" => $it->mois,
+                "année" => $it->annee,
+                "id_enfant" => $it->id_enfant,
+            );
+
+            $this->db->insert("facture", $to_insert);
+        }
+    }
+
+    private function get_factures_enfant($id_enfant) {
+
+        //a utiliser pour tache planifiée -> -> -> $this->db->select('YEAR(date) as annee, MONTH(date) as mois, sum(prix) as somme ')->from('repas')->where('id_enfant', $id_enfant)->group_by(array("YEAR(date)", "MONTH(date)"));
+
+        $this->db->select('* ')->from('facture')->where('id_enfant', $id_enfant);
+
+        $to_return = $this->db->get()->result();
+
+        return $to_return;
+    }
+
+    public function set_facture_reglee($id_facture) {
+
+        $data = array(
+            'reglee' => 1,
+        );
+        $this->db->where('id_facture', $id_facture);
+        $this->db->update('facture', $data);
+    }
+
+    public function get_vacances_scolaires() {
+
+        $this->db->select('*')->from('vacances');
+        $row = $this->db->get()->result();
+        $to_return = array();
+        
+        foreach ($row as $vacances) {
+            $to_return["vac" . $vacances->id_vacances]["debut"] = $vacances->date_debut;
+            $to_return["vac" . $vacances->id_vacances]["fin"] = $vacances->date_fin;
+        }
+
+        return $to_return;
+    }
+
+    public function sauvegarder_vacances_scolaires($liste_dates) {
+
+        $this->db->empty_table('vacances');
+
+        foreach ($liste_dates as $key => $dates) {
+
+            $to_insert = array(
+                'id_vacances' => $key,
+                'date_debut' => $dates["debut"],
+                'date_fin' => $dates["fin"],
+            );
+            $this->db->insert('vacances', $to_insert);
+        }
+    }
+
+    public function get_liste_classes() {
+
+        $this->db->select('*')
+                ->from('classe');
+
+        $to_return = $this->db->get()->result();
+        return $to_return;
+    }
+
+    public function is_classe($id_classe) {
+
+        //on vérifie que l'id passé en paramètre est dans la base
+        $this->db->select('*')
+                ->from('classe')
+                ->where('id_classe', $id_classe);
+
+        $query = $this->db->get();
+        $row = $query->result();
+
+        if (empty($row)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function enregistrer_classe($nom_enseignant, $niveau) {
+
+        $to_insert = array(
+            'niveau' => $niveau,
+            'nom_enseignant' => $nom_enseignant
+        );
+
+        $this->db->insert('classe', $to_insert);
+    }
+
+    public function supprimer_classe($id_classe) {
+        $this->db->delete('classe', array('id_classe' => $id_classe));
+    }
+
+    private function generer_mot_de_passe() {
+        $mot_de_passe = "";
+        $nb_caractere = 12;
+        $chaine = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        $longeur_chaine = strlen($chaine);
+
+        for ($i = 1; $i <= $nb_caractere; $i++) {
+            $place_aleatoire = mt_rand(0, ($longeur_chaine - 1));
+            $mot_de_passe .= $chaine[$place_aleatoire];
+        }
+
+        return $mot_de_passe;
+    }
+
+    public function get_id_famille() {
+        $this->db->select('id_resp_1, nom_famille')
+                ->from('famille');
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function getmessage() {
+        $this->db->select('contenu, nom_famille')
+                ->from('message inner join famille on message.id_expediteur=famille.id_resp_1')
+                ->where('id_recepteur', 0);
+
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function insertMessage($idf, $intitule, $contenu) {
+        $data = array(
+            'intitule' => $intitule,
+            'contenu' => $contenu,
+            'id_expediteur' => 0,
+            'id_recepteur' => $idf,
+        );
+        $this->db->insert('message', $data);
+    }
+
+    public function add_tarifs($prixAetM, $prixO, $prixHD) {
+
+        //on prépare les données à inserer dans la table tarifs
+        $to_insert = array(
+            'prixAetM' => $prixAetM,
+            'prixO' => $prixO,
+            'prixHD' => $prixHD,
+        );
+
+        $this->db->insert('tarifs', $to_insert); //et on les insert
+    }
+
+    function recuperer_tarifs() {
+        $this->db->select('*')
+                ->from('tarifs');
+        $query = $this->db->get();
+        return $query;
+    }
+
+    function form_tarifs($data) {
+        $this->db->update('tarifs', $data);
+    }
+
+    public function load_document() {
+        $upload_data = $this->upload->data();
+        $this->db->set('nom_document', $upload_data['file_name']);
+        return $this->db->insert('document');
+    }
+
+    public function get_document() {
+        $this->db->select('*')
+                ->from('document');
+        $query2 = $this->db->get();
+        return $query2;
+    }
+
+    public function delete_document($id_document) {
+        $this->load->helper('file');
+        $this->db->select('nom_document')->from('document')->where('id_document', $id_document);
+        $nom_fichier = $this->db->get();
+        $this->db->delete('document', array('id_document' => $id_document)); //on supprime l'entrée correspondantes dans la table document
+        delete_files("./assets/documents/" . $nom_fichier);
+    }
+
+}
