@@ -114,7 +114,7 @@ class Parents_Control extends CI_Controller {
 
         $this->form_validation->set_rules('nom', '"nom"', 'trim|required|min_length[2]|max_length[52]|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('prenom', '"prenom"', 'trim|required|min_length[2]|max_length[52]|encode_php_tags|xss_clean');
-        $this->form_validation->set_rules('select_classe', '"select_classe"', 'trim|required|encode_php_tags|xss_clean');
+        //$this->form_validation->set_rules('select_classe', '"select_classe"', 'trim|required|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('allergie', '"allergie"', 'trim|max_length[250]|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('select_regime', '"select_regime"', 'trim|required|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('select_abonnement', '"select_abonnement"', 'trim|encode_php_tags|xss_clean');
@@ -125,7 +125,7 @@ class Parents_Control extends CI_Controller {
             redirect(base_url("parents_control/affiche_enfants"));
         } else {
             $this->session->set_flashdata('message', "Le formulaire n'a pas été remplis correctement! ");
-            //   redirect(base_url("parents_control/ajouter_enfants"));
+            redirect(base_url("parents_control/ajouter_enfants"));
         }
     }
 

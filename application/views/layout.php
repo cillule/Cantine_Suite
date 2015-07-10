@@ -52,10 +52,10 @@
         <script type="text/javascript" src="<?php echo base_url("assets/js/jasny-bootstrap.min.js"); ?>"></script>
         <script type="text/javascript" src="<?php echo base_url("assets/js/script.js"); ?>"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-        <script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
         <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-toggle.min.js"); ?>"></script>
         <script type="text/javascript" src="<?php echo base_url("assets/js/scriptPointage.js"); ?>"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/tabletools/2.2.0/js/dataTables.tableTools.min.js"></script>
+        <script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
     </body>
 </html>
 

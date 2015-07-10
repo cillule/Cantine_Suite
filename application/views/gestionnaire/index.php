@@ -13,7 +13,7 @@ $date = date("Y-m-d");
                 echo $date_affiche;
                 ?>
             </h3>
-            <table id="table_gestion" class="table table-striped table-bordered">
+            <table id="table_gestion" class="table table-striped table-bordered" cellspacing="0" width="100%">
                 <thead>
                     <tr>
                         <th>Nom</th>
@@ -22,7 +22,6 @@ $date = date("Y-m-d");
                         <th>Régime spécial</th>
                         <th>Allergie</th>
                         <th>Abonnement</th>
-                        <th>Présent</th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -33,7 +32,6 @@ $date = date("Y-m-d");
                         <th>Régime spécial</th>
                         <th>Allergie</th>
                         <th>Abonnement</th>
-                        <th>Présent</th>
                     </tr>
                 </tfoot>
                 <tbody class="text-center">
@@ -43,15 +41,10 @@ $date = date("Y-m-d");
                         <tr>
                             <td><?php echo $row->nom; ?></td>
                             <td><?php echo $row->prenom; ?></td>
-                            <td><?php echo $row->niveau." ".$row->nom_enseignant; ?></td>
+                            <td><?php echo $row->niveau." - ".$row->nom_enseignant; ?></td>
                             <td><?php echo $row->regime_alimentaire; ?></td>
                             <td><?php echo $row->allergie; ?></td>
                             <td><?php echo $row->type_inscription; ?></td>
-                            <?php if ($row->present == true && $row->date == $date) { ?>
-                                <td><input checked class="checkbox" data-toggle="toggle" data-on="Présent" data-off="Absent" type="checkbox" value="<?php echo $row->id_enfant; ?>"/></td>
-                            <?php } else { ?>
-                                <td><input class="checkbox" data-toggle="toggle" data-on="Présent" data-off="Absent" type="checkbox" value="<?php echo $row->id_enfant; ?>"/></td>
-                            <?php } ?>
                         </tr>
                         <?php
                     }

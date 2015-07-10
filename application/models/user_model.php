@@ -20,8 +20,7 @@ class User_model extends CI_Model {
 
 
        
-        $mdp_1=password_hash($mdp, PASSWORD_BCRYPT);
-        $mdp_2=$mdp;
+        $mdp_1=password_hash($mdp, PASSWORD_DEFAULT);
         print_r("</br> mot de passe haché " . $mdp_1);
         print_r("</br> mot de passe entré " . $mdp);
 
@@ -29,16 +28,12 @@ class User_model extends CI_Model {
         
 
         if (password_verify($mdp, $result[0]->mdp)  && !empty($result)) {
-
-            print_r("ok");
             return $this->db->select('id_responsable,admin, gestionnaire')
                             ->from($this->table)
                             ->where('mail', $email)
                             ->get()
                             ->result();
         } else {
-
-            print_r("ok2");
             return array();
         }
     }

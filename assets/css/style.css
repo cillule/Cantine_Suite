@@ -2,10 +2,6 @@ body {
     background-image: url(../img/background.png);
 }
 
-/*.panel-body {
-background: grey;
-}*/
-
 .navbar-default {
     background-color: #18c19c;
     border-color: #1bb76c;
@@ -154,9 +150,6 @@ background: grey;
     margin: 0;
 }
 
-
-
-
 .faqHeader {
     font-size: 27px;
     margin: 20px;
@@ -186,3 +179,5 @@ background: grey;
     transform: rotate(90deg);
     color: #454444;
 }
+
+div.DTTT { margin-bottom: 0.5em;  }

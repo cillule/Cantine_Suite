@@ -1,25 +1,9 @@
 $(document).ready(function () {
     
-    //génére le tableau
-    $.fn.dataTable.ext.order['dom-checkbox'] = function (settings, col)
-    {
-        return this.api().column(col, {order: 'index'}).nodes().map(function (td, i) {
-            return $('input', td).prop('checked') ? '1' : '0';
-        });
-    };
     $('#table_gestion').dataTable({
-        "columns": [
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            {"orderDataType": "dom-checkbox"}
-        ],
-        "dom": 'T<"clear">lfrtip',
-        "tableTools": {
-            "sSwfPath": "/swf/copy_csv_xls_pdf.swf"
+        dom: 'T<"clear">lfrtip',
+        tableTools: {
+            "sSwfPath": "//cdn.datatables.net/tabletools/2.2.2/swf/copy_csv_xls_pdf.swf"
         },
         "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.7/i18n/French.json"
@@ -33,23 +17,6 @@ $(document).ready(function () {
         "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.7/i18n/French.json"
             }
-         
-    });
-
-    //permet de cocher l'enfant présent et d'envoyer à la base de données
-    $(".checkbox").change(function () {
-        var id_enfant = $(this).val();
-        $.ajax({
-            url: location.href + '/pointage', // La ressource ciblée
-            type: 'POST', // Le type de la requête HTTP.
-            data: 'id_enfant=' + id_enfant,
-            dataType: 'html',
-            success: function () {
-            },
-            error: function () {
-                alert("AJAX ne fonctionne pas, réessayez. Si l'erreur persiste, contactez l'administrateur");
-            }
-        });
     });
 
     //permet de rechercher un enfant
