@@ -6,7 +6,7 @@ if (!defined('BASEPATH'))
 class Login_Control extends CI_Controller {
 
     public function index() {
-        redirect();
+        redirect(base_url());
     }
 
     public function login() {
@@ -25,11 +25,11 @@ class Login_Control extends CI_Controller {
         if ($this->form_validation->run() == false) {//Si les données du formulaire ne sont pas valides
             $this->session->set_flashdata('message', 'Formulaire non valide');
         
-           redirect();
+           redirect(base_url());
         } else if ($this->form_validation->run() == true && empty($result)) {//Si il n'y a pas d'utilisateur possédant le mail dans la BD
             $this->session->set_flashdata('message', 'Aucun compte ne correspond à vos identifiants ');
           
-           redirect();
+           redirect(base_url());
         } else {//si tout est ok
             $this->session->set_userdata('id_user', $result[0]->id_responsable);
 
@@ -52,7 +52,7 @@ class Login_Control extends CI_Controller {
 
     public function logout() {
         $this->session->sess_destroy();
-        redirect();
+        redirect(base_url());
     }
    
 
