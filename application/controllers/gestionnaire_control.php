@@ -11,16 +11,17 @@ class Gestionnaire_Control extends CI_Controller {
         if (empty($this->session->userdata('gestionnaire'))) {
             redirect();
         }
+        $this->template->set('page', 'gestionnaire');
     }
 
     public function index() {
         $data['query'] = $this->gestionnaire_model->get_enfant_gestionnaire(); //recupere nom prenom classe et id de l'enfant
-        $this->template->load('gestionnaire/layout_gestionnaire', 'gestionnaire/index', $data);
+        $this->template->load('layout', 'gestionnaire/index', $data);
     }
 
     public function affiche_tableau_suivi() {
 
-        $this->template->load('gestionnaire/layout_gestionnaire', 'gestionnaire/suivi_inscrits');
+        $this->template->load('layout', 'gestionnaire/suivi_inscrits');
     }
 
     public function pointage() {

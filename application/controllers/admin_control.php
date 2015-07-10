@@ -15,13 +15,13 @@ class Admin_Control extends CI_Controller {
          */
         if (empty($this->session->userdata('admin'))) {
             redirect();
-            print_r("pas admin");
             exit();
         }
 
         $config['upload_path'] = './assets/documents';
         $config['allowed_types'] = 'gif|jpg|png|pdf';
         $this->load->library('upload', $config);
+        $this->template->set('page', 'admin');
     }
 
     function index() {
@@ -32,7 +32,7 @@ class Admin_Control extends CI_Controller {
     function affiche_familles() {
         $data['query'] = $this->admin_model->get_familles();
         $data['affiche_tuille'] = 0;
-        $this->template->load('admin/layout_admin', 'admin/famille', $data);
+        $this->template->load('layout', 'admin/famille', $data);
     }
 
     //afficher les familles pour la première page
@@ -42,9 +42,9 @@ class Admin_Control extends CI_Controller {
             $this->admin_model->is_famille($id_famille);
             $data['infos_famille'] = $this->admin_model->get_info_famille($id_famille);
             $data['affiche_tuille'] = 1;
-            $this->template->load('admin/layout_admin', 'admin/famille', $data);
+            $this->template->load('layout', 'admin/famille', $data);
         } else {
-            $this->template->load('admin/layout_admin', 'view_404');
+            $this->template->load('layout', 'view_404');
         }
     }
 
@@ -55,7 +55,7 @@ class Admin_Control extends CI_Controller {
             $this->session->set_flashdata('message', 'Suppression effectuée avec succès ');
             $this->affiche_familles();
         } else {
-            $this->template->load('admin/layout_admin', 'view_404');
+            $this->template->load('layout', 'view_404');
         }
     }
 
@@ -63,7 +63,7 @@ class Admin_Control extends CI_Controller {
 
         $data['query'] = $this->admin_model->get_familles();
         $data['affiche_tuille'] = 0;
-        $this->template->load('admin/layout_admin', 'admin/facturation', $data);
+        $this->template->load('layout', 'admin/facturation', $data);
     }
 
     function affiche_facturation_info() {
@@ -74,14 +74,14 @@ class Admin_Control extends CI_Controller {
         $data['infos_famille'] = $this->admin_model->get_facturation_famille($id_famille);
         $data['id_famille'] = $id_famille;
         $data['affiche_tuille'] = 1;
-        $this->template->load('admin/layout_admin', 'admin/facturation', $data);
+        $this->template->load('layout', 'admin/facturation', $data);
     }
 
     function reglages() {
 
         $data["vacances"] = $this->admin_model->get_vacances_scolaires();
         $data["classes"] = $this->admin_model->get_liste_classes();
-        $this->template->load('admin/layout_admin', 'admin/reglages_admin', $data);
+        $this->template->load('layout', 'admin/reglages_admin', $data);
     }
 
     function sauvegarder_vacances_scolaires() {
@@ -161,7 +161,7 @@ class Admin_Control extends CI_Controller {
 
     //redirige vers le formulaire ajout d'une famille
     function ajouter_famille() {
-        $this->template->load('admin/layout_admin', 'admin/ajouter_famille');
+        $this->template->load('layout', 'admin/ajouter_famille');
     }
 
     //redirige vers le formulaire ajout d'une famille
@@ -187,7 +187,7 @@ class Admin_Control extends CI_Controller {
 
     //affiche la page suivi des inscrits
     function suivi_inscrits() {
-        $this->template->load('admin/layout_admin', 'admin/suivi_inscrits');
+        $this->template->load('layout', 'admin/suivi_inscrits');
     }
 
     //permet de générer les factures (voir pour planifier la tache)
@@ -231,7 +231,7 @@ class Admin_Control extends CI_Controller {
             $this->admin_model->set_facture_reglee($id_facture);
             $this->affiche_facturation_info();
         } else {
-            $this->template->load('admin/layout_admin', 'view_404');
+            $this->template->load('layout', 'view_404');
         }
     }
 
@@ -257,7 +257,7 @@ class Admin_Control extends CI_Controller {
     function message() {
         $data['query'] = $this->admin_model->get_id_famille();
         $data['message'] = $this->admin_model->getmessage();
-        $this->template->load('admin/layout_admin', 'admin/message', $data);
+        $this->template->load('layout', 'admin/message', $data);
     }
 
     function envoimessage() {
@@ -283,7 +283,7 @@ class Admin_Control extends CI_Controller {
     function affiche_documents() {
         $data['query'] = $this->admin_model->recuperer_tarifs();
         $data['query2'] = $this->admin_model->get_document();
-        $this->template->load('admin/layout_admin', 'admin/documents', $data);
+        $this->template->load('layout', 'admin/documents', $data);
     }
 
     function ajouter_document() {

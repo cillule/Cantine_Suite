@@ -16,7 +16,24 @@ $(document).ready(function () {
             null,
             null,
             {"orderDataType": "dom-checkbox"}
-        ]
+        ],
+        "dom": 'T<"clear">lfrtip',
+        "tableTools": {
+            "sSwfPath": "/swf/copy_csv_xls_pdf.swf"
+        },
+        "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.7/i18n/French.json"
+            }
+    });
+    
+    $('#table_liste_famille').dataTable({
+        
+        "scrollY":        "300px",
+        "scrollCollapse": true,
+        "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.7/i18n/French.json"
+            }
+         
     });
 
     //permet de cocher l'enfant présent et d'envoyer à la base de données

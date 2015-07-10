@@ -14,6 +14,7 @@ class Parents_Control extends CI_Controller {
 
         $id_famille = $this->parents_model->get_id_famille();
         $this->session->set_userdata('id_famille', $id_famille);
+        $this->template->set('page', 'parent');
     }
 
     public function index() {
@@ -22,7 +23,7 @@ class Parents_Control extends CI_Controller {
 
     public function info_parents() {
         $data['query'] = $this->parents_model->recuperer_info_parents();
-        $this->template->load('parents/layout_parents', 'parents/info_parents', $data);
+        $this->template->load('layout', 'parents/info_parents', $data);
     }
 
     public function sauvegarder_infos_famille() {
@@ -74,7 +75,7 @@ class Parents_Control extends CI_Controller {
 
         $data['query'] = $this->parents_model->get_enfants();
         $data['affiche_calendrier'] = 0;
-        $this->template->load('parents/layout_parents', 'parents/affiche_enfants', $data);
+        $this->template->load('layout', 'parents/affiche_enfants', $data);
     }
 
     //supprimer un enfant
@@ -97,7 +98,7 @@ class Parents_Control extends CI_Controller {
     function ajouter_enfants() {
         $data["liste_classe"] = $this->parents_model->get_liste_classes();
 
-        $this->template->load('parents/layout_parents', 'parents/add_enfant_parents', $data);
+        $this->template->load('layout', 'parents/add_enfant_parents', $data);
     }
 
     //redirige vers le formulaire ajout d'un enfant
@@ -142,9 +143,9 @@ class Parents_Control extends CI_Controller {
             $data["elem_calendrier"]["jours"] = $days;
             $data["elem_calendrier"]["mois"] = $months;
             $data['affiche_calendrier'] = 1;
-            $this->template->load('parents/layout_parents', 'parents/affiche_enfants', $data);
+            $this->template->load('layout', 'parents/affiche_enfants', $data);
         } else {
-            $this->template->load('parents/layout_parents', 'view_404');
+            $this->template->load('layout', 'view_404');
         }
     }
 
@@ -165,7 +166,7 @@ class Parents_Control extends CI_Controller {
             $this->session->set_flashdata('message', "Les changements ont bien été enregistrés");
             $this->afficher_Calendrier_Inscriptions($id_enfant);
         } else {
-            $this->template->load('parents/layout_parents', 'view_404');
+            $this->template->load('layout', 'view_404');
         }
     }
 
@@ -173,7 +174,7 @@ class Parents_Control extends CI_Controller {
 
         $data['infos_factures'] = $this->parents_model->get_facturation();
         // print_r($data);
-        $this->template->load('parents/layout_parents', 'parents/affiche_facturation', $data);
+        $this->template->load('layout', 'parents/affiche_facturation', $data);
     }
 
     public function export_facture_PDF($id_facture) {
@@ -181,12 +182,12 @@ class Parents_Control extends CI_Controller {
     }
 
     public function contact() {
-        $this->template->load('parents/layout_parents', 'parents/contact');
+        $this->template->load('layout', 'parents/contact');
     }
 
     public function message() {
         $data['message'] = $this->parents_model->getmessage();
-        $this->template->load('parents/layout_parents', 'parents/message_parents', $data);
+        $this->template->load('layout', 'parents/message_parents', $data);
     }
 
     public function envoimessage() {
@@ -210,7 +211,7 @@ class Parents_Control extends CI_Controller {
     function affiche_documents() {
         $data['query'] = $this->admin_model->recuperer_tarifs();
         $data['query2'] = $this->parents_model->get_document();
-        $this->template->load('parents/layout_parents', 'parents/documents_parents', $data);
+        $this->template->load('layout', 'parents/documents_parents', $data);
     }
 
     function telecharger_document($nom_doc) {
@@ -222,7 +223,7 @@ class Parents_Control extends CI_Controller {
 
     function affiche_faq() {
         $data['query'] = $this->parents_model->recuperer_QR();
-        $this->template->load('parents/layout_parents', 'parents/faq_parents', $data);
+        $this->template->load('layout', 'parents/faq_parents', $data);
     }
 
 }
