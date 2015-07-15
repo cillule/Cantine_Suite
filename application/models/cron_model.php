@@ -22,12 +22,12 @@ class Cron_model extends CI_Model {
 
         //on recupère les dates utiles
         $now = new DateTime();
-        $date_fin = $now->format('Y-m') . "-25";
-        $date_2 = new DateTime("-1 month");
-        $date_debut = $date_2->format('Y-m') . "-25";
+        $mois_courant = $now->format('m');
+        $annee_courante = $now->format('Y');
+      
 
-        //requete SQL
-        $where = "date BETWEEN '" . $date_debut . "' AND '" . $date_fin . "'";
+        //requete SQLnth(date)= '" . $mois_courant 
+        $where = "MONTH(date)= " . $mois_courant . " AND YEAR(date)=  " . $annee_courante;
         $this->db->select('id_enfant_repas as id_enfant, sum(prix) as montant ')
                 ->from('repas')
                 ->where($where)

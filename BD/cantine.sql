@@ -33,31 +33,23 @@ CREATE TABLE IF NOT EXISTS `document` (
   `nom_document` varchar(50) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
---
--- Contenu de la table `document`
---
 
-INSERT INTO `document` (`id_document`, `nom_document`) VALUES
-(2, 'autorisation_de_prelevement.pdf'),
-(3, 'ReglementCantine_-2014-2015.pdf');
 
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `enfant`
 --
-
 CREATE TABLE IF NOT EXISTS `enfant` (
 `id_enfant` int(11) NOT NULL,
   `id_famille` int(11) NOT NULL,
   `nom` varchar(30) NOT NULL,
   `prenom` varchar(20) NOT NULL,
-  `classe` varchar(10) NOT NULL,
+  `classe` int(11) NOT NULL,
   `regime_alimentaire` varchar(30) NOT NULL,
   `allergie` varchar(30) NOT NULL,
   `type_inscription` varchar(30) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
-
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -172,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `responsable` (
   `mail` varchar(30) NOT NULL,
   `mdp` varchar(250) NOT NULL,
   `tel_mobile` varchar(20) NOT NULL,
-  `tel_travail` varchar(10) NOT NULL,
+  `tel_travail` varchar(20) NOT NULL,
   `admin` tinyint(1) NOT NULL,
   `gestionnaire` tinyint(1) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
@@ -185,7 +177,28 @@ INSERT INTO `responsable` (`id_responsable`, `identité`, `nom`, `prenom`, `adre
 (1, 0, 'admin', 'admin', '', '', '', 0, 'admin@yahoo.fr', '$2y$10$Uv9ayjoVOU07jcVLLCwwdOf94P0yq3UT1X8KTV07TCDJH77wh1esy', '0607050609', '0474653219', 1, 0),
 (2, 0, 'responsable', 'responsable', '', '', '', 0, 'gestionnaire@yahoo.fr', '$2y$10$Uv9ayjoVOU07jcVLLCwwdOf94P0yq3UT1X8KTV07TCDJH77wh1esy', '', '', 0, 1);
 -- --------------------------------------------------------
+DROP TABLE IF EXISTS `tarifs`;
+CREATE TABLE IF NOT EXISTS `tarifs` (
+  `tarif_id` varchar(10) NOT NULL,
+  `tarif_mont` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Contenu de la table `tarifs`
+--
+
+INSERT INTO `tarifs` (`tarif_id`, `tarif_mont`) VALUES
+('prixAetM', 3.5),
+('prixHD', 3.65),
+('prixHebdo', 3.5),
+('prixPasIns', 4.3);
+
+
+--
+-- Index pour la table `tarifs`
+--
+ALTER TABLE `tarifs`
+ ADD PRIMARY KEY (`tarif_id`)
 
 --
 -- Index pour les tables exportées
@@ -376,21 +389,7 @@ CREATE TABLE IF NOT EXISTS `schema_inscription_annuelle` (
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
 
 
---
--- Structure de la table `tarifs`
---
 
-DROP TABLE IF EXISTS `tarifs`;
-CREATE TABLE IF NOT EXISTS `tarifs` (
-  `id` int(8) NOT NULL,
-  `prixAetM` float NOT NULL,
-  `prixHebdo` float NOT NULL,
-  `prixHD` float NOT NULL,
-  `prixPasInscrit` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-INSERT INTO `tarifs` (`id`, `prixAetM`, `prixHebdo`, `prixHD`,`prixPasInscrit` ) VALUES
-(1, 3.5, 4, 4.5, 4.65);
 
 --
 -- Index pour la table `classe`

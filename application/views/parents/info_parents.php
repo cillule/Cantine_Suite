@@ -11,11 +11,11 @@
                     <fieldset>
                         <div class="form-group">    
                             <label class="control-label" for="dname">Nom: </label>
-                            <input type="text" name="dname" class="form-control" value="<?php echo $row[0]->nom ?>" placeholder="Nom" required="true">
+                            <input type="text" name="dname" class="form-control" value="<?php echo $row[0]->nom ?>" placeholder="Nom" required="false"  disabled>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="dprenom">Prenom: </label>
-                            <input type="text" name="dprenom" class="form-control" value="<?php echo $row[0]->prenom ?>" placeholder="Prenom" required="true">
+                            <input type="text" name="dprenom" class="form-control" value="<?php echo $row[0]->prenom ?>" placeholder="Prenom" required="false"  disabled>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="demail">Mail: </label>

@@ -68,6 +68,7 @@ class Calendrier_model extends CI_Model {
         $date = new DateTime(date('Y-m-d', mktime(0, 0, 0, $moiscourant, 1, $anneecourante)));
 
         $jours_inscrit = $this->getJoursInscrit($id_enfant, $moiscourant);
+        $this->get_inscription_enfant($id_enfant);
 
         while ($date->format('n') < $moiscourant + 3) {//pour le mois courant + les 2 suivants
             $y = $date->format('Y');
@@ -81,9 +82,10 @@ class Calendrier_model extends CI_Model {
 
                 array_push($to_return['annees'], $y);
             }
-            array_push($to_return["type"], $this->getType($jours_inscrit, $date));
+            array_push($to_return["type"], $this->getType($jours_inscrit, $date, $id_enfant));
             $date->add(new DateInterval('P1D'));
         }
+
 
         return $to_return;
     }
@@ -95,44 +97,46 @@ class Calendrier_model extends CI_Model {
      * @return array contenant: les dates du mois courant + des deux suivants, les années
 
      *  */
-    //retourne: 1 -> l'enfant est inscrit et le jour est dans les délais
-    //          2 -> l'enfant est inscrit mais le jour n'est pas dans les délais 
-    //          0 -> l'enfant n'est pas inscrit mais le jour est dans les délais
-    //          3 -> l'enfant n'est pas inscrit et le jour n'est pas dans les délais 
-    //          4 -> jours pendant les vacances ou le week end
-    private function getType($jours_inscrit, $date) {
+//retourne: 1 -> l'enfant est inscrit et le jour est dans les délais
+//          2 -> l'enfant est inscrit mais le jour n'est pas dans les délais 
+//          0 -> l'enfant n'est pas inscrit mais le jour est dans les délais
+//          3 -> l'enfant n'est pas inscrit et le jour n'est pas dans les délais 
+//          4 -> jours pendant les vacances ou le week end
+//          5 -> inscription annuelle dans les délais
+    private function getType($jours_inscrit, $date, $id_enfant) {
 
         $now = new DateTime; //aujourd'hui
         $W_now = $now->format('W');
         $N_now = $now->format('N');
 
-
-        //Pour la comparaison
+    //Pour la comparaison
         $y = $date->format('Y');
         $m = $date->format('m');
         $d = $date->format('d');
         $w = str_replace('0', '7', $date->format('w'));
         $W_date = $date->format('W');
-        //  $N_date = $date->format('N');
-
-        if ($w == 6 || $w == 7 || $this->jour_ok($y . "-" . $m . "-" . $d) == false) {//si le jours est pendant le WE ou les vacances
+        $N_date = $date->format('N');
+       
+        if ($w == 6 || $w == 7 || $this->jour_ok($y . "-" . $m . "-" . $d) == false) {//si le jour est pendant le WE ou les vacances
+            
             return 4; //jour de vacance ou week end
         }
 
-
-        if (in_array($y . "-" . $m . "-" . $d, $jours_inscrit)) {//si l'enfant est inscrit pour ce jour 
+        if (in_array($y . "-" . $m . "-" . $d, $jours_inscrit)) {//SI l'enfant est déja inscrit pour ce jour
             if ($W_now == $W_date || $N_now > 4 && $W_now + 1 == $W_date) {// si on est hors délais
-                return 2;//inscription hors délais 
+         
+                return 2; //inscription hors délais 
             } else {
 
-                return 1;//inscription dans les délais 
+
+                return 1; //inscription dans les délais 
             }
         } else {// l'enfant n'est pas inscrit
-            if ($W_now == $W_date || $N_now > 5 && $W_now + 1 == $W_date) {// si on est hors délais
-                return 3;//pas inscrit et hors délais 
+            if ($W_now == $W_date || $N_now > 4 && $W_now + 1 == $W_date) {// si on est hors délais
+                return 3; //pas inscrit et hors délais 
             } else {
 
-                return 0;//pas inscrit mais jour dans les délais 
+                return 0; //pas inscrit mais jour dans les délais 
             }
         }
     }
@@ -174,6 +178,39 @@ class Calendrier_model extends CI_Model {
         }
 
         return $to_return;
+    }
+
+    private function get_inscription_enfant($id_enfant) {
+
+        $this->db->select('id_enfant, type_inscription')
+                ->from('enfant')
+                ->where('id_enfant', $id_enfant);
+
+        $result = $this->db->get()->result();
+
+        if (strcmp($result[0]->type_inscription, "Annuelle") == 0) {
+
+            $this->db->select('schem_lundi, schem_mardi, schem_mercredi, schem_jeudi, schem_vendredi')
+                    ->from('schema_inscription_annuelle')
+                    ->where('schem_id_enfant', $id_enfant);
+
+            $jours_inscript_annuelle = $this->db->get()->result();
+
+            $i = 1;
+            foreach ($jours_inscript_annuelle[0] as $row) {
+                $schema_inscript[$i] = $row;
+                $i++;
+            }
+        } else {
+
+            $i = 1;
+            while ($i < 6) {
+                $schema_inscript[$i] = 0;
+                $i++;
+            }
+        }
+
+        return $schema_inscript;
     }
 
 }

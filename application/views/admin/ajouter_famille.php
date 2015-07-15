@@ -13,6 +13,11 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="InputPrenom">Prénom</label>
+                            <input type="text" class="form-control" id="InputPrenom" name="prenom" placeholder="Entrer le prenom du responsable">
+                        </div>
+
+                        <div class="form-group">
                             <label for="Inputamil">Mail</label>
                             <input type="email" name="mail" id="InputMail" class="form-control" placeholder="Adresse mail" required>
                         </div>

@@ -5,27 +5,27 @@
                 <h3 class="panel-title">Modification des tarifs <i class="fa fa-euro"></i></h3>
             </div>
             <div class="panel-body">
-                <?php $row = $query->result(); ?>
+             
                 <form role="form" method="post" action="<?php echo base_url("admin_control/sauvegarder_tarifs") ?>">
                     <fieldset>
                         <div class="form-group">
                             <label for="prixAetM">Prix d'un repas avec inscription annuelle</label>
-                            <input type="text" class="form-control" name="prixAetM" value="<?php echo $row[0]->prixAetM ?>">
+                            <input type="text" class="form-control" name="prixAetM" value="<?php echo $liste_tarif["prixAetM"] ?>">
                         </div>
 
                         <div class="form-group">
                             <label for="prixHebdo" class="control-label">Prix d'un repas avec inscription hebdommadaire</label>
-                            <input type="text" class="form-control" name="prixHebdo" value="<?php echo $row[0]->prixHebdo ?>">
+                            <input type="text" class="form-control" name="prixHebdo" value="<?php echo $liste_tarif["prixHebdo"] ?>">
                         </div>
 
                         <div class="form-group">
                             <label for="prixHD" class="control-label">Prix d'un repas avec inscription hors délai</label>
-                            <input type="text" class="form-control" name="prixHD" value="<?php echo $row[0]->prixHD ?>">
+                            <input type="text" class="form-control" name="prixHD" value="<?php echo $liste_tarif["prixHD"] ?>">
                         </div>
 
                         <div class="form-group">
                             <label for="prixPasInscrit" class="control-label">Prix d'un repas avec inscription lors du pointage</label>
-                            <input type="text" class="form-control" name="prixPasInscrit" value="<?php echo $row[0]->prixPasInscrit?>">
+                            <input type="text" class="form-control" name="prixPasInscrit" value="<?php echo $liste_tarif["prixPasIns"] ?>">
                         </div>
                         <div class="form-group">
                             <input type="submit" name="submit" class="btn btn-success pull-right" value="Sauvegarder">

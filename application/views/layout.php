@@ -14,20 +14,24 @@
         <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap-datepicker3.min.css'); ?>"/>
         <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/bootstrap-toggle.min.css"); ?>"/>
         <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"/>
+        <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.4/themes/redmond/jquery-ui.css"/>
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/tabletools/2.2.0/css/dataTables.tableTools.min.css"/>
     </head>
     <body>
+       
 
-        <?php 
-            if($page == "admin"){
-                require_once("menu/menu_admin.php");
-            }else if($page == "parent"){
-                require_once("menu/menu_parent.php");
-            }else if($page == "gestionnaire"){
-                require_once("menu/menu_gestionnaire.php");
-            }else{
-                require_once("menu/menu.php");
-            }
+        <?php
+
+        if ($page == "admin") {
+           
+            require_once("menu/menu_admin.php");
+        } else if ($page == "parent") {
+            require_once("menu/menu_parent.php");
+        } else if ($page == "gestionnaire") {
+            require_once("menu/menu_gestionnaire.php");
+        } else {
+            require_once("menu/menu.php");
+        }
         ?>
         <div class="container"><?= $contents ?></div>
 
@@ -41,6 +45,7 @@
         </footer>
 
         <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
         <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="<?php echo base_url("assets/js/typehead.js"); ?>"></script>
         <script type="text/javascript" src="<?php echo base_url("assets/js/bootstrap-datepicker.min.js"); ?>"></script>

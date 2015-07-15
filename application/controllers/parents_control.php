@@ -28,8 +28,8 @@ class Parents_Control extends CI_Controller {
 
     public function sauvegarder_infos_famille() {
 
-        $this->form_validation->set_rules('dname', 'Username', 'trim|required|max_length[52]|encode_php_tags|xss_clean');
-        $this->form_validation->set_rules('dprenom', 'trim|required|max_length[52]|encode_php_tags|xss_clean');
+        /*  $this->form_validation->set_rules('dname', 'Username', 'trim|required|max_length[52]|encode_php_tags|xss_clean');
+          $this->form_validation->set_rules('dprenom', 'trim|required|max_length[52]|encode_php_tags|xss_clean'); */
         $this->form_validation->set_rules('demail', 'Email', 'trim|required|min_length[5]|max_length[52]|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('dmobile', 'trim|required|min_length[10]|max_length[10]|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('dtel_travail', 'trim|required|min_length[10]|max_length[10]|encode_php_tags|xss_clean');
@@ -39,8 +39,8 @@ class Parents_Control extends CI_Controller {
         if ($this->form_validation->run() == TRUE) {
 
             $data = array(
-                'nom' => $this->input->post('dname'),
-                'prenom' => $this->input->post('dprenom'),
+                /* 'nom' => $this->input->post('dname'),
+                  'prenom' => $this->input->post('dprenom'), */
                 'adresse' => $this->input->post('daddress'),
                 'mail' => $this->input->post('demail'),
                 'tel_mobile' => $this->input->post('dmobile'),
@@ -131,6 +131,7 @@ class Parents_Control extends CI_Controller {
 
     // Fonction pour afficher le calendrier
     public function afficher_Calendrier_Inscriptions($id_enfant = '') {
+       
         if ($this->parents_model->is_enfant_from_famille($id_enfant) == true) {
             $dates = $this->calendrier_model->get_MoisSuivants($id_enfant);
 
@@ -155,13 +156,19 @@ class Parents_Control extends CI_Controller {
         if ($this->parents_model->is_enfant_from_famille($id_enfant) == true) {
 
             $liste_date_serialise = $this->input->post('checkbox');
+            $liste_date_serialise_HD = $this->input->post('checkbox_HD');
             $liste_date_deserialisee = array();
 
             foreach ($liste_date_serialise as $date) {
-               
+
                 array_push($liste_date_deserialisee, unserialize($date));
             }
-            
+
+            foreach ($liste_date_serialise_HD as $date) {
+
+                array_push($liste_date_deserialisee, unserialize($date));
+            }
+
             $this->parents_model->setInscriptions($liste_date_deserialisee, $id_enfant);
             $this->session->set_flashdata('message', "Les changements ont bien été enregistrés");
             $this->afficher_Calendrier_Inscriptions($id_enfant);
@@ -209,7 +216,7 @@ class Parents_Control extends CI_Controller {
     }
 
     function affiche_documents() {
-        $data['query'] = $this->admin_model->recuperer_tarifs();
+        $data['liste_tarif'] = $this->parents_model->recuperer_tarifs();
         $data['query2'] = $this->parents_model->get_document();
         $this->template->load('layout', 'parents/documents_parents', $data);
     }

@@ -153,9 +153,9 @@ class Admin_Control extends CI_Controller {
         if ($this->admin_model->is_famille($id_famille) == true) {
             $this->admin_model->delete_famille($id_famille); //Admin_model->on supprime la famille
             $this->session->set_flashdata('message', 'La famille a bien été supprimée');
-            redirect(base_url("admin_control/affiche_familles"));
+            $this->template->load('layout', 'admin/famille');
         } else {
-            redirect(base_url("admin_control/affiche_familles"));
+            $this->template->load('layout', 'admin/famille');
         }
     }
 
@@ -169,20 +169,20 @@ class Admin_Control extends CI_Controller {
 
         //recupération des données du POST 
         $nom = $this->input->post('nom');
-        $rib = $this->input->post('rib');
+        $prenom = $this->input->post('prenom');
         $mail = $this->input->post('mail');
 
         $this->form_validation->set_rules('nom', '"nom"', 'trim|required|min_length[3]|max_length[52]|encode_php_tags|xss_clean');
-        $this->form_validation->set_rules('rib', '"rib"', 'trim|is_natural|min_length[5]|max_length[52]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('prenom', '"prenom"', 'trim|required|min_length[3]|max_length[52]|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('mail', '"mail"', 'trim|required|valid_email|min_length[5]|max_length[52]|encode_php_tags|xss_clean');
 
         if ($this->form_validation->run() == true) {
-            $this->admin_model->add_famille($nom, $mail, $rib);
+            $this->admin_model->add_famille($nom, $mail, $prenom);
             $this->session->set_flashdata('message', "Famille ajouté avec succès!");
         } else {
             $this->session->set_flashdata('message', "Echec lors de l'ajout de la famille!");
         }
-        redirect(base_url("admin_control/affiche_familles"));
+        $this->template->load('layout', 'admin/famille');
     }
 
     //affiche la page suivi des inscrits
@@ -250,7 +250,7 @@ class Admin_Control extends CI_Controller {
         $tmp = explode("/", $date);
         $mois = $tmp[0];
         $annee = $tmp[1];
-        //print_r($mois." ".$annee);
+
         $this->excel_model->export_echeancier($mois, $annee);
     }
 
@@ -281,7 +281,7 @@ class Admin_Control extends CI_Controller {
     }
 
     function affiche_documents() {
-        $data['query'] = $this->admin_model->recuperer_tarifs();
+        $data['liste_tarif'] = $this->admin_model->recuperer_tarifs();
         $data['query2'] = $this->admin_model->get_document();
         $this->template->load('layout', 'admin/documents', $data);
     }
@@ -319,7 +319,7 @@ class Admin_Control extends CI_Controller {
                 'prixAetM' => $prixAetM,
                 'prixHebdo' => $prixHebdo,
                 'prixHD' => $prixHD,
-                'prixPasInscrit' => $prixPasInscrit,
+                'prixPasIns' => $prixPasInscrit,
             );
             $this->admin_model->form_tarifs($data); //sauvegarde les infos dans la base
             $this->session->set_flashdata('message', 'Tarifs modifiés avec succès!');

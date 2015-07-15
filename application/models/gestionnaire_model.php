@@ -23,7 +23,7 @@ class Gestionnaire_Model extends CI_Model {
         return $query;
     }
 
-    function insert_enfant_gestionnaire($id_enfant) { // insertion de l'enfant dans la BD
+    /*function insert_enfant_gestionnaire($id_enfant) { // insertion de l'enfant dans la BD
         $date = date("Y-m-d");
         $sql = "SELECT *
                 FROM repas
@@ -38,18 +38,20 @@ class Gestionnaire_Model extends CI_Model {
 
         $this->db->where(array('id_enfant_repas' => $id_enfant, 'date' => $date));
         $this->db->update('repas', $data);
-    }
+    }*/
 
     function insert_enfant_non_inscrit($nom_enfant, $prenom_enfant) {
         $date = date("Y-m-d");
-        $this->db->select('id_enfant, prixPasInscrit')
+        $this->db->select('id_enfant, tarif_mont')
                 ->from('enfant, tarifs')
-                ->where(array('nom' => $nom_enfant, 'prenom' => $prenom_enfant));
+                ->where(array('nom' => $nom_enfant, 'prenom' => $prenom_enfant, 'tarif_id' => "prixPasIns"));
+        
         $query = $this->db->get();
+        
         if ($query->num_rows() == 1) {
             foreach ($query->result() as $row) {
                 $id_enfant = $row->id_enfant;
-                $prix = $row->prixPasInscrit;
+                $prix = $row->tarif_mont;
             }
 
             $data = array(

@@ -46,13 +46,12 @@ class PDF_model extends CI_Model {
         $this->pdf->addClient($this->infos_enfant->prenom . " " . $this->infos_enfant->nom);
         $this->pdf->addPageNumber("1");
         $this->pdf->addClientAdresse($this->get_adresse_facturation());
-        $this->pdf->addReglement("Rendre facture + chèque");
+        $this->pdf->addReglement("Prélèvement automatique");
     }
 
     private function creation_corps_facture() {
 
         $liste_repas = $this->get_liste_repas();
-
 
         $cols = array("DATE" => 70,
             "TARIF" => 70,
@@ -163,19 +162,18 @@ class PDF_model extends CI_Model {
     private function get_liste_repas() {
 
         //on recupère les dates utiles
-        $date = new DateTime($this->infos_facture->annee . "-" . $this->infos_facture->mois . "-01");
-        $date_fin = $date->format('Y-m') . "-25";
-        $date_2 = new DateTime($this->infos_facture->annee . "-" . $this->infos_facture->mois . "-01 -1 month");
-        $date_debut = $date_2->format('Y-m') . "-25";
-
+       // $date = new DateTime($this->infos_facture->annee . "-" . $this->infos_facture->mois . "-01");
+        $mois_courant = $this->infos_facture->mois;
+        $annee_courante = $this->infos_facture->annee;
+ 
         //requete SQL
-        $where = "(date BETWEEN '" . $date_debut . "' AND '" . $date_fin . "') AND (id_enfant_repas=" . $this->infos_enfant->id_enfant . ")";
+        $where = "(MONTH(date)= " . $mois_courant . " AND YEAR(date)=  " . $annee_courante .") AND (id_enfant_repas=" . $this->infos_enfant->id_enfant . ")";
+
         $this->db->select('date, prix')
                 ->from('repas')
                 ->where($where);
 
         $liste_repas = $this->db->get()->result();
-
         return $liste_repas;
     }
 

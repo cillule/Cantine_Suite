@@ -35,7 +35,7 @@ class Admin_model extends CI_Model {
         $this->db->select('id_enfant, nom, prenom, niveau, nom_enseignant, regime_alimentaire, allergie, type_inscription')
                 ->from('enfant')
                 ->where('id_famille', $id_famille)
-                ->join('classe',"enfant.classe=classe.id_classe");
+                ->join('classe', "enfant.classe=classe.id_classe");
 
         $result["enfants"] = $this->db->get()->result();
 
@@ -62,7 +62,7 @@ class Admin_model extends CI_Model {
     }
 
     // add_famille: Ajouter une famille
-    public function add_famille($nom, $mail, $rib) {
+    public function add_famille($nom, $mail, $prenom) {
 
         //on récupère deux id pour les responsables
         $this->db->select('max(id_responsable) as id_max')
@@ -79,14 +79,15 @@ class Admin_model extends CI_Model {
 
         $this->db->insert('famille', $to_insert); //et on les insert
         //on genère un mdp au hasard et on le crypte
-        $mdp = password_hash($this->generer_mot_de_passe(), PASSWORD_BCRYPT);
+        $mdp_non_crypte = $this->generer_mot_de_passe();
+        $mdp = password_hash($mdp_non_crypte, PASSWORD_BCRYPT);
 
 
         //On prépare les données à insérer pour le responsable 1
         $insert_resp_1 = array(
             'id_responsable' => $id_resp_1,
             'nom' => $nom,
-            'rib' => $rib,
+            'prenom' => $prenom,
             'mail' => $mail,
             'mdp' => $mdp,
         );
@@ -94,7 +95,7 @@ class Admin_model extends CI_Model {
         //On les ajoute à la base
         $this->db->insert('responsable', $insert_resp_1);
         //et on envoie le mail
-        // $this->mail_ajout_famille($mail, $mdp);
+        // $this->mail_ajout_famille($mail, $mdp_non_crypte);
     }
 
     private function mail_ajout_famille($mail, $mdp) {
@@ -103,12 +104,11 @@ class Admin_model extends CI_Model {
         $this->load->library('email');
 
         $this->email->from('admin@yahoo.com', 'Cantine');
-        $this->email->to("g.lucille01@yahoo.fr");
+        $this->email->to($mail);
 
         $this->email->subject('Inscription Cantine');
         $this->email->message("Voici votre mot de passe: " . $mdp);
 
-        $this->email->send();
 
         echo $this->email->print_debugger();
     }
@@ -252,7 +252,7 @@ class Admin_model extends CI_Model {
         $this->db->select('*')->from('vacances');
         $row = $this->db->get()->result();
         $to_return = array();
-        
+
         foreach ($row as $vacances) {
             $to_return["vac" . $vacances->id_vacances]["debut"] = $vacances->date_debut;
             $to_return["vac" . $vacances->id_vacances]["fin"] = $vacances->date_fin;
@@ -356,27 +356,47 @@ class Admin_model extends CI_Model {
         $this->db->insert('message', $data);
     }
 
-    public function add_tarifs($prixAetM, $prixO, $prixHD) {
+    public function add_tarifs($prixAetM, $prixHD, $prixHD) {
 
-        //on prépare les données à inserer dans la table tarifs
-        $to_insert = array(
-            'prixAetM' => $prixAetM,
-            'prixO' => $prixO,
-            'prixHD' => $prixHD,
-        );
+        $liste_tarifs = array([0] => "prixAetM", [1] => "prixHD", [2] => "prixPasIns", [3] => "prixHebdo");
 
-        $this->db->insert('tarifs', $to_insert); //et on les insert
+        foreach ($liste_tarifs as $value) {
+            print_r($value);
+        }
+        /* $data = array(
+          'tarif_mont' => $prixAetM
+          );
+
+          $this->db->where('id', $id);
+          $this->db->update('tarifs', $data); */
     }
 
     function recuperer_tarifs() {
-        $this->db->select('*')
+        
+        $this->db->select('tarif_id, tarif_mont')
                 ->from('tarifs');
-        $query = $this->db->get();
-        return $query;
+        
+        $query = $this->db->get()->result();
+  
+        foreach ($query as $row) {
+     
+            $to_return[$row->tarif_id]=$row->tarif_mont; 
+        }
+   
+        return $to_return;
     }
 
-    function form_tarifs($data) {
-        $this->db->update('tarifs', $data);
+    function form_tarifs($liste_tarifs) {
+
+        foreach ($liste_tarifs as $key => $value) {
+
+            $data = array(
+                'tarif_mont' => $value
+            );
+
+            $this->db->where('tarif_id', $key);
+            $this->db->update('tarifs', $data);
+        }
     }
 
     public function load_document() {

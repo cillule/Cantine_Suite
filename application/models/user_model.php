@@ -14,19 +14,10 @@ class User_model extends CI_Model {
                         ->from($this->table)
                         ->where('mail', $email)
                         ->get()->result();
-
-
-
-
-
        
         $mdp_1=password_hash($mdp, PASSWORD_DEFAULT);
-        print_r("</br> mot de passe haché " . $mdp_1);
-        print_r("</br> mot de passe entré " . $mdp);
 
-   
-        
-
+  
         if (password_verify($mdp, $result[0]->mdp)  && !empty($result)) {
             return $this->db->select('id_responsable,admin, gestionnaire')
                             ->from($this->table)

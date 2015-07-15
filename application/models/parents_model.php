@@ -222,21 +222,12 @@ class Parents_model extends CI_Model {
         //on ajoute les données reçus en POST du calendrier (normalement ok car tout les enregistrements ont été éffacés)
         if (!empty($liste_dates)) {
 
-            /* $this->db->select('schem_lundi,schem_mardi, schem_mercredi, schem_jeudi, schem_vendredi')
-              ->from('schema_inscription_annuelle')
-              ->where('schem_id_enfant', $id_enfant);
-
-              $result_1 = $this->db->get()->result();
-              $schema_inscrip = $result_1[0]; */
-
-            $this->db->select('')
-                    ->from('tarifs');
-
-            $result = $this->db->get()->result();
-
-            $prix_annuel = $result[0]->prixAetM;
-            $prix_hebdo = $result[0]->prixHebdo;
-            $prix_hd = $result[0]->prixHD;
+           
+            $liste_tarif = $this->recuperer_tarifs();
+       
+            $prix_annuel = $liste_tarif["prixAetM"];
+            $prix_hebdo = $liste_tarif["prixHebdo"];
+            $prix_hd = $liste_tarif["prixHD"];
 
             //on efface les entrées des deux mois à venir
             $this->db->query("DELETE FROM `repas` WHERE (MONTH(date) = MONTH(CURDATE()) OR MONTH(date) = MONTH(CURDATE())+1  OR MONTH(date) = MONTH(CURDATE())+2 ) and date > CURDATE() AND id_enfant_repas = " . $id_enfant);
@@ -245,10 +236,13 @@ class Parents_model extends CI_Model {
                 $date = new DateTime($value["date"]);
                 $type_inscription = $value["type"];
 
+                // print_r($value);
+
                 if ($type_inscription == 0 || $type_inscription == 1) {
 
                     $prix = $prix_hebdo;
-                } elseif ($type_inscription == 3) {
+                }
+                if ($type_inscription == 2 || $type_inscription == 3) {
                     $prix = $prix_hd;
                 }
 
@@ -322,10 +316,17 @@ class Parents_model extends CI_Model {
     }
 
     function recuperer_tarifs() {
-        $this->db->select('*')
+        $this->db->select('tarif_id, tarif_mont')
                 ->from('tarifs');
-        $query = $this->db->get();
-        return $query;
+
+        $query = $this->db->get()->result();
+
+        foreach ($query as $row) {
+
+            $to_return[$row->tarif_id] = $row->tarif_mont;
+        }
+
+        return $to_return;
     }
 
     function recuperer_QR() {

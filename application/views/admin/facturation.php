@@ -31,7 +31,7 @@
     $somme_due = 0;
     if ($affiche_tuille == 1)://gestion de l'affichage de la tuille 
         if (!empty($infos_famille)) {
-            // print_r($infos_famille);
+            
             foreach ($infos_famille as $row):
                 ?>
                 <div class="panel panel-info">
@@ -42,7 +42,7 @@
                         <table class="table text-uppercase">
 
                             <?php
-                            //  print_r($row['factures_associées']);
+                           
                             if (!empty($row['factures_associées'])) {
                                 ?> 
 
@@ -129,7 +129,7 @@
         <div class="panel-body">
             <form class="form-horizontal" role="form" method="post" action="<?php echo base_url('admin_control/generer_echeancier'); ?>">
                 <fieldset>
-                    <label> Sélectionnez une famille : </label>
+                    <label> Sélectionnez un mois : </label>
                     <div class="panel-body">
                         <div class="input-group">
                             <input required type="text" id="date_suivi_inscrit" name="date_echeancier" class="form-control"/>

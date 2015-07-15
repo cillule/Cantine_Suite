@@ -1,4 +1,4 @@
-<?php if ($query->num_rows() > 0): //si on a déja des enfants inscrits                                                                                                                      ?>
+<?php if ($query->num_rows() > 0): //si on a déja des enfants inscrits                                                                                                                                 ?>
 
     <div class="row">
         <div class="col-md-8">
@@ -86,39 +86,39 @@
                                                     if (new DateTime($year . "-" . $m . "-" . $d) > $now) {//
                                                         $type = $elem_calendrier["dates"]['type'][$i];
                                                         $array_to_post = serialize(array("date" => "2015" . "-" . $m . "-" . $d, "type" => $type));
-                                                  
+
                                                         switch ($type) {
 
                                                             case 0://l'enfant n'est pas inscrit mais le jour est dans les délais
                                                                 //cellule blanche + checkable
                                                                 echo "<td>";
-                                                                echo "<input type='checkbox' name='checkbox[]" . $i . "' value='" . $array_to_post . "' >";
+                                                                echo "<input type='checkbox' name='checkbox[]' value='" . $array_to_post . "' >";
                                                                 echo $d;
                                                                 echo "</td>";
                                                                 break;
                                                             case 1:// l'enfant est inscrit et le jour est dans les délais
-                                                                //cellule rouge + checkable
+                                                                //cellule verte claire + checkable
                                                                 echo "<td style='background-color: #01FA3B'>";
-                                                                echo "<input type='checkbox' name='checkbox[]" . $i . "' value='" . $array_to_post . "' checked >";
+                                                                echo "<input type='checkbox' name='checkbox[]' value='" . $array_to_post . "' checked >";
                                                                 echo $d;
                                                                 echo "</td>";
                                                                 break;
                                                             case 2://l'enfant est inscrit mais le jour n'est pas dans les délais 
-                                                                //cellule rouge non checkable
+                                                                //cellule verte foncée non cheackable
                                                                 echo "<td style='background-color: #00A131'>";
-                                                                echo "<input type='hidden' name='checkbox[]" . $i . "' value='" . $array_to_post . "'' checked >";
+                                                                echo "<input type='hidden' name='checkbox[]' value='" . $array_to_post . "' checked >";
                                                                 echo $d;
                                                                 echo "</td>";
                                                                 break;
                                                             case 3://l'enfant n'est pas inscrit et le jour n'est pas dans les délais 
                                                                 //cellule orange checkable
                                                                 echo "<td style='background-color: #FAB801'>";
-                                                                echo "<input type='checkbox' name='checkbox[]" . $i . "' value='" . $array_to_post . "'' >";
+                                                                echo "<input type='checkbox' name='checkbox_HD[]' value='" . $array_to_post . "' >";
                                                                 echo $d;
                                                                 echo "</td>";
                                                                 break;
                                                             case 4://le jour est pendant le week end ou les vacances
-                                                                //cellule blanche non checkable
+                                                                //cellule grisée non checkable
                                                                 echo "<td style='background-color: #A2B5BF'>";
                                                                 echo $d;
                                                                 echo '</td>';
@@ -152,14 +152,22 @@
                             endforeach;
                         endforeach;
                         ?>
-                        <button class='btn btn-success pull-right' type="submit" form="form_calendrier" value="Submit">Enregistrer les changements</button>
+                        <button class='btn btn-success pull-right' type="submit" form="form_calendrier" id="bouton_enregistrer_inscrip" value="Submit">Enregistrer les changements</button>
                     <?php endif; ?>
 
                 </form>
 
+                <div id="popupconfirmation_inscription" title="Boîte de dialogue de base">
+
+
+                    <p><strong>Une inscription Hors Délais va être effectuée. </strong>(zone orange)</p>
+                    <p>Une fois, cette inscription validée, il vous sera impossible de la modifier</p>
+                    <p>Etes vous sur de vouloir continuer ?</p>
+                </div>
+
 
             </div>
-
         </div>
     </div>
 </div>
+

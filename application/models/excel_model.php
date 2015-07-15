@@ -247,16 +247,17 @@ class Excel_model extends CI_Model {
     }
 
     private function tri_liste($liste) {
-        $i = count($liste) - 1;
+        $i = count($liste)-1;
         $tab_trie = array(array(), array(), array(), array(), array(), array(), array(), array());
 
         while ($i != -1) {
+          
             $enfant = $liste[$i];
             $niveau_inf = explode("-", $enfant->niveau);
 
-            switch ($niveau_inf[0]) {
+            switch (strtoupper($niveau_inf[0])) {
 
-                case "Maternelle":
+                case "MATERNELLE":
                     array_push($tab_trie[0], $enfant);
                     //  $tab_trie[0][$enfant->nom_enseignant][] = $enfant;
                     break;
@@ -265,6 +266,12 @@ class Excel_model extends CI_Model {
                     array_push($tab_trie[1], $enfant);
                     //  $tab_trie[1][$enfant->nom_enseignant][] = $enfant;
                     break;
+                
+                 case "GRANDE SECTION":
+                    array_push($tab_trie[1], $enfant);
+                    //  $tab_trie[1][$enfant->nom_enseignant][] = $enfant;
+                    break;
+
 
                 case "CP":
                     array_push($tab_trie[2], $enfant);
@@ -435,18 +442,18 @@ class Excel_model extends CI_Model {
         $this->creation_feuille_presence($date);
         $this->mise_en_page_fp();
 
-        header('Content-type: application/vnd.ms-excel');
+       header('Content-type: application/vnd.ms-excel');
         header("Content-Disposition: attachment; filename='feuille_presence_" . $date . ".xls'");
-
         $writer = new PHPExcel_Writer_Excel5($this->workbook);
         $writer->save('php://output');
     }
 
     private function creation_feuille_presence($date) {
 
-        $this->db->select('nom,prenom,classe,present')
+        $this->db->select('id_enfant, nom, prenom, niveau, nom_enseignant, regime_alimentaire, allergie')
                 ->from('repas')
                 ->join('enfant', 'enfant.id_enfant = repas.id_enfant_repas')
+                ->join('classe', 'enfant.classe = classe.id_classe')
                 ->where('date', $date);
 
         $liste = $this->db->get()->result();
@@ -454,6 +461,7 @@ class Excel_model extends CI_Model {
         $ligne = 4;
 
         if (!empty($liste)) {
+         
 
             $liste_triee = $this->tri_liste($liste);
 
@@ -472,32 +480,52 @@ class Excel_model extends CI_Model {
         $this->sheet->getStyle("A1")->applyFromArray($this->style1);
         $this->sheet->setCellValue('A1', "Feuille de présence du " . $date);
         $this->sheet->mergeCells('A1:D1');
-        $this->sheet->setCellValue('A3', "Nom");
-        $this->sheet->setCellValue('B3', "Prenom");
-        $this->sheet->setCellValue('C3', "Classe-Enseignant");
-        $this->sheet->setCellValue('D3', "Présent");
+        $this->sheet->setCellValue('A3', "Position");
+        $this->sheet->setCellValue('B3', "Nom");
+        $this->sheet->setCellValue('C3', "Prenom");
+        $this->sheet->setCellValue('D3', "Classe-Enseignant");
+        $this->sheet->setCellValue('E3', " Regime Alimentaire");
+        $this->sheet->setCellValue('F3', "Allergie");
+        $this->sheet->setCellValue('G3', "Présent");
     }
 
     private function ecriture_presence_classe($classe, $ligne) {
-
+        $position_enfant = 1;
         foreach ($classe as $enfant) {
-            $this->sheet->setCellValueByColumnAndRow(0, $ligne, strtoupper($enfant->nom));
-            $this->sheet->setCellValueByColumnAndRow(1, $ligne, $enfant->prenom);
-            $this->sheet->setCellValueByColumnAndRow(2, $ligne, $enfant->classe);
-            $this->sheet->setCellValueByColumnAndRow(3, $ligne, $enfant->present);
-            $this->sheet->getStyle("A" . $ligne . ":D" . $ligne)->getBorders()->applyFromArray($this->allborders_fin);
+
+            $this->sheet->setCellValueByColumnAndRow(0, $ligne, $position_enfant);
+            $this->sheet->setCellValueByColumnAndRow(1, $ligne, strtoupper($enfant->nom));
+            $this->sheet->setCellValueByColumnAndRow(2, $ligne, $enfant->prenom);
+            $this->sheet->setCellValueByColumnAndRow(3, $ligne, $enfant->niveau . " - " . $enfant->nom_enseignant);
+            $this->sheet->setCellValueByColumnAndRow(4, $ligne, $enfant->regime_alimentaire);
+            $this->sheet->setCellValueByColumnAndRow(5, $ligne, $enfant->allergie);
+            $this->sheet->getStyle('F'.$ligne)->applyFromArray(array(
+                'font' => array(
+                    'bold' => true,
+                    'size' => 12,
+                    'name' => Arial,
+                    'color' => array(
+                        'rgb' => 'FF0000'))
+            ));
+            $this->sheet->setCellValueByColumnAndRow(6, $ligne, " ");
+            $this->sheet->getStyle("A" . $ligne . ":G" . $ligne)->getBorders()->applyFromArray($this->allborders_fin);
+            $position_enfant++;
             $ligne++;
         }
     }
 
     private function mise_en_page_fp() {
         //taille des cellules
-        $this->sheet->getColumnDimension('A')->setWidth(15); //colonne Nom
-        $this->sheet->getColumnDimension('B')->setWidth(12); //colonne Prenom
-        $this->sheet->getColumnDimension('C')->setWidth(25); //colonne Classe-Enseignant
-        $this->sheet->getColumnDimension('D')->setWidth(10); //colonne Classe-Enseignant
+        $this->sheet->getColumnDimension('A')->setWidth(10); //colonne Position
+        $this->sheet->getColumnDimension('B')->setWidth(20); //colonne Nom
+        $this->sheet->getColumnDimension('C')->setWidth(20); //colonne Prenom
+        $this->sheet->getColumnDimension('D')->setWidth(20); //colonne Classe-Enseignant
+        $this->sheet->getColumnDimension('E')->setWidth(25); //colonne RA
+        $this->sheet->getColumnDimension('F')->setWidth(20); //colonne Allergi
+        $this->sheet->getColumnDimension('G')->setWidth(10);
 
-        $this->sheet->getStyle("A3:D3")->getBorders()->applyFromArray($this->allborders);
+
+        $this->sheet->getStyle("A3:G3")->getBorders()->applyFromArray($this->allborders);
     }
 
     // </editor-fold>
@@ -513,8 +541,9 @@ class Excel_model extends CI_Model {
         $this->creation_entete_echeancier();
         $this->creation_corps_echeancier();
 
+
         header('Content-type: application/vnd.ms-excel');
-        header("Content-Disposition: attachment; filename='echeancier_" . $mois . "/" . $annee . ".xls'");
+        header("Content-Disposition: attachment; filename='recap_prelevement_" . $mois . "/" . $annee . ".xls'");
         $writer = new PHPExcel_Writer_Excel5($this->workbook);
         $writer->save('php://output');
     }
@@ -536,13 +565,37 @@ class Excel_model extends CI_Model {
         $liste_montant = $this->get_liste_montant_mois();
         $num_ligne = 4;
 
-        foreach ($liste_montant as $ligne) {
-            $this->sheet->setCellValueByColumnAndRow(0, $num_ligne, strtoupper($ligne->enf_nom) . " " . $ligne->enf_prenom);
+        foreach ($liste_montant as $famille) {
+            $total_famille = 0;
+            $this->sheet->setCellValueByColumnAndRow(0, $num_ligne, strtoupper($famille["resp_nom"]) . " " . $famille["resp_prenom"]);
             $this->sheet->getStyle('A' . $num_ligne)->getBorders()->applyFromArray($this->allborders_fin);
-            $this->sheet->setCellValueByColumnAndRow(1, $num_ligne, strtoupper($ligne->resp_nom) . " " . $ligne->resp_prenom);
-            $this->sheet->getStyle('B' . $num_ligne)->getBorders()->applyFromArray($this->allborders_fin);
-            $this->sheet->setCellValueByColumnAndRow(2, $num_ligne, $ligne->montant);
-            $this->sheet->getStyle('C' . $num_ligne)->getBorders()->applyFromArray($this->allborders_fin);
+            foreach ($famille["liste_enfants"] as $enfant) {
+
+                $this->sheet->setCellValueByColumnAndRow(1, $num_ligne, strtoupper($enfant["enf_nom"]) . " " . $enfant["enf_prenom"]);
+                $this->sheet->getStyle('B' . $num_ligne)->getBorders()->applyFromArray($this->allborders_fin);
+
+                $this->sheet->setCellValueByColumnAndRow(2, $num_ligne, number_format($enfant["montant"], 2));
+                $this->sheet->getStyle('C' . $num_ligne)->getBorders()->applyFromArray($this->allborders_fin);
+                $this->sheet->getStyle('C' . $num_ligne)->getNumberFormat()->applyFromArray(
+                        array(
+                            'code' => PHPExcel_Style_NumberFormat::FORMAT_NUMBER_00
+                        )
+                );
+                $total_famille = $total_famille + $enfant["montant"];
+                $num_ligne = $num_ligne + 1;
+            }
+
+            $this->sheet->setCellValueByColumnAndRow(0, $num_ligne, strtoupper($famille["resp_nom"]) . " " . $famille["resp_prenom"]);
+            $this->sheet->getStyle('A' . $num_ligne)->getBorders()->applyFromArray($this->allborders);
+            $this->sheet->setCellValueByColumnAndRow(1, $num_ligne, "TOTAL: ");
+            $this->sheet->getStyle('B' . $num_ligne)->getBorders()->applyFromArray($this->allborders);
+            $this->sheet->setCellValueByColumnAndRow(2, $num_ligne, number_format($total_famille, 2));
+            $this->sheet->getStyle('C' . $num_ligne)->getNumberFormat()->applyFromArray(
+                    array(
+                        'code' => PHPExcel_Style_NumberFormat::FORMAT_NUMBER_00
+                    )
+            );
+            $this->sheet->getStyle('C' . $num_ligne)->getBorders()->applyFromArray($this->allborders);
             $num_ligne = $num_ligne + 1;
         }
 
@@ -551,10 +604,9 @@ class Excel_model extends CI_Model {
         $this->sheet->setCellValueByColumnAndRow(2, $num_ligne, '=SUM(C2:C' . ($num_ligne - 1) . ')');
         $this->sheet->getStyle('C' . $num_ligne)->getBorders()->applyFromArray($this->allborders);
 
-
-        $this->sheet->getColumnDimension('A')->setWidth(30); //colonne Classe-Enseignant
-        $this->sheet->getColumnDimension('B')->setWidth(30); //colonne Regime
-        $this->sheet->getColumnDimension('C')->setWidth(25); //type inscription
+        $this->sheet->getColumnDimension('A')->setWidth(30);
+        $this->sheet->getColumnDimension('B')->setWidth(30);
+        $this->sheet->getColumnDimension('C')->setWidth(25);
     }
 
     // </editor-fold>
@@ -653,14 +705,23 @@ class Excel_model extends CI_Model {
 
     private function get_liste_montant_mois() {
 
-        $this->db->select('facture.montant, enfant.nom as enf_nom, enfant.prenom as enf_prenom, responsable.nom as resp_nom, responsable.prenom as resp_prenom')
+        $this->db->select('facture.montant, enfant.nom as enf_nom, enfant.prenom as enf_prenom, responsable.nom as resp_nom, responsable.prenom as resp_prenom, responsable.id_responsable as id_resp')
                 ->from('facture')
                 ->join('enfant', 'enfant.id_enfant=facture.id_enfant')
                 ->join('famille', 'enfant.id_famille=famille.id_famille')
                 ->join('responsable', 'famille.id_resp_1=responsable.id_responsable')
                 ->where("facture.mois = " . $this->mois_tab . " AND facture.année = " . $this->annee_tab);
 
-        $liste_facture = $this->db->get()->result();
+        $result = $this->db->get()->result();
+
+        $liste_facture = array();
+
+        foreach ($result as $ligne) {
+            $liste_facture[$ligne->id_resp]["resp_nom"] = $ligne->resp_nom;
+            $liste_facture[$ligne->id_resp]["resp_prenom"] = $ligne->resp_prenom;
+            $liste_facture[$ligne->id_resp]["liste_enfants"][] = array("enf_nom" => $ligne->enf_nom, "enf_prenom" => $ligne->enf_prenom, "montant" => $ligne->montant);
+        }
+
 
         return $liste_facture;
     }

@@ -173,3 +173,74 @@ $(function() {
         daysOfWeekDisabled: "0,6",
     });
 });
+
+$(document).ready(function() {
+
+// définition de la boîte de dialogue
+// la méthode jQuery dialog() permet de transformer un div en boîte de dialogue et de définir ses boutons
+    $("#popupconfirmation_inscription").dialog({
+        autoOpen: false,
+        width: 400,
+        modal: true,
+        resizable: false
+
+    });
+  
+    $("#form_calendrier").submit(function(event) {
+        
+        event.preventDefault();
+
+        var action = $("#form_calendrier").attr('action');
+        var values = $("#form_calendrier").serialize();
+        
+        if ($("input[name='checkbox_HD[]']").is(':checked')) {
+        
+            $("#popupconfirmation_inscription").dialog({
+                buttons: [
+                    {
+                        text: "Oui",
+                        click: function() {
+                            $.ajax({
+                                type: "POST",
+                                url: action,
+                                data: values,
+                                dataType: "html",
+                                success: function() {
+                                    location.reload();
+                                }
+                            });
+                        }
+                    },
+                    {
+                        text: "Non",
+                        click: function() {
+                            $(this).dialog("close");
+                        }
+
+                    }
+
+                ]
+
+            });
+            $("#popupconfirmation_inscription").dialog("open");
+        
+        } else {
+          
+            $.ajax({
+                type: "POST",
+                url: action,
+                data: values,
+                dataType: "html",
+                success: function() {
+                   
+                    location.reload();
+                   
+                }
+
+            });
+          
+        }
+    }
+    );
+
+}); 
