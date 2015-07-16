@@ -26,7 +26,7 @@ class Admin_model extends CI_Model {
 
         $id_resp1 = $row[0]->id_resp_1;
 
-        $this->db->select('id_responsable, nom, prenom, adresse,tel_mobile, ville')
+        $this->db->select('id_responsable, nom, prenom, adresse,tel_mobile, tel_travail, ville')
                 ->from('responsable')
                 ->where('id_responsable', $id_resp1);
 
@@ -35,7 +35,7 @@ class Admin_model extends CI_Model {
         $this->db->select('id_enfant, nom, prenom, niveau, nom_enseignant, regime_alimentaire, allergie, type_inscription')
                 ->from('enfant')
                 ->where('id_famille', $id_famille)
-                ->join('classe', "enfant.classe=classe.id_classe");
+                ->join('classe', "enfant.classe=classe.id_classe","left");
 
         $result["enfants"] = $this->db->get()->result();
 
@@ -301,6 +301,24 @@ class Admin_model extends CI_Model {
         }
     }
 
+    public function is_empty_classe($id_classe) {
+
+        //on vérifie que l'id passé en paramètre est dans la base
+        $this->db->select('*')
+                ->from('classe')
+                ->where('id_classe', $id_classe)
+                ->join('enfant', 'enfant.classe = classe.id_classe');
+
+        $query = $this->db->get();
+        $row = $query->result();
+
+        if (empty($row)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function enregistrer_classe($nom_enseignant, $niveau) {
 
         $to_insert = array(
@@ -312,6 +330,7 @@ class Admin_model extends CI_Model {
     }
 
     public function supprimer_classe($id_classe) {
+
         $this->db->delete('classe', array('id_classe' => $id_classe));
     }
 
@@ -353,21 +372,6 @@ class Admin_model extends CI_Model {
             'id_recepteur' => $idf,
         );
         $this->db->insert('message', $data);
-    }
-
-    public function add_tarifs($prixAetM, $prixHD, $prixHD) {
-
-        $liste_tarifs = array([0] => "prixAetM", [1] => "prixHD", [2] => "prixPasIns", [3] => "prixHebdo");
-
-        foreach ($liste_tarifs as $value) {
-            print_r($value);
-        }
-        /* $data = array(
-          'tarif_mont' => $prixAetM
-          );
-
-          $this->db->where('id', $id);
-          $this->db->update('tarifs', $data); */
     }
 
     function recuperer_tarifs() {

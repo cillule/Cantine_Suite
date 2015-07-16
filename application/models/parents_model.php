@@ -51,6 +51,26 @@ class Parents_model extends CI_Model {
         }
     }
 
+    function is_facture_from_famille($id_facture) {
+
+        $id_famille = $this->get_id_famille();
+        $this->db->select('*')
+                ->from('facture')
+                ->where(array('famille.id_famille' => $id_famille, 'facture.id_facture' => $id_facture))
+                ->join('enfant', 'facture.id_enfant=enfant.id_enfant')
+                ->join('famille', 'famille.id_famille=enfant.id_famille');
+
+        $query = $this->db->get();
+        $rowcount = $query->num_rows();
+
+        if ($rowcount == 0) {
+            return false;
+        } else {
+
+            return true;
+        }
+    }
+
     function recuperer_info_parents() {
         $this->db->select('nom, adresse, prenom, tel_mobile, mail,tel_travail, ville')
                 ->from('responsable')
@@ -218,7 +238,7 @@ class Parents_model extends CI_Model {
     }
 
     public function setInscriptions($liste_dates, $id_enfant = " ") {
-    
+
         //on ajoute les données reçus en POST du calendrier (normalement ok car tout les enregistrements ont été éffacés)
         if (!empty($liste_dates)) {
 

@@ -118,12 +118,12 @@ class Admin_Control extends CI_Controller {
 
     public function supprimer_classe($id_classe) {
 
-        if ($this->admin_model->is_classe($id_classe)) {
+        if ($this->admin_model->is_classe($id_classe) && $this->admin_model->is_empty_classe($id_classe)) {
             $this->admin_model->supprimer_classe($id_classe);
-            $this->session->set_flashdata('message', 'Suppression ok');
+            $this->session->set_flashdata('message', 'Suppression effectuée');
             redirect(base_url("admin_control/reglages"));
         } else {
-            $this->session->set_flashdata('message', 'Une erreur est survenue lors de la suppression');
+            $this->session->set_flashdata('message', 'Impossible de supprimer la classe: des enfants y sont encore ratachés');
             redirect(base_url("admin_control/reglages"));
         }
     }

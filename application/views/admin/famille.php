@@ -25,7 +25,7 @@
                             <th>Voir info</th>
                         </tr>
                     </tfoot>
-                    
+
                     <tbody>
                         <?php foreach ($query->result() as $row): //pour chaque ligne de la requete?>
                             <tr class="text-center">
@@ -55,8 +55,9 @@
 
                 <p><strong>Responsable : </strong></p>
                 <p><?php echo $infos_famille['resp_1'][0]->nom . " " . $infos_famille['resp_1'][0]->prenom; ?></p>
-                <p><strong>Adresse: <?php echo $infos_famille['resp_1'][0]->adresse . " " . strtoupper($infos_famille['resp_1'][0]->ville) ?></strong></p>
-                <p><strong>Téléphone : <?php echo $infos_famille['resp_1'][0]->tel_mobile ?></strong></p>
+                <p><strong>Adresse: </strong><br/><?php echo $infos_famille['resp_1'][0]->adresse . " <br/> " . strtoupper($infos_famille['resp_1'][0]->ville) ?></p>
+                <p><strong>Téléphone portable:</strong> <?php echo $infos_famille['resp_1'][0]->tel_mobile ?></strong></p>
+                <p><strong>Téléphone travail:</strong> <?php echo $infos_famille['resp_1'][0]->tel_travail ?></strong></p>
 
                 <p><strong>Enfants: </strong></p>
                 <form role="form" method="post" action="<?php echo base_url('admin_control/supprimer_enfant'); ?>">
@@ -84,7 +85,7 @@
                                         <tr>
                                             <td><?php echo $row->nom ?></td>
                                             <td><?php echo $row->prenom ?></td>
-                                            <td><?php echo $row->niveau."  -  ".$row->nom_enseignant ?></td>
+                                            <td><?php echo $row->niveau . "  -  " . $row->nom_enseignant ?></td>
                                             <td><?php echo $row->regime_alimentaire ?></td>
                                             <td><?php echo $row->allergie ?></td>
                                             <td> <?php echo $row->type_inscription ?></td>
@@ -104,6 +105,8 @@
         </div>
     </div>
     <?php
+
+
 
 
 

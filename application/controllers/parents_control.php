@@ -78,22 +78,6 @@ class Parents_Control extends CI_Controller {
         $this->template->load('layout', 'parents/affiche_enfants', $data);
     }
 
-    //supprimer un enfant
-    function supprimer_enfant() {
-
-        $id_enfant = $this->input->post('id_enfant');
-        $this->form_validation->set_rules('id_enfant', 'id_enfant', 'trim|required|min_length[1]|max_length[4]|encode_php_tags|xss_clean');
-
-        if ($this->form_validation->run() == TRUE) {
-            $this->parents_model->delete_enfant($id_enfant);
-            $this->session->set_flashdata('message', 'Suppression effectué avec succès ');
-            redirect(base_url("parents_control/affiche_enfants"));
-        } else {
-            $this->session->set_flashdata('message', 'Une erreur est survenu, veuillez reésayer! ');
-            redirect(base_url("parents_control/affiche_enfants"));
-        }
-    }
-
     //redirige vers le formulaire ajout d'un enfant
     function ajouter_enfants() {
         $data["liste_classe"] = $this->parents_model->get_liste_classes();
@@ -131,7 +115,7 @@ class Parents_Control extends CI_Controller {
 
     // Fonction pour afficher le calendrier
     public function afficher_Calendrier_Inscriptions($id_enfant = '') {
-       
+
         if ($this->parents_model->is_enfant_from_famille($id_enfant) == true) {
             $dates = $this->calendrier_model->get_MoisSuivants($id_enfant);
 
@@ -180,12 +164,15 @@ class Parents_Control extends CI_Controller {
     public function affiche_factures() {
 
         $data['infos_factures'] = $this->parents_model->get_facturation();
-        // print_r($data);
         $this->template->load('layout', 'parents/affiche_facturation', $data);
     }
 
     public function export_facture_PDF($id_facture) {
-        $this->pdf_model->export_facture($id_facture);
+        if ($this->parents_model->is_facture_from_famille($id_facture) == true) {
+            $this->pdf_model->export_facture($id_facture);
+        } else {
+            $this->template->load('layout', 'view_404');
+        }
     }
 
     public function contact() {
