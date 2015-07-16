@@ -20,7 +20,6 @@ class Gestionnaire_Control extends CI_Controller {
     }
 
     public function affiche_tableau_suivi() {
-
         $this->template->load('layout', 'gestionnaire/suivi_inscrits');
     }
 
@@ -38,7 +37,6 @@ class Gestionnaire_Control extends CI_Controller {
         foreach ($data->result() as $row) {
             array_push($data_json, "$row->nom" . " $row->prenom");
         }
-
         echo json_encode($data_json);
     }
 

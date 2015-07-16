@@ -24,18 +24,14 @@ class Admin_Control extends CI_Controller {
         $this->template->set('page', 'admin');
     }
 
-    function index() {
-        $this->affiche_familles();
-    }
-
     //afficher les familles pour la première page
-    function affiche_familles() {
+    function index() {
         $data['query'] = $this->admin_model->get_familles();
         $data['affiche_tuille'] = 0;
         $this->template->load('layout', 'admin/famille', $data);
     }
 
-    //afficher les familles pour la première page
+    //afficher les tuiles correspondant à la famille
     function afficher_tuille_info($id_famille = '') {
         if ($this->admin_model->is_famille($id_famille) == true) {
             $data['query'] = $this->admin_model->get_familles();
@@ -53,7 +49,7 @@ class Admin_Control extends CI_Controller {
         if ($this->admin_model->is_enfant($id_enfant) == true) {
             $this->admin_model->delete_enfant($id_enfant);
             $this->session->set_flashdata('message', 'Suppression effectuée avec succès ');
-            $this->affiche_familles();
+            redirect(base_url("admin_control"));
         } else {
             $this->template->load('layout', 'view_404');
         }
@@ -153,9 +149,9 @@ class Admin_Control extends CI_Controller {
         if ($this->admin_model->is_famille($id_famille) == true) {
             $this->admin_model->delete_famille($id_famille); //Admin_model->on supprime la famille
             $this->session->set_flashdata('message', 'La famille a bien été supprimée');
-            $this->affiche_familles();
+            redirect(base_url("admin_control"));
         } else {
-            $this->affiche_familles();
+            redirect(base_url("admin_control"));
         }
     }
 
@@ -178,11 +174,11 @@ class Admin_Control extends CI_Controller {
 
         if ($this->form_validation->run() == true) {
             $this->admin_model->add_famille($nom, $mail, $prenom);
-            $this->session->set_flashdata('message', "Famille ajouté avec succès!");
+            $this->session->set_flashdata('message', "Famille ajoutée avec succès!");
         } else {
             $this->session->set_flashdata('message', "Echec lors de l'ajout de la famille!");
         }
-        $this->affiche_familles();
+        redirect(base_url("admin_control"));
     }
 
     //affiche la page suivi des inscrits

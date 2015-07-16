@@ -56,7 +56,7 @@ $(function() {
         {
             element: "#reglages_admin",
             title: "Onglet Reglages!",
-            content: "Permet de modifier la période de vacances ainsi que le mot de passe administrateur.",
+            content: "Permet de modifier la période de vacances, la liste des classes, ainsi que le mot de passe administrateur.",
             placement: "bottom"
         },
         {
