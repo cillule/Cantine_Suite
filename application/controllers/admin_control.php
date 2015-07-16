@@ -164,7 +164,7 @@ class Admin_Control extends CI_Controller {
     function sauvegarder_famille() {
 
         //recupération des données du POST 
-        $nom = $this->input->post('nom');
+        $nom = strtoupper($this->input->post('nom'));
         $prenom = $this->input->post('prenom');
         $mail = $this->input->post('mail');
 
@@ -252,11 +252,17 @@ class Admin_Control extends CI_Controller {
 
     function message() {
         $data['query'] = $this->admin_model->get_id_famille();
-        $data['message'] = $this->admin_model->getmessage();
+        $data['message'] = $this->admin_model->get_message();
         $this->template->load('layout', 'admin/message', $data);
     }
+    
+    function supprimer_message($id_message) {
+        $this->admin_model->delete_message($id_message);
+        $this->session->set_flashdata('message', 'Suppression effectuée avec succès ');
+        redirect(base_url("admin_control/message"));
+    }
 
-    function envoimessage() {
+    function envoi_message() {
         $Intitule = $this->input->post('Intitule');
         $Contenu = $this->input->post('Contenu');
         $idfamille = $this->input->post('familleselect');

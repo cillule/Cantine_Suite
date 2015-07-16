@@ -355,13 +355,17 @@ class Admin_model extends CI_Model {
         return $query;
     }
 
-    public function getmessage() {
-        $this->db->select('contenu, nom_famille')
+    public function get_message() {
+        $this->db->select('*')
                 ->from('message inner join famille on message.id_expediteur=famille.id_resp_1')
                 ->where('id_recepteur', 0);
 
         $query = $this->db->get();
         return $query;
+    }
+    
+    public function delete_message($id_message) {
+        $this->db->delete('message', array('id_message' => $id_message));
     }
 
     public function insertMessage($idf, $intitule, $contenu) {
