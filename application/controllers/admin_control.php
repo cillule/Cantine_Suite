@@ -153,9 +153,9 @@ class Admin_Control extends CI_Controller {
         if ($this->admin_model->is_famille($id_famille) == true) {
             $this->admin_model->delete_famille($id_famille); //Admin_model->on supprime la famille
             $this->session->set_flashdata('message', 'La famille a bien été supprimée');
-            $this->template->load('layout', 'admin/famille');
+            $this->affiche_familles();
         } else {
-            $this->template->load('layout', 'admin/famille');
+            $this->affiche_familles();
         }
     }
 
@@ -182,7 +182,7 @@ class Admin_Control extends CI_Controller {
         } else {
             $this->session->set_flashdata('message', "Echec lors de l'ajout de la famille!");
         }
-        $this->template->load('layout', 'admin/famille');
+        $this->affiche_familles();
     }
 
     //affiche la page suivi des inscrits

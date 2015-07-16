@@ -218,13 +218,13 @@ class Parents_model extends CI_Model {
     }
 
     public function setInscriptions($liste_dates, $id_enfant = " ") {
-
+    
         //on ajoute les données reçus en POST du calendrier (normalement ok car tout les enregistrements ont été éffacés)
         if (!empty($liste_dates)) {
 
-           
+
             $liste_tarif = $this->recuperer_tarifs();
-       
+
             $prix_annuel = $liste_tarif["prixAetM"];
             $prix_hebdo = $liste_tarif["prixHebdo"];
             $prix_hd = $liste_tarif["prixHD"];
@@ -235,8 +235,6 @@ class Parents_model extends CI_Model {
             foreach ($liste_dates as $value) {
                 $date = new DateTime($value["date"]);
                 $type_inscription = $value["type"];
-
-                // print_r($value);
 
                 if ($type_inscription == 0 || $type_inscription == 1) {
 

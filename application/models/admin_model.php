@@ -95,12 +95,12 @@ class Admin_model extends CI_Model {
         //On les ajoute à la base
         $this->db->insert('responsable', $insert_resp_1);
         //et on envoie le mail
-        // $this->mail_ajout_famille($mail, $mdp_non_crypte);
+        $this->mail_ajout_famille($mail, $mdp_non_crypte);
     }
 
     private function mail_ajout_famille($mail, $mdp) {
 
-        print_r($mail);
+
         $this->load->library('email');
 
         $this->email->from('admin@yahoo.com', 'Cantine');
@@ -109,8 +109,7 @@ class Admin_model extends CI_Model {
         $this->email->subject('Inscription Cantine');
         $this->email->message("Voici votre mot de passe: " . $mdp);
 
-
-        echo $this->email->print_debugger();
+        $this->email->send();
     }
 
 // delete_enfant: détruire les données reliée à l'id_enfant passé en paramètre dans le base Cantine
@@ -372,17 +371,17 @@ class Admin_model extends CI_Model {
     }
 
     function recuperer_tarifs() {
-        
+
         $this->db->select('tarif_id, tarif_mont')
                 ->from('tarifs');
-        
+
         $query = $this->db->get()->result();
-  
+
         foreach ($query as $row) {
-     
-            $to_return[$row->tarif_id]=$row->tarif_mont; 
+
+            $to_return[$row->tarif_id] = $row->tarif_mont;
         }
-   
+
         return $to_return;
     }
 
