@@ -35,7 +35,6 @@ class Admin_Control extends CI_Controller {
     function afficher_tuille_info($id_famille = '') {
         if ($this->admin_model->is_famille($id_famille) == true) {
             $data['query'] = $this->admin_model->get_familles();
-            $this->admin_model->is_famille($id_famille);
             $data['infos_famille'] = $this->admin_model->get_info_famille($id_famille);
             $data['affiche_tuille'] = 1;
             $this->template->load('layout', 'admin/famille', $data);
