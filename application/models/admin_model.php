@@ -103,11 +103,11 @@ class Admin_model extends CI_Model {
 
         $this->load->library('email');
 
-        $this->email->from('admin@yahoo.com', 'Cantine');
+        $this->email->from('admin@cantine-treffort.fr', 'Cantine');
         $this->email->to($mail);
 
         $this->email->subject('Inscription Cantine');
-        $this->email->message("Voici votre mot de passe: " . $mdp);
+        $this->email->message("Bonjour, \nVoici votre identifiant: " . $mail . " \nVoici votre mot de passe: " . $mdp);
 
         $this->email->send();
     }
