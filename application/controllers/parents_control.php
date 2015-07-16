@@ -193,11 +193,17 @@ class Parents_Control extends CI_Controller {
     }
 
     public function message() {
-        $data['message'] = $this->parents_model->getmessage();
+        $data['message'] = $this->parents_model->get_message();
         $this->template->load('layout', 'parents/message_parents', $data);
     }
+    
+    function supprimer_message($id_message) {
+        $this->parents_model->delete_message($id_message);
+        $this->session->set_flashdata('message', 'Suppression effectuée avec succès ');
+        redirect(base_url("parents_control/message"));
+    }
 
-    public function envoimessage() {
+    public function envoi_message() {
         $Intitule = $this->input->post('Intitule');
         $Contenu = $this->input->post('Contenu');
         //$id_famille = $this->session->userdata('id_famille');

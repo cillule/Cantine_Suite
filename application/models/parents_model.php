@@ -334,15 +334,19 @@ class Parents_model extends CI_Model {
         return $query;
     }
 
-    function getmessage() {
+    function get_message() {
 
         $id_resp = $this->session->userdata('id_user');
-        $this->db->select('contenu')
+        $this->db->select('*')
                 ->from('message')
                 ->where(array('id_expediteur' => 0, 'id_recepteur' => $id_resp));
 
         $result = $this->db->get();
         return $result;
+    }
+    
+    public function delete_message($id_message) {
+        $this->db->delete('message', array('id_message' => $id_message));
     }
 
 }
