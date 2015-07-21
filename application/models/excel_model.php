@@ -13,6 +13,7 @@ class Excel_model extends CI_Model {
     private $allborders_fin;
     private $style1;
     private $ligne_courante;
+    private $liste_cell;
 
     function __construct() {
 
@@ -171,11 +172,12 @@ class Excel_model extends CI_Model {
         $this->sheet->setCellValue('C3', "Prenom");
         $this->sheet->setCellValue('D3', "Classe-Enseignant");
         $this->sheet->setCellValue('E3', "Régime");
-        $this->sheet->setCellValue('F3', "Type Inscription");
+        $this->sheet->setCellValue('F3', "Allergie");
+        $this->sheet->setCellValue('G3', "Type Inscription");
 
         $calendrier = $this->calendrier_model->getCalendrierMois($this->mois_tab, $this->annee_tab);
 
-        $col = 6;
+        $col = 7;
         foreach ($calendrier as $key => $value) {
             switch ($value) {
                 case 1:
@@ -216,8 +218,6 @@ class Excel_model extends CI_Model {
 
         $this->sheet->getStyle("G2:" . $cell2->getCoordinate())->getBorders()->applyFromArray($this->allborders);
         $this->sheet->getStyle("G2:" . $cell2->getCoordinate())->applyFromArray($this->style1);
-
-        $this->sheet->setCellValueByColumnAndRow($col, 3, "TOTAL:");
     }
 
     private function creation_corps_tableau() {
@@ -225,8 +225,7 @@ class Excel_model extends CI_Model {
         //on récupère la liste des enfants
         $liste = $this->get_liste_enfants();
         $liste_triee = $this->tri_liste($liste);
-        // $ligne = 4;
-        $this->ligne_courante = 4;
+        $this->ligne_courante = 5;
         $size = count($liste_triee);
         $i = $size;
 
@@ -235,23 +234,47 @@ class Excel_model extends CI_Model {
 
             if (!empty($classe)) {
 
-                $this->creation_ligne_classe($classe/* , $ligne */);
+                $this->creation_ligne_classe($classe);
                 $this->ligne_courante = $this->ligne_courante + 2;
-            } else {
-
-                $this->ligne_courante = $this->ligne_courante + 1;
             }
 
             $i--;
         }
+
+        $calendrier = $this->calendrier_model->getCalendrierMois($this->mois_tab, $this->annee_tab);
+        $col = 7;
+        $this->sheet->setCellValueByColumnAndRow(6, $this->ligne_courante, "TOTAL :");
+        $cell_debut = $this->sheet->getCellByColumnAndRow(6, $this->ligne_courante)->getCoordinate();
+
+        foreach ($calendrier as $date => $day) {
+
+            $this->sheet->setCellValueByColumnAndRow($col, $this->ligne_courante, $this->make_sum($this->liste_cell[$date]));
+            $col++;
+        }
+
+        $cell_fin = $this->sheet->getCellByColumnAndRow($col - 1, $this->ligne_courante)->getCoordinate();
+
+        $this->sheet->getStyle($cell_debut . ":" . $cell_fin)->applyFromArray(
+                array(
+                    'fill' => array(
+                        'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                        'color' => array('rgb' => 'F28A8C')
+                    ),
+                    'font' => array(
+                        'bold' => true,
+                    )
+                )
+        );
+        
+        $this->sheet->getStyle($cell_debut . ":" . $cell_fin)->getBorders()->applyFromArray($this->allborders);
     }
 
     private function tri_liste($liste) {
-        $i = count($liste)-1;
-        $tab_trie = array(array(), array(), array(), array(), array(), array(), array(), array());
+        $i = count($liste) - 1;
+        $tab_trie = array(array(), array(), array(), array(), array(), array(), array(), array(), array(), array());
 
         while ($i != -1) {
-          
+
             $enfant = $liste[$i];
             $niveau_inf = explode("-", $enfant->niveau);
 
@@ -259,43 +282,47 @@ class Excel_model extends CI_Model {
 
                 case "MATERNELLE":
                     array_push($tab_trie[0], $enfant);
-                    //  $tab_trie[0][$enfant->nom_enseignant][] = $enfant;
+                    break;
+
+                case "PS":
+                    array_push($tab_trie[1], $enfant);
+                    break;
+
+                case "MS":
+                    array_push($tab_trie[2], $enfant);
                     break;
 
                 case "GS":
-                    array_push($tab_trie[1], $enfant);
-                    //  $tab_trie[1][$enfant->nom_enseignant][] = $enfant;
+                    array_push($tab_trie[3], $enfant);
                     break;
-                
-                 case "GRANDE SECTION":
-                    array_push($tab_trie[1], $enfant);
-                    //  $tab_trie[1][$enfant->nom_enseignant][] = $enfant;
+
+                case "GRANDE SECTION":
+                    array_push($tab_trie[3], $enfant);
                     break;
 
 
                 case "CP":
-                    array_push($tab_trie[2], $enfant);
-                    //  $tab_trie[2][$enfant->nom_enseignant][] = $enfant;
+                    array_push($tab_trie[4], $enfant);
                     break;
 
                 case "CE1":
-                    array_push($tab_trie[4], $enfant);
-                    // $tab_trie[3][$enfant->nom_enseignant][] = $enfant;
+                    array_push($tab_trie[5], $enfant);
                     break;
 
                 case "CE2":
-                    array_push($tab_trie[5], $enfant);
-                    // $tab_trie[4][$enfant->nom_enseignant][] = $enfant;
+                    array_push($tab_trie[6], $enfant);
                     break;
 
                 case "CM1":
-                    array_push($tab_trie[6], $enfant);
-                    // $tab_trie[5][$enfant->nom_enseignant][] = $enfant;
+                    array_push($tab_trie[7], $enfant);
                     break;
 
                 case "CM2":
-                    array_push($tab_trie[7], $enfant);
-                    //  $tab_trie[6][$enfant->nom_enseignant][] = $enfant;
+                    array_push($tab_trie[8], $enfant);
+                    break;
+
+                default :
+                    array_push($tab_trie[9], $enfant);
                     break;
             }
 
@@ -308,7 +335,6 @@ class Excel_model extends CI_Model {
 
     private function creation_ligne_classe($liste_classe, $ligne = "") {
 
-        //$ligne_debut = $ligne;
         $ligne_debut = $this->ligne_courante;
         $calendrier = $this->calendrier_model->getCalendrierMois($this->mois_tab, $this->annee_tab);
         $i = 1;
@@ -320,7 +346,16 @@ class Excel_model extends CI_Model {
             $this->sheet->setCellValueByColumnAndRow(2, $this->ligne_courante, $enfant->prenom);
             $this->sheet->setCellValueByColumnAndRow(3, $this->ligne_courante, $enfant->niveau . " - " . $enfant->nom_enseignant);
             $this->sheet->setCellValueByColumnAndRow(4, $this->ligne_courante, $enfant->regime_alimentaire);
-            $this->sheet->setCellValueByColumnAndRow(5, $this->ligne_courante, $enfant->type_inscription);
+            $this->sheet->setCellValueByColumnAndRow(5, $this->ligne_courante, $enfant->allergie);
+            $this->sheet->getStyle('F' . $this->ligne_courante)->applyFromArray(array(
+                'font' => array(
+                    'bold' => true,
+                    'size' => 12,
+                    'name' => Arial,
+                    'color' => array(
+                        'rgb' => 'FF0000'))
+            ));
+            $this->sheet->setCellValueByColumnAndRow(6, $this->ligne_courante, $enfant->type_inscription);
 
             //remplissage du calendrier
             $this->crea_ligne_repas($enfant->id_enfant, $this->ligne_courante);
@@ -329,26 +364,26 @@ class Excel_model extends CI_Model {
             $this->ligne_courante++;
         }
 
-        $col = 6;
+        $col = 7;
         $this->sheet->setCellValueByColumnAndRow(3, $this->ligne_courante, $enfant->niveau . " - " . $enfant->nom_enseignant);
         $this->sheet->setCellValueByColumnAndRow(5, $this->ligne_courante, "TOTAL " . $enfant->classe . ": ");
 
-        foreach ($calendrier as $day) {
+        foreach ($calendrier as $date => $day) {
 
             $cell_debut = $this->sheet->getCellByColumnAndRow($col, $ligne_debut)->getCoordinate();
             $cell_fin = $this->sheet->getCellByColumnAndRow($col, $this->ligne_courante - 1)->getCoordinate();
 
             $this->sheet->setCellValueByColumnAndRow($col, $this->ligne_courante, "=SUM(" . $cell_debut . ":" . $cell_fin . ")");
+
+            if (empty($this->liste_cell[$date])) {
+                $this->liste_cell[$date] = array();
+            }
+            array_push($this->liste_cell[$date], $this->sheet->getCellByColumnAndRow($col, $this->ligne_courante)->getCoordinate());
             $col++;
         }
 
-
-        $cell_debut = $this->sheet->getCellByColumnAndRow(6, $this->ligne_courante)->getCoordinate();
-        $cell_fin = $this->sheet->getCellByColumnAndRow($col - 1, $this->ligne_courante)->getCoordinate();
-        $this->sheet->setCellValueByColumnAndRow($col, $this->ligne_courante, "=SUM(" . $cell_debut . ":" . $cell_fin . ")");
-
         $cell_1 = $this->sheet->getCellByColumnAndRow(0, $this->ligne_courante)->getCoordinate();
-        $cell_2 = $this->sheet->getCellByColumnAndRow($col, $this->ligne_courante)->getCoordinate();
+        $cell_2 = $this->sheet->getCellByColumnAndRow($col - 1, $this->ligne_courante)->getCoordinate();
         $this->sheet->getStyle($cell_1 . ":" . $cell_2)->applyFromArray(
                 array(
                     'fill' => array(
@@ -367,7 +402,7 @@ class Excel_model extends CI_Model {
     private function crea_ligne_repas($id_enfant, $ligne = "") {
         $ligne_debut = $this->ligne_courante;
         $calendrier = $this->calendrier_model->getCalendrierMois($this->mois_tab, $this->annee_tab);
-        $col = 6;
+        $col = 7;
 
         foreach ($calendrier as $day => $value) {
 
@@ -377,6 +412,7 @@ class Excel_model extends CI_Model {
                     ->where(array('id_enfant_repas' => $id_enfant, 'date' => $date->format("Y-m-d")));
 
             $row = $this->db->get()->result();
+
 
             if ($value == 6 || $value == 7) {
 
@@ -401,7 +437,7 @@ class Excel_model extends CI_Model {
         }
 
 
-        $col = 6;
+        $col = 7;
         $cell_debut = $this->sheet->getCellByColumnAndRow($col, $this->ligne_courante)->getCoordinate();
         foreach ($calendrier as $day => $value) {
 
@@ -415,8 +451,23 @@ class Excel_model extends CI_Model {
             $col++;
         }
 
-        $this->sheet->setCellValueByColumnAndRow($col, $ligne, "=SUM(" . $cell_debut . ":" . $cell_fin . ")");
+
         $this->sheet->getStyle("A" . $ligne_debut . ":" . $cell_fin)->getBorders()->applyFromArray($this->allborders_fin);
+    }
+
+    private function make_sum($liste_cellule) {
+
+        $formule = "=";
+        $lastKey = array_pop(array_keys($liste_cellule));
+        foreach ($liste_cellule as $key => $cell) {
+            if ($key != $lastKey) {
+                $formule = $formule . $cell . "+";
+            } else {
+                $formule = $formule . $cell;
+            }
+        }
+
+        return $formule;
     }
 
     private function mise_en_page() {
@@ -426,7 +477,8 @@ class Excel_model extends CI_Model {
         $this->sheet->getColumnDimension('C')->setWidth(15); //colonne Prenom
         $this->sheet->getColumnDimension('D')->setWidth(25); //colonne Classe-Enseignant
         $this->sheet->getColumnDimension('E')->setWidth(25); //colonne Regime
-        $this->sheet->getColumnDimension('F')->setWidth(20); //type inscription
+        $this->sheet->getColumnDimension('F')->setWidth(20); //colonne Allergie
+        $this->sheet->getColumnDimension('G')->setWidth(20); //colonne Allergie
     }
 
 // </editor-fold>
@@ -442,7 +494,7 @@ class Excel_model extends CI_Model {
         $this->creation_feuille_presence($date);
         $this->mise_en_page_fp();
 
-       header('Content-type: application/vnd.ms-excel');
+        header('Content-type: application/vnd.ms-excel');
         header("Content-Disposition: attachment; filename='feuille_presence_" . $date . ".xls'");
         $writer = new PHPExcel_Writer_Excel5($this->workbook);
         $writer->save('php://output');
@@ -461,7 +513,7 @@ class Excel_model extends CI_Model {
         $ligne = 4;
 
         if (!empty($liste)) {
-         
+
 
             $liste_triee = $this->tri_liste($liste);
 
@@ -499,7 +551,7 @@ class Excel_model extends CI_Model {
             $this->sheet->setCellValueByColumnAndRow(3, $ligne, $enfant->niveau . " - " . $enfant->nom_enseignant);
             $this->sheet->setCellValueByColumnAndRow(4, $ligne, $enfant->regime_alimentaire);
             $this->sheet->setCellValueByColumnAndRow(5, $ligne, $enfant->allergie);
-            $this->sheet->getStyle('F'.$ligne)->applyFromArray(array(
+            $this->sheet->getStyle('F' . $ligne)->applyFromArray(array(
                 'font' => array(
                     'bold' => true,
                     'size' => 12,
@@ -540,7 +592,6 @@ class Excel_model extends CI_Model {
         ///Creation du tableau
         $this->creation_entete_echeancier();
         $this->creation_corps_echeancier();
-
 
         header('Content-type: application/vnd.ms-excel');
         header("Content-Disposition: attachment; filename='recap_prelevement_" . $mois . "/" . $annee . ".xls'");
@@ -694,11 +745,10 @@ class Excel_model extends CI_Model {
 
     private function get_liste_enfants() {
 
-
-        $this->db->select('id_enfant, nom, prenom, niveau, nom_enseignant, regime_alimentaire, type_inscription')
+        $this->db->select('id_enfant, nom, prenom, niveau, nom_enseignant, regime_alimentaire, allergie, type_inscription')
                 ->from('enfant')
-                ->join('classe', 'enfant.classe=classe.id_classe')
-                ->order_by('niveau, nom_enseignant, nom ');
+                ->join('classe', 'enfant.classe=classe.id_classe', "left")
+                ->order_by('classe.niveau, classe.nom_enseignant, nom');
 
         return $this->db->get()->result();
     }
