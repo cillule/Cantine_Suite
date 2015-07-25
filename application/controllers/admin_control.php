@@ -119,14 +119,8 @@ class Admin_Control extends CI_Controller {
     }
     
     public function editer_classe($id_classe) {
-
-        if ($this->admin_model->is_classe($id_classe) && $this->admin_model->is_empty_classe($id_classe)) {
-            $data["classe"] = $this->admin_model->get_classe_id($id_classe);
-            $this->template->load('layout', 'admin/edit_classe', $data);
-        } else {
-            $this->session->set_flashdata('message', "Impossible d'éditer cette classe.");;
-            redirect(base_url("admin_control/reglages"));
-        }
+        $data["classe"] = $this->admin_model->get_classe_id($id_classe);
+        $this->template->load('layout', 'admin/edit_classe', $data);
     }
 
     public function supprimer_classe($id_classe) {

@@ -345,6 +345,7 @@ class Admin_model extends CI_Model {
         if(empty($classe_existe)){
             $this->db->insert('classe', $to_insert);
         }else{
+            $this->db->where('id_classe', $id_classe);
             $this->db->update('classe', $to_insert);
         }
     }
