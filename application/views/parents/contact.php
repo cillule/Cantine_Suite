@@ -2,7 +2,7 @@
     <div class="col-md-6">
         <adress>
             <strong>Cantine Scolaire Treffort Cuisiat</strong> <br>
-            013070 Treffort Cuisiat <br>
+            1 rue des écoliers 01370 TREFFORT CUISIAT<br>
             Telephone : 04-74-51-39-03 <br>
             cantinedetreffort@gmail.com <br>
         </adress>
