@@ -283,7 +283,17 @@ class Admin_model extends CI_Model {
         $to_return = $this->db->get()->result();
         return $to_return;
     }
+    
+   public function get_classe_id($id_classe){
+       $this->db->select('*')
+                ->from('classe')
+                ->where('id_classe', $id_classe);
 
+        $query = $this->db->get()->result();
+        return $query;
+   }
+
+   
     public function is_classe($id_classe) {
 
         //on vérifie que l'id passé en paramètre est dans la base
@@ -319,14 +329,24 @@ class Admin_model extends CI_Model {
         }
     }
 
-    public function enregistrer_classe($nom_enseignant, $niveau) {
+    public function enregistrer_classe($nom_enseignant, $niveau, $id_classe) {
 
         $to_insert = array(
             'niveau' => $niveau,
             'nom_enseignant' => $nom_enseignant
         );
-
-        $this->db->insert('classe', $to_insert);
+        
+        $this->db->select('*')
+                ->from('classe')
+                ->where('id_classe', $id_classe);
+        
+        $classe_existe = $this->db->get()->result();
+        
+        if(empty($classe_existe)){
+            $this->db->insert('classe', $to_insert);
+        }else{
+            $this->db->update('classe', $to_insert);
+        }
     }
 
     public function supprimer_classe($id_classe) {

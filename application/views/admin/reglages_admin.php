@@ -96,7 +96,7 @@
         <div id="collapse2" class="panel-collapse collapse">
             
             <div class="panel-body">
-                <table class="table table-hover table-responsive table-bordered">
+                <table class="table table-hover table-responsive table-bordered text-center">
                     <tr class="info">
 
                         <th>Nom enseignant</th>
@@ -106,10 +106,13 @@
 
                     </tr>
                     <?php foreach ($classes as $row): ?>
-                        <tr>
+                        <tr>          
                             <td><?php echo $row->nom_enseignant; ?></td>
                             <td><?php echo $row->niveau; ?></td>
-                            <td><a href="<?php echo base_url("admin_control/supprimer_classe/" . $row->id_classe); ?>"><i class="fa fa-2x fa-trash"></i></a></td>
+                            <td>
+                                <a href="<?php echo base_url("admin_control/editer_classe/" . $row->id_classe); ?>"><i class="fa fa-2x fa-pencil"></i></a>
+                                <a href="<?php echo base_url("admin_control/supprimer_classe/" . $row->id_classe); ?>"><i class="fa fa-2x fa-trash"></i></a>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
 

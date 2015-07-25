@@ -106,11 +106,25 @@ class Admin_Control extends CI_Controller {
         if ($this->form_validation->run() == TRUE) {
             $nom_enseignant = $this->input->post('InputNomEnseignant');
             $niveau = $this->input->post('InputNiveau');
-            $this->admin_model->enregistrer_classe($nom_enseignant, $niveau);
+            $id_classe = $this->input->post('IdClasse');
+            
+            $this->admin_model->enregistrer_classe($nom_enseignant, $niveau, $id_classe);
+            
             $this->session->set_flashdata('message', 'Enregistrement Réussi');
             redirect(base_url("admin_control/reglages"));
         } else {
             $this->session->set_flashdata('message', 'Tout les champs requis ne sont pas renseignés');
+            redirect(base_url("admin_control/reglages"));
+        }
+    }
+    
+    public function editer_classe($id_classe) {
+
+        if ($this->admin_model->is_classe($id_classe) && $this->admin_model->is_empty_classe($id_classe)) {
+            $data["classe"] = $this->admin_model->get_classe_id($id_classe);
+            $this->template->load('layout', 'admin/edit_classe', $data);
+        } else {
+            $this->session->set_flashdata('message', "Impossible d'éditer cette classe.");;
             redirect(base_url("admin_control/reglages"));
         }
     }
@@ -122,7 +136,7 @@ class Admin_Control extends CI_Controller {
             $this->session->set_flashdata('message', 'Suppression effectuée');
             redirect(base_url("admin_control/reglages"));
         } else {
-            $this->session->set_flashdata('message', 'Impossible de supprimer la classe: des enfants y sont encore ratachés');
+            $this->session->set_flashdata('message', 'Impossible de supprimer la classe: des enfants y sont encore rattachés');
             redirect(base_url("admin_control/reglages"));
         }
     }
