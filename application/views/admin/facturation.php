@@ -31,8 +31,7 @@
     $somme_due = 0;
     if ($affiche_tuille == 1)://gestion de l'affichage de la tuille 
         if (!empty($infos_famille)) {
-            
-            foreach ($infos_famille as $row):
+            foreach ($infos_famille as $key => $row):
                 ?>
                 <div class="panel panel-info">
                     <div class="panel-heading">
@@ -42,7 +41,6 @@
                         <table class="table text-uppercase">
 
                             <?php
-                           
                             if (!empty($row['factures_associées'])) {
                                 ?> 
 
@@ -93,15 +91,122 @@
                             </tbody>
                         </table>
                     </div>
+
+
+                    <?php
+                    $i = 0;
+                    $now = new DateTime;
+
+                    foreach ($row["calendrier_inscrip"]["inscrip_enfant"]["dates"]["annees"] as $year):
+                        foreach ($row["calendrier_inscrip"]["inscrip_enfant"]["dates"][$year] as $m => $jours):
+                            ?>
+
+                            <div class ="month" id="mois<?php echo $m ?>">
+                                <h2><?php echo $row["calendrier_inscrip"]["inscrip_enfant"]['mois'][$m - 1] . " - " . $year ?></h2>
+                                <table class="table  table-responsive table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <?php
+                                            foreach ($row["calendrier_inscrip"]["inscrip_enfant"]["jours"] as $jour):
+                                                ?>
+                                                <th>
+                                                    <?php echo substr($jour, 0, 3) ?>
+                                                </th>
+                                            <?php endforeach; ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <?php
+                                            $end = end($jours);
+                                            foreach ($jours as $d => $w):
+                                                ?>
+                                                <?php if ($d == 1 and $w != 1): ?>
+                                                    <td colspan="<?php
+                                                    echo $w - 1;
+                                                    ?>"> </td>
+                                                    <?php endif; ?>
+
+                                                <?php
+                                                if (new DateTime($year . "-" . $m . "-" . $d) < $now) {//
+                                                    $type = $row["calendrier_inscrip"]["inscrip_enfant"]["dates"]['type'][$i];
+
+                                                    $array_to_post = serialize(array("date" => "2015" . "-" . $m . "-" . $d, "type" => $type));
+
+                                                    switch ($type) {
+                                                        case 0://pas de repas
+                                                            echo "<td>";
+                                                            echo $d;
+                                                            echo "</td>";
+                                                            break;
+                                                        
+                                                        case 1://repas normal
+                                                            //cellule verte 
+                                                            echo "<td style='background-color: #3AF70A'>";
+                                                            echo $d;
+                                                            echo "</td>";
+                                                            break;
+                                                        case 2://repas hors delais
+                                                            //cellule orange 
+                                                            echo "<td style='background-color: #F7C00A'>";
+                                                            echo $d;
+                                                            echo "</td>";
+                                                            break;
+                                                        case 3://repas non inscrit
+                                                            //cellule rouge
+                                                            echo "<td style='background-color: #F7690A'>";
+                                                            echo $d;
+                                                            echo '</td>';
+                                                            break;
+
+                                                        case 5://le jour est pendant le week end ou les vacances
+                                                            //cellule grisée non checkable
+                                                            echo "<td style='background-color: #A2B5BF'>";
+                                                            echo $d;
+                                                            echo '</td>';
+                                                            break;
+
+                                                        default:
+                                                            break;
+                                                    }
+                                                } else {
+                                                    echo "<td>";
+                                                    echo $d;
+                                                    echo "</td>";
+                                                } $i++;
+                                                ?> 
+                                                <?php if ($w == 7): ?>
+
+                                                </tr><tr>
+                                                    <?php
+                                                endif;
+                                            endforeach;
+                                            if ($end != 7):
+                                                ?>
+                                                <td colspan="<?php echo 7 - $end; ?>"> </td>
+                                            <?php endif; ?>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <?php
+                        endforeach;
+                    endforeach;
+                    ?>
+                        <form method="post" class="pull-right" role="form" id="form_edit_facturation_<?php echo $key ?>" action="<?php echo base_url('admin_control/affiche_edit_facturation/' . $key); ?> "> 
+                            <input type="hidden" name="id_famille" value="<?php echo $id_famille ?>">
+                            <button class='btn btn-success' type="submit" form="form_edit_facturation_<?php echo $key ?>" >Gérer la facturation</button>
+                        </form>
+                    
                 </div>
                 <?php
             endforeach;
         } else {
             ?>
-                <div class="alert alert-warning alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    <span class="glyphicon glyphicon-info-sign"></span> Pas de factures associées à cette famille !
-                </div>  
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <span class="glyphicon glyphicon-info-sign"></span> Pas de factures associées à cette famille !
+            </div>  
             <?php
         }
         ?>
@@ -120,7 +225,6 @@
 </div>
 
 <div class="row">
-    
     <div class="panel panel-primary">
         <div class="panel-heading text-center">
             <h3 class="panel-title">Générer le récapitulatif des prélèvements <i class="fa fa-euro"></i></h3>
@@ -143,5 +247,5 @@
             </form>
         </div>
     </div>
-    
+
 </div>

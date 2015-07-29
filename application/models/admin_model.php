@@ -35,7 +35,7 @@ class Admin_model extends CI_Model {
         $this->db->select('id_enfant, nom, prenom, niveau, nom_enseignant, regime_alimentaire, allergie, type_inscription')
                 ->from('enfant')
                 ->where('id_famille', $id_famille)
-                ->join('classe', "enfant.classe=classe.id_classe","left");
+                ->join('classe', "enfant.classe=classe.id_classe", "left");
 
         $result["enfants"] = $this->db->get()->result();
 
@@ -179,7 +179,7 @@ class Admin_model extends CI_Model {
 
     public function get_facturation_famille($id_famille) {
 
-        $this->db->select('id_enfant, prenom, classe, type_inscription')
+        $this->db->select('id_enfant, prenom, nom, classe, type_inscription')
                 ->from('enfant')
                 ->where('id_famille', $id_famille);
 
@@ -193,12 +193,14 @@ class Admin_model extends CI_Model {
                 $array1 = Array(
                     "id_enfant" => $it->id_enfant,
                     "prenom" => $it->prenom,
+                    "nom" => $it->nom,
                     "classe" => $it->classe,
                     "type_inscription" => $it->type_inscription,
                 );
 
                 $to_return[$it->id_enfant]["info_enfant"] = $array1;
                 $to_return[$it->id_enfant]["factures_associées"] = $this->get_factures_enfant($it->id_enfant);
+                $to_return[$it->id_enfant]["calendrier_inscrip"] = $this->get_liste_inscriptions($it->id_enfant);
             }
         }
 
@@ -283,17 +285,16 @@ class Admin_model extends CI_Model {
         $to_return = $this->db->get()->result();
         return $to_return;
     }
-    
-   public function get_classe_id($id_classe){
-       $this->db->select('*')
+
+    public function get_classe_id($id_classe) {
+        $this->db->select('*')
                 ->from('classe')
                 ->where('id_classe', $id_classe);
 
         $query = $this->db->get()->result();
         return $query;
-   }
+    }
 
-   
     public function is_classe($id_classe) {
 
         //on vérifie que l'id passé en paramètre est dans la base
@@ -335,16 +336,16 @@ class Admin_model extends CI_Model {
             'niveau' => $niveau,
             'nom_enseignant' => $nom_enseignant
         );
-        
+
         $this->db->select('*')
                 ->from('classe')
                 ->where('id_classe', $id_classe);
-        
+
         $classe_existe = $this->db->get()->result();
-        
-        if(empty($classe_existe)){
+
+        if (empty($classe_existe)) {
             $this->db->insert('classe', $to_insert);
-        }else{
+        } else {
             $this->db->where('id_classe', $id_classe);
             $this->db->update('classe', $to_insert);
         }
@@ -384,7 +385,7 @@ class Admin_model extends CI_Model {
         $query = $this->db->get();
         return $query;
     }
-    
+
     public function delete_message($id_message) {
         $this->db->delete('message', array('id_message' => $id_message));
     }
@@ -446,6 +447,112 @@ class Admin_model extends CI_Model {
         $nom_fichier = $this->db->get();
         $this->db->delete('document', array('id_document' => $id_document)); //on supprime l'entrée correspondantes dans la table document
         delete_files("./assets/documents/" . $nom_fichier);
+    }
+
+    public function get_liste_inscriptions($id_enfant = '') {
+
+        $dates = $this->calendrier_model->get_liste_repas_enfant($id_enfant);
+
+        $days = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche');
+        $months = array('Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Decembre');
+
+        $data["inscrip_enfant"]["dates"] = $dates;
+        $data["inscrip_enfant"]["jours"] = $days;
+        $data["inscrip_enfant"]["mois"] = $months;
+
+        return $data;
+    }
+
+    public function set_facturation_repas($id_enfant, $liste_date_repas, $type) {
+
+        $liste_tarif = $this->recuperer_tarifs();
+        $prix_non_inscrit = $liste_tarif["prixPasIns"];
+        $prix_hebdo = $liste_tarif["prixHebdo"];
+        $prix_hd = $liste_tarif["prixHD"];
+        $is_suppression = false;
+
+        switch ($type) {
+            case "normal":
+                $data = array(
+                    'hors_delais' => 0,
+                    'pas_inscrit' => 0,
+                    'prix' => $prix_hebdo
+                );
+
+
+                break;
+            case "hors_delais":
+                $data = array(
+                    'hors_delais' => 1,
+                    'pas_inscrit' => 0,
+                    'prix' => $prix_hd
+                );
+
+
+                break;
+            case "sans_inscrip":
+                $data = array(
+                    'hors_delais' => 0,
+                    'pas_inscrit' => 1,
+                    'prix' => $prix_non_inscrit
+                );
+                break;
+
+            case "suppression":
+                $is_suppression = true;
+
+                break;
+        }
+
+        foreach ($liste_date_repas as $date_repas) {
+
+            unset($data['date']);
+            unset($data['id_enfant_repas']);
+
+            if ($is_suppression == false) {
+                if ($this->is_repas_existant($id_enfant, $date_repas) == true) {
+                    $this->db->where(array('id_enfant_repas' => $id_enfant, 'date' => $date_repas));
+                    $this->db->update('repas', $data);
+                } else {
+                    $data['date'] = $date_repas;
+                    $data['id_enfant_repas'] = $id_enfant;
+                    $this->db->insert('repas', $data);
+                }
+            } else {
+                $this->db->where(array('id_enfant_repas' => $id_enfant, 'date' => $date_repas));
+                $this->db->delete('repas');
+            }
+        }
+    }
+
+    private function is_repas_existant($id_enfant, $date_repas) {
+
+        //on vérifie que l'id passé en paramètre est dans la base
+        $this->db->select('*')
+                ->from('repas')
+                ->where(array('id_enfant_repas' => $id_enfant, 'date' => $date_repas));
+
+        $query = $this->db->get();
+        $row = $query->result();
+
+        if (empty($row)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function get_famille_by_enfant($id_enfant) {
+
+        $this->db->select('famille.id_famille')
+                ->from('famille')
+                ->join('enfant', 'enfant.id_famille=famille.id_famille')
+                ->where('enfant.id_enfant',$id_enfant);
+
+        $query = $this->db->get();
+        $row = $query->result();
+
+        return $row[0];
     }
 
 }

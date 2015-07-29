@@ -55,7 +55,7 @@ class Calendrier_model extends CI_Model {
      * @return array contenant: les dates du mois courant + des deux suivants, les années
 
      *  */
-    public function get_MoisSuivants($id_enfant) {
+    public function get_MoisSuivants($id_enfant, $nb_mois) {
 
         $to_return = array();
         $to_return['type'] = array();
@@ -68,9 +68,9 @@ class Calendrier_model extends CI_Model {
         $date = new DateTime(date('Y-m-d', mktime(0, 0, 0, $moiscourant, 1, $anneecourante)));
 
         $jours_inscrit = $this->getJoursInscrit($id_enfant, $moiscourant);
-        $this->get_inscription_enfant($id_enfant);
+        // $this->get_inscription_enfant($id_enfant);
 
-        while ($date->format('n') < $moiscourant + 3) {//pour le mois courant + les 2 suivants
+        while ($date->format('n') < $moiscourant + $nb_mois) {//pour le mois courant + les 2 suivants
             $y = $date->format('Y');
             $m = $date->format('n');
             $d = $date->format('j');
@@ -109,22 +109,20 @@ class Calendrier_model extends CI_Model {
         $W_now = $now->format('W');
         $N_now = $now->format('N');
 
-    //Pour la comparaison
+        //Pour la comparaison
         $y = $date->format('Y');
         $m = $date->format('m');
         $d = $date->format('d');
         $w = str_replace('0', '7', $date->format('w'));
         $W_date = $date->format('W');
         $N_date = $date->format('N');
-       
+
         if ($w == 6 || $w == 7 || $this->jour_ok($y . "-" . $m . "-" . $d) == false) {//si le jour est pendant le WE ou les vacances
-            
             return 4; //jour de vacance ou week end
         }
 
         if (in_array($y . "-" . $m . "-" . $d, $jours_inscrit)) {//SI l'enfant est déja inscrit pour ce jour
             if ($W_now == $W_date || $N_now > 4 && $W_now + 1 == $W_date) {// si on est hors délais
-         
                 return 2; //inscription hors délais 
             } else {
 
@@ -211,6 +209,63 @@ class Calendrier_model extends CI_Model {
         }
 
         return $schema_inscript;
+    }
+
+    public function get_liste_repas_enfant($id_enfant) {
+
+        $datecourante = new DateTime;
+        $moiscourant = $datecourante->format('n');
+        $anneecourante = $datecourante->format('Y');
+        $to_return["type"] = array();
+        $to_return["annees"] = array();
+
+        $date = new DateTime(date('Y-m-d', mktime(0, 0, 0, $moiscourant, 1, $anneecourante)));
+
+        $where = "id_enfant_repas =" . $id_enfant . " AND month(date)= " . $moiscourant . " AND year(date)= " . $anneecourante;
+
+        $this->db->select('date, hors_delais, pas_inscrit ')
+                ->from('repas')
+                ->where($where);
+
+        $result = $this->db->get()->result();
+        $liste_repas_enfant = array();
+
+        foreach ($result as $row) {
+            $liste_repas_enfant[$row->date]["hors_delais"] = $row->hors_delais;
+            $liste_repas_enfant[$row->date]["pas_inscrit"] = $row->pas_inscrit;
+        }
+
+        while ($date->format('n') < $moiscourant + 1) {//pour le mois courant + les 2 suivants
+            $y = $date->format('Y');
+            $m = $date->format('n');
+            $d = $date->format('j');
+            $w = str_replace('0', '7', $date->format('w'));
+
+            $to_return[$y][$m][$d] = $w;
+
+            if (!in_array($y, $to_return['annees'])) {
+
+                array_push($to_return['annees'], $y);
+            }
+            if (!empty($liste_repas_enfant[$date->format("Y-m-d")])) {
+                if ($liste_repas_enfant[$date->format("Y-m-d")]["hors_delais"] == 1) {
+                    array_push($to_return["type"], 2);
+                } else if ($liste_repas_enfant[$date->format("Y-m-d")]["pas_inscrit"] == 1) {
+                    array_push($to_return["type"], 3);
+                } else {
+                    array_push($to_return["type"], 1);
+                }
+            } else if ($w == 6 || $w == 7 || $this->jour_ok($y . "-" . $m . "-" . $d) == false) {//si le jour est pendant le WE ou les vacances
+                array_push($to_return["type"], 5);
+            } else {
+                array_push($to_return["type"], 0);
+            }
+
+            $date->add(new DateInterval('P1D'));
+        }
+
+
+        return $to_return;
     }
 
 }

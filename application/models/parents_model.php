@@ -242,7 +242,6 @@ class Parents_model extends CI_Model {
         //on ajoute les données reçus en POST du calendrier (normalement ok car tout les enregistrements ont été éffacés)
         if (!empty($liste_dates)) {
 
-
             $liste_tarif = $this->recuperer_tarifs();
 
             $prix_annuel = $liste_tarif["prixAetM"];
@@ -259,14 +258,17 @@ class Parents_model extends CI_Model {
                 if ($type_inscription == 0 || $type_inscription == 1) {
 
                     $prix = $prix_hebdo;
+                    $hors_delais=0;
                 }
                 if ($type_inscription == 2 || $type_inscription == 3) {
                     $prix = $prix_hd;
+                    $hors_delais=1;
                 }
 
                 $to_insert = array(//preparation des données à ajouter
                     'date' => $date->format('Y-m-d'),
                     'id_enfant_repas' => $id_enfant,
+                    'hors_delais'=>$hors_delais, 
                     'prix' => $prix,
                     'present' => 0,
                 );

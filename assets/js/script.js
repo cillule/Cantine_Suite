@@ -185,16 +185,16 @@ $(document).ready(function() {
         resizable: false
 
     });
-  
+
     $("#form_calendrier").submit(function(event) {
-        
+
         event.preventDefault();
 
         var action = $("#form_calendrier").attr('action');
         var values = $("#form_calendrier").serialize();
-        
+
         if ($("input[name='checkbox_HD[]']").is(':checked')) {
-        
+
             $("#popupconfirmation_inscription").dialog({
                 buttons: [
                     {
@@ -223,23 +223,124 @@ $(document).ready(function() {
 
             });
             $("#popupconfirmation_inscription").dialog("open");
-        
+
         } else {
-          
+
             $.ajax({
                 type: "POST",
                 url: action,
                 data: values,
                 dataType: "html",
                 success: function() {
-                   
+
                     location.reload();
-                   
+
                 }
 
             });
-          
+
         }
+    }
+    );
+
+});
+
+
+$(document).ready(function() {
+
+// définition de la boîte de dialogue
+// la méthode jQuery dialog() permet de transformer un div en boîte de dialogue et de définir ses boutons
+    $("#popupchoix_facturation").dialog({
+        autoOpen: false,
+        width: 400,
+        modal: true,
+        resizable: false
+
+    });
+
+    $("#calendrier_gestion_facturation").submit(function(event) {
+
+        event.preventDefault();
+
+        var action = $("#calendrier_gestion_facturation").attr('action');
+        var values = $("#calendrier_gestion_facturation").serialize();
+        var id_famille = $('#input_id_famille').val();
+        var hostname = location.href;
+
+        var hostname_split = hostname.split("/"); 
+        var url_retour = hostname_split[0] + "/" + hostname_split[1] + "/" + hostname_split[2] + "/" + hostname_split[3] + "/affiche_facturation_info/" + id_famille;
+
+        $("#popupchoix_facturation").dialog({
+            buttons: [
+                {
+                    text: "Repas normal",
+                    click: function() {
+                        $.ajax({
+                            type: "POST",
+                            url: action,
+                            data: values + '&traitement_facture=normal',
+                            dataType: "html",
+                            success: function() {
+                                location.replace(url_retour);
+                            }
+                        });
+                    }
+                },
+                {
+                    text: "Repas hors délais",
+                    click: function() {
+                        $.ajax({
+                            type: "POST",
+                            url: action,
+                            data: values + '&traitement_facture=hors_delais',
+                            dataType: "html",
+                            success: function() {
+
+                                location.replace(url_retour);
+                            }
+                        });
+                    }
+
+                },
+                {
+                    text: "Repas sans inscription",
+                    click: function() {
+                        $.ajax({
+                            type: "POST",
+                            url: action,
+                            data: values + '&traitement_facture=sans_inscrip',
+                            dataType: "html",
+                            success: function(data) {
+
+                                location.replace(url_retour);
+                            }
+                        });
+                    }
+
+                },
+                {
+                    text: "Annuler le repas",
+                    click: function() {
+                        $.ajax({
+                            type: "POST",
+                            url: action,
+                            data: values + '&traitement_facture=suppression',
+                            dataType: "html",
+                            success: function() {
+
+                                location.replace(url_retour);
+                            }
+                        });
+                    }
+
+                }
+
+            ]
+
+        });
+        $("#popupchoix_facturation").dialog("open");
+
+
     }
     );
 

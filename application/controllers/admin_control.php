@@ -61,15 +61,22 @@ class Admin_Control extends CI_Controller {
         $this->template->load('layout', 'admin/facturation', $data);
     }
 
-    function affiche_facturation_info() {
+    function affiche_facturation_info($id_famille = "") {
         $data['infos_famille'] = array();
         $data['query'] = $this->admin_model->get_familles();
 
-        $id_famille = $this->input->post("select_famille"); //on recupère l'id de la famille en post
-        $data['infos_famille'] = $this->admin_model->get_facturation_famille($id_famille);
-        $data['id_famille'] = $id_famille;
-        $data['affiche_tuille'] = 1;
-        $this->template->load('layout', 'admin/facturation', $data);
+        if (empty($id_famille)) {//si l'id de la famille n'est pas en paramètre dans l'url
+            $id_famille = $this->input->post("select_famille"); //on recupère l'id de la famille en post
+        }
+        if ($this->admin_model->is_famille($id_famille) == true) {
+            $data['infos_famille'] = $this->admin_model->get_facturation_famille($id_famille);
+            $data['id_famille'] = $id_famille;
+            $data['affiche_tuille'] = 1;
+
+            $this->template->load('layout', 'admin/facturation', $data);
+        } else {
+            $this->template->load('layout', 'view_404');
+        }
     }
 
     function reglages() {
@@ -107,9 +114,9 @@ class Admin_Control extends CI_Controller {
             $nom_enseignant = $this->input->post('InputNomEnseignant');
             $niveau = $this->input->post('InputNiveau');
             $id_classe = $this->input->post('IdClasse');
-            
+
             $this->admin_model->enregistrer_classe($nom_enseignant, $niveau, $id_classe);
-            
+
             $this->session->set_flashdata('message', 'Enregistrement Réussi');
             redirect(base_url("admin_control/reglages"));
         } else {
@@ -117,7 +124,7 @@ class Admin_Control extends CI_Controller {
             redirect(base_url("admin_control/reglages"));
         }
     }
-    
+
     public function editer_classe($id_classe) {
         $data["classe"] = $this->admin_model->get_classe_id($id_classe);
         $this->template->load('layout', 'admin/edit_classe', $data);
@@ -262,7 +269,7 @@ class Admin_Control extends CI_Controller {
         $data['message'] = $this->admin_model->get_message();
         $this->template->load('layout', 'admin/message', $data);
     }
-    
+
     function supprimer_message($id_message) {
         $this->admin_model->delete_message($id_message);
         $this->session->set_flashdata('message', 'Suppression effectuée avec succès ');
@@ -336,6 +343,42 @@ class Admin_Control extends CI_Controller {
             $this->session->set_flashdata('message', 'Erreur lors de la modification des tarifs!');
         }
         redirect(base_url("admin_control/affiche_documents"));
+    }
+
+    function modifer_facturation($id_enfant = '') {
+
+        if ($this->admin_model->is_enfant($id_enfant) == true) {
+            $liste_date_serialise = $this->input->post('checkbox');
+            $type = $this->input->post('traitement_facture');
+            $liste_date_deserialisee = array();
+
+            foreach ($liste_date_serialise as $date) {
+                $date_deserialisee = unserialize($date);
+
+                array_push($liste_date_deserialisee, $date_deserialisee["date"]);
+            }
+
+            $this->admin_model->set_facturation_repas($id_enfant, $liste_date_deserialisee, $type);
+            $id_famille = $this->admin_model->get_famille_by_enfant($id_enfant);
+
+            $this->affiche_facturation_info($id_famille->id_famille);
+        } else {
+            $this->template->load('layout', 'view_404');
+        }
+    }
+
+    function affiche_edit_facturation($id_enfant = '') {
+        $id_famille = $this->input->post("id_famille"); //on recupère l'id de la famille en post
+        $infos_famille = $this->admin_model->get_facturation_famille($id_famille);
+        foreach ($infos_famille as $key => $row) {
+            if ($key == $id_enfant) {
+
+                $data["info_enfant"] = $row;
+            }
+        }
+
+        $data["info_enfant"]["id_famille"] = $id_famille;
+        $this->template->load('layout', 'admin/edit_facturation', $data);
     }
 
 }

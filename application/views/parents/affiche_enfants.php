@@ -157,7 +157,7 @@
 
                 </form>
 
-                <div id="popupconfirmation_inscription" title="Boîte de dialogue de base">
+                <div id="popupconfirmation_inscription" title="Inscription hors délais">
 
 
                     <p><strong>Une inscription Hors Délais va être effectuée. </strong>(zone orange)</p>

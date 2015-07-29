@@ -9,14 +9,14 @@
                     <fieldset>
                         <input name="IdClasse" type="hidden" value="<?php echo $classe[0]->id_classe; ?>">
                         <div class="form-group">
-                            <label for="InputNomEnseignant">Nom</label>
+                            <label for="InputNomEnseignant">Enseignant</label>
                             <input type="text" class="form-control" name="InputNomEnseignant" id="InputNomEnseignant" 
                                    value="<?php echo $classe[0]->nom_enseignant; ?>"
                                    placeholder="<?php echo $classe[0]->nom_enseignant; ?>">
                         </div>
 
                         <div class="form-group">
-                            <label for="InputNiveau">Prénom</label>
+                            <label for="InputNiveau">Niveau</label>
                             <input type="text" class="form-control" name="InputNiveau" id="InputNiveau" 
                                    value="<?php echo $classe[0]->niveau; ?>"
                                    placeholder="<?php echo $classe[0]->niveau; ?>">

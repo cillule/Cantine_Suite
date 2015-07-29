@@ -123,10 +123,10 @@ CREATE TABLE IF NOT EXISTS `message` (
 CREATE TABLE IF NOT EXISTS `repas` (
   `date` date NOT NULL,
   `id_enfant_repas` int(11) NOT NULL,
-  `present` tinyint(1) NOT NULL,
+  `hors_delais` tinyint(1) NOT NULL,
+  `pas_inscrit` tinyint(1) NOT NULL,
   `prix` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 
 --
 -- Structure de la table `responsable`

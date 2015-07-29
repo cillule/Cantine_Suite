@@ -56,8 +56,9 @@ class Gestionnaire_Model extends CI_Model {
 
             $data = array(
                 'id_enfant_repas' => $id_enfant,
-                'present' => 1,
                 'date' => $date,
+                'hors_delais' =>0,
+                'pas_inscrit'=>1,
                 'prix' => $prix
             );
 

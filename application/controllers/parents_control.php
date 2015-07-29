@@ -28,8 +28,6 @@ class Parents_Control extends CI_Controller {
 
     public function sauvegarder_infos_famille() {
 
-        /*  $this->form_validation->set_rules('dname', 'Username', 'trim|required|max_length[52]|encode_php_tags|xss_clean');
-          $this->form_validation->set_rules('dprenom', 'trim|required|max_length[52]|encode_php_tags|xss_clean'); */
         $this->form_validation->set_rules('demail', 'Email', 'trim|required|min_length[5]|max_length[52]|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('dmobile', 'trim|required|min_length[10]|max_length[10]|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('dtel_travail', 'trim|required|min_length[10]|max_length[10]|encode_php_tags|xss_clean');
@@ -39,8 +37,7 @@ class Parents_Control extends CI_Controller {
         if ($this->form_validation->run() == TRUE) {
 
             $data = array(
-                /* 'nom' => $this->input->post('dname'),
-                  'prenom' => $this->input->post('dprenom'), */
+
                 'adresse' => $this->input->post('daddress'),
                 'mail' => $this->input->post('demail'),
                 'tel_mobile' => $this->input->post('dmobile'),
@@ -117,7 +114,7 @@ class Parents_Control extends CI_Controller {
     public function afficher_Calendrier_Inscriptions($id_enfant = '') {
 
         if ($this->parents_model->is_enfant_from_famille($id_enfant) == true) {
-            $dates = $this->calendrier_model->get_MoisSuivants($id_enfant);
+            $dates = $this->calendrier_model->get_MoisSuivants($id_enfant,3);
 
             $data['query'] = $this->parents_model->get_enfants();
             $days = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche');
