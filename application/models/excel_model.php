@@ -588,6 +588,7 @@ class Excel_model extends CI_Model {
         $this->mois_tab = $mois;
         $this->workbook = new PHPExcel;
         $this->sheet = $this->workbook->getActiveSheet();
+        $this->liste_cell=array();
 
         ///Creation du tableau
         $this->creation_entete_echeancier();
@@ -602,7 +603,7 @@ class Excel_model extends CI_Model {
     public function creation_entete_echeancier() {
 
         $this->sheet->getStyle("A1")->applyFromArray($this->style1);
-        $this->sheet->setCellValue('A1', "Echéancier du  " . $this->mois_tab . "/" . $this->annee_tab);
+        $this->sheet->setCellValue('A1', "Récapitulatif prélèvements du  " . $this->mois_tab . "/" . $this->annee_tab);
         $this->sheet->mergeCells('A1:C1');
 
         $this->sheet->setCellValue('A3', "Responsable");
@@ -640,6 +641,8 @@ class Excel_model extends CI_Model {
             $this->sheet->getStyle('A' . $num_ligne)->getBorders()->applyFromArray($this->allborders);
             $this->sheet->setCellValueByColumnAndRow(1, $num_ligne, "TOTAL: ");
             $this->sheet->getStyle('B' . $num_ligne)->getBorders()->applyFromArray($this->allborders);
+            array_push($this->liste_cell, $this->sheet->getCellByColumnAndRow(2, $num_ligne)->getCoordinate());
+            $col++;
             $this->sheet->setCellValueByColumnAndRow(2, $num_ligne, number_format($total_famille, 2));
             $this->sheet->getStyle('C' . $num_ligne)->getNumberFormat()->applyFromArray(
                     array(
@@ -652,7 +655,7 @@ class Excel_model extends CI_Model {
 
         $this->sheet->setCellValueByColumnAndRow(1, $num_ligne, "TOTAL DES PRELEVEMENT: ");
         $this->sheet->getStyle('B' . $num_ligne)->getBorders()->applyFromArray($this->allborders);
-        $this->sheet->setCellValueByColumnAndRow(2, $num_ligne, '=SUM(C2:C' . ($num_ligne - 1) . ')');
+        $this->sheet->setCellValueByColumnAndRow(2, $num_ligne, $this->make_sum($this->liste_cell));
         $this->sheet->getStyle('C' . $num_ligne)->getBorders()->applyFromArray($this->allborders);
 
         $this->sheet->getColumnDimension('A')->setWidth(30);
