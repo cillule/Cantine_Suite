@@ -37,7 +37,6 @@ class Parents_Control extends CI_Controller {
         if ($this->form_validation->run() == TRUE) {
 
             $data = array(
-
                 'adresse' => $this->input->post('daddress'),
                 'mail' => $this->input->post('demail'),
                 'tel_mobile' => $this->input->post('dmobile'),
@@ -77,8 +76,8 @@ class Parents_Control extends CI_Controller {
 
     //redirige vers le formulaire ajout d'un enfant
     function ajouter_enfants() {
-        $data["liste_classe"] = $this->parents_model->get_liste_classes();
 
+        $data["liste_classe"] = $this->parents_model->get_liste_classes();
         $this->template->load('layout', 'parents/add_enfant_parents', $data);
     }
 
@@ -110,11 +109,56 @@ class Parents_Control extends CI_Controller {
         }
     }
 
+    //redirige vers un formaulaire permettant de changer les information concernant l'enfant dont l'id est en paramètre
+    public function modifier_informations_enfant($id_enfant = '') {
+        if ($this->parents_model->is_enfant_from_famille($id_enfant) == true) {
+            $data["infos_enfant"] = $this->parents_model->get_enfant($id_enfant);
+            $data["liste_classe"] = $this->parents_model->get_liste_classes();
+            $this->template->load('layout', 'parents/edit_enfant_parents', $data);
+        } else {
+            $this->template->load('layout', 'view_404');
+        }
+    }
+
+    function sauvegarder_infos_enfant() {
+        $this->form_validation->set_rules('id_enfant', 'trim|required|min_length[2]|max_length[29]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('id_famille', 'trim|required|min_length[2]|max_length[29]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('nom_enfant', 'trim|required|min_length[2]|max_length[29]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('prenom_enfant', 'trim|required|min_length[5]|max_length[52]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('classe_enfant', 'trim||min_length[10]|max_length[10]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('select_regime', 'trim|min_length[10]|max_length[50]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('allergie', 'trim|min_length[5]|max_length[200]|encode_php_tags|xss_clean');
+
+        if ($this->form_validation->run() == TRUE) {
+
+            $id_enfant = $this->input->post("id_enfant");
+
+
+            $data = array(
+                'nom' => $this->input->post('nom_enfant'),
+                'prenom' => $this->input->post('prenom_enfant'),
+                'classe' => $this->input->post('classe_enfant'),
+                'regime_alimentaire' => $this->input->post('select_regime'),
+                'allergie' => $this->input->post('allergie')
+            );
+
+
+            if ($this->parents_model->is_enfant_from_famille($id_enfant) == true) {
+                $this->parents_model->set_enfant($data, $id_enfant);
+                $this->session->set_flashdata('message', 'Modification effectuée avec succès!');
+                $this->affiche_enfants();
+            } else {
+                $this->session->set_flashdata('message', 'La modification a echoué');
+                $this->template->load('layout', 'view_404');
+            }
+        }
+    }
+
     // Fonction pour afficher le calendrier
     public function afficher_Calendrier_Inscriptions($id_enfant = '') {
 
         if ($this->parents_model->is_enfant_from_famille($id_enfant) == true) {
-            $dates = $this->calendrier_model->get_MoisSuivants($id_enfant,3);
+            $dates = $this->calendrier_model->get_MoisSuivants($id_enfant, 3);
 
             $data['query'] = $this->parents_model->get_enfants();
             $days = array('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche');
@@ -180,7 +224,7 @@ class Parents_Control extends CI_Controller {
         $data['message'] = $this->parents_model->get_message();
         $this->template->load('layout', 'parents/message_parents', $data);
     }
-    
+
     function supprimer_message($id_message) {
         $this->parents_model->delete_message($id_message);
         $this->session->set_flashdata('message', 'Suppression effectuée avec succès ');

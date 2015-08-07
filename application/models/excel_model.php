@@ -230,14 +230,14 @@ class Excel_model extends CI_Model {
         $i = $size;
 
         while ($i != 0) {
-            $classe = $liste_triee[$i];
+            $niveau = $liste_triee[$i];
+            foreach ($niveau as $classe) {
+                if (!empty($classe)) {
 
-            if (!empty($classe)) {
-
-                $this->creation_ligne_classe($classe);
-                $this->ligne_courante = $this->ligne_courante + 2;
+                    $this->creation_ligne_classe($classe);
+                    $this->ligne_courante = $this->ligne_courante + 2;
+                }
             }
-
             $i--;
         }
 
@@ -265,7 +265,7 @@ class Excel_model extends CI_Model {
                     )
                 )
         );
-        
+
         $this->sheet->getStyle($cell_debut . ":" . $cell_fin)->getBorders()->applyFromArray($this->allborders);
     }
 
@@ -276,55 +276,76 @@ class Excel_model extends CI_Model {
         while ($i != -1) {
 
             $enfant = $liste[$i];
+
             $niveau_inf = explode("-", $enfant->niveau);
 
-            switch (strtoupper($niveau_inf[0])) {
+            $key = 9;
+
+            switch (strtoupper(trim($niveau_inf[0]))) {
 
                 case "MATERNELLE":
-                    array_push($tab_trie[0], $enfant);
+                    $key = 0;
+                    // array_push($tab_trie[0][$enfant->enseignant], $enfant);
                     break;
 
                 case "PS":
-                    array_push($tab_trie[1], $enfant);
+                    $key = 1;
+                    //array_push($tab_trie[1][$enfant->enseignant], $enfant);
                     break;
 
                 case "MS":
-                    array_push($tab_trie[2], $enfant);
+                    $key = 2;
+                    // array_push($tab_trie[2][$enfant->enseignant], $enfant);
                     break;
 
                 case "GS":
-                    array_push($tab_trie[3], $enfant);
+                    $key = 3;
+                    // array_push($tab_trie[3][$enfant->enseignant], $enfant);
                     break;
 
                 case "GRANDE SECTION":
-                    array_push($tab_trie[3], $enfant);
+                    $key = 3;
+                    // array_push($tab_trie[3][$enfant->enseignant], $enfant);
                     break;
 
 
                 case "CP":
-                    array_push($tab_trie[4], $enfant);
+                    $key = 4;
+                    // array_push($tab_trie[4][$enfant->enseignant], $enfant);
                     break;
 
                 case "CE1":
-                    array_push($tab_trie[5], $enfant);
+                    $key = 5;
+                    //  array_push($tab_trie[5][$enfant->enseignant], $enfant);
                     break;
 
                 case "CE2":
-                    array_push($tab_trie[6], $enfant);
+                    $key = 6;
+                    //  array_push($tab_trie[6][$enfant->enseignant], $enfant);
                     break;
 
                 case "CM1":
-                    array_push($tab_trie[7], $enfant);
+                    $key = 7;
+                    //  array_push($tab_trie[7][$enfant->enseignant], $enfant);
+
                     break;
 
                 case "CM2":
-                    array_push($tab_trie[8], $enfant);
+                    $key = 8;
+                    // array_push($tab_trie[8][$enfant->enseignant], $enfant);
                     break;
 
                 default :
-                    array_push($tab_trie[9], $enfant);
+                    $key = 9;
+                    //  array_push($tab_trie[9], $enfant);
                     break;
             }
+
+            if (empty($tab_trie[$key][$enfant->nom_enseignant])) {
+                $tab_trie[$key][$enfant->nom_enseignant] = array();
+            }
+            array_push($tab_trie[$key][$enfant->nom_enseignant], $enfant);
+
 
             array_pop($liste);
             $i--;
@@ -588,7 +609,7 @@ class Excel_model extends CI_Model {
         $this->mois_tab = $mois;
         $this->workbook = new PHPExcel;
         $this->sheet = $this->workbook->getActiveSheet();
-        $this->liste_cell=array();
+        $this->liste_cell = array();
 
         ///Creation du tableau
         $this->creation_entete_echeancier();

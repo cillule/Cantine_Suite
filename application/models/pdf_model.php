@@ -36,13 +36,13 @@ class PDF_model extends CI_Model {
 
     private function creation_entete_facture() {
 
-        $now = new DateTime;
-        $this->pdf->addSociete("Cantine de Treffort-Cuisiat", "89 Impasse du Pecheur\n" .
-                "01370 Treffort\n" .
-                "Association");
+
+        $this->pdf->addSociete("Cantine de Treffort-Cuisiat", "1 Rue des Ecoliers\n" .
+                "01370 Treffort\n");
         $date = new DateTime($this->infos_facture->annee . "-" . $this->infos_facture->mois);
         $this->pdf->fact_dev("Facture du", $date->format('m-Y'));
-        $this->pdf->addDate($now->format('d-m-Y'));
+        $date_crea_facture = new DateTime($this->infos_facture->date_crea);
+        $this->pdf->addDate($date_crea_facture->format('d-m-Y'));
         $this->pdf->addClient($this->infos_enfant->prenom . " " . $this->infos_enfant->nom);
         $this->pdf->addPageNumber("1");
         $this->pdf->addClientAdresse($this->get_adresse_facturation());
@@ -104,7 +104,7 @@ class PDF_model extends CI_Model {
 
     private function get_infos_facture($id_facture) {
 
-        $this->db->select('id_facture, mois, année as annee')
+        $this->db->select('id_facture, mois, année as annee, date_crea')
                 ->from('facture')
                 ->where('id_facture', $id_facture);
 
@@ -162,12 +162,11 @@ class PDF_model extends CI_Model {
     private function get_liste_repas() {
 
         //on recupère les dates utiles
-       // $date = new DateTime($this->infos_facture->annee . "-" . $this->infos_facture->mois . "-01");
         $mois_courant = $this->infos_facture->mois;
         $annee_courante = $this->infos_facture->annee;
- 
+
         //requete SQL
-        $where = "(MONTH(date)= " . $mois_courant . " AND YEAR(date)=  " . $annee_courante .") AND (id_enfant_repas=" . $this->infos_enfant->id_enfant . ")";
+        $where = "(MONTH(date)= " . $mois_courant . " AND YEAR(date)=  " . $annee_courante . ") AND (id_enfant_repas=" . $this->infos_enfant->id_enfant . ")";
 
         $this->db->select('date, prix')
                 ->from('repas')

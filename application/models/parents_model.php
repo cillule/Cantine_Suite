@@ -19,11 +19,7 @@ class Parents_model extends CI_Model {
                 ->from('famille')
                 ->where('id_resp_1', $this->id_resp);
 
-
         $return = $this->db->get()->result();
-
-
-
         return $return[0]->id_famille;
     }
 
@@ -95,11 +91,30 @@ class Parents_model extends CI_Model {
         $this->db->select('id_enfant, nom, prenom, niveau, nom_enseignant, regime_alimentaire,allergie,type_inscription')
                 ->from('enfant')
                 ->where('id_famille', $id_famille)
-                ->join('classe', 'enfant.classe=classe.id_classe');
+                ->join('classe', 'enfant.classe=classe.id_classe', "left");
 
         $query = $this->db->get();
 
         return $query;
+    }
+
+    function get_enfant($id_enfant) {
+
+        $id_famille = $this->session->userdata('id_famille');
+
+        $this->db->select('id_enfant, nom, prenom, niveau, nom_enseignant, regime_alimentaire,allergie,type_inscription')
+                ->from('enfant')
+                ->where(array('id_famille'=> $id_famille, "id_enfant"=>$id_enfant))
+                ->join('classe', 'enfant.classe=classe.id_classe', "left");
+
+        $result = $this->db->get()->result();
+
+        return $result[0];
+    }
+    
+        public function set_enfant($liste_infos, $id_enfant){
+        $this->db->where('id_enfant', $id_enfant);
+        $this->db->update('enfant', $liste_infos);
     }
 
     //Permet d'avoir la liste des classes + enseignant
@@ -193,7 +208,6 @@ class Parents_model extends CI_Model {
                         'date' => $dt->format('Y-m-d'),
                         'id_enfant_repas' => $id_enfant,
                         'prix' => 3.5,
-                        'present' => 0,
                     );
 
                     $this->db->insert('repas', $to_insert); //insertion dans la DB
@@ -258,19 +272,18 @@ class Parents_model extends CI_Model {
                 if ($type_inscription == 0 || $type_inscription == 1) {
 
                     $prix = $prix_hebdo;
-                    $hors_delais=0;
+                    $hors_delais = 0;
                 }
                 if ($type_inscription == 2 || $type_inscription == 3) {
                     $prix = $prix_hd;
-                    $hors_delais=1;
+                    $hors_delais = 1;
                 }
 
                 $to_insert = array(//preparation des données à ajouter
                     'date' => $date->format('Y-m-d'),
                     'id_enfant_repas' => $id_enfant,
-                    'hors_delais'=>$hors_delais, 
-                    'prix' => $prix,
-                    'present' => 0,
+                    'hors_delais' => $hors_delais,
+                    'prix' => $prix
                 );
 
                 $this->db->insert('repas', $to_insert);
@@ -366,7 +379,7 @@ class Parents_model extends CI_Model {
         $result = $this->db->get();
         return $result;
     }
-    
+
     public function delete_message($id_message) {
         $this->db->delete('message', array('id_message' => $id_message));
     }

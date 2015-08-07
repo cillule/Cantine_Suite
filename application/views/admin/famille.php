@@ -45,7 +45,7 @@
     </div>
 </div>
 
-<?php if ($affiche_tuille == 1): //gestion de l'affichage de la tuille ?>
+<?php if ($affiche_tuille == 1): //gestion de l'affichage de la tuille ;?>
     <div class="row">
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -56,55 +56,76 @@
                 <p><strong>Responsable : </strong></p>
                 <p><?php echo $infos_famille['resp_1'][0]->nom . " " . $infos_famille['resp_1'][0]->prenom; ?></p>
                 <p><strong>Adresse: </strong><br/><?php echo $infos_famille['resp_1'][0]->adresse . " <br/> " . strtoupper($infos_famille['resp_1'][0]->ville) ?></p>
-                <p><strong>Téléphone portable:</strong> <?php echo $infos_famille['resp_1'][0]->tel_mobile ?></strong></p>
-                <p><strong>Téléphone travail:</strong> <?php echo $infos_famille['resp_1'][0]->tel_travail ?></strong></p>
+                <p><strong>Mail: </strong><br/><?php echo $infos_famille['resp_1'][0]->mail ?></p>
+                <p><strong>Téléphone portable:</strong><br/> <?php echo $infos_famille['resp_1'][0]->tel_mobile ?></strong></p>
+                <p><strong>Téléphone travail:</strong> <br/><?php echo $infos_famille['resp_1'][0]->tel_travail ?></strong></p>
 
-                <p><strong>Enfants: </strong></p>
-                <form role="form" method="post" action="<?php echo base_url('admin_control/supprimer_enfant'); ?>">
-                    <fieldset>
-                        <table class="table table-hover table-responsive table-bordered">
-                            <thead>
-                                <tr class="info">
-                                    <th>Nom</th>
-                                    <th>Prénom</th>
-                                    <th>Classe</th>
-                                    <th>Régime alimentaire</th>
-                                    <th>Allergies</th>
-                                    <th>Type d'inscription</th>
-                                    <th>Supprimer</th>
-                                </tr>
-                            </thead>
-
-
-
-                            <?php
-                            if ($infos_famille['enfants'] != null):
-                                foreach ($infos_famille['enfants'] as $row):
-                                    ?>
-                                    <tbody class="text-center">
-                                        <tr>
-                                            <td><?php echo $row->nom ?></td>
-                                            <td><?php echo $row->prenom ?></td>
-                                            <td><?php echo $row->niveau . "  -  " . $row->nom_enseignant ?></td>
-                                            <td><?php echo $row->regime_alimentaire ?></td>
-                                            <td><?php echo $row->allergie ?></td>
-                                            <td> <?php echo $row->type_inscription ?></td>
-                                            <td><a href="<?php echo base_url("admin_control/supprimer_enfant/" . $row->id_enfant); ?>">
-                                                    <i class="fa fa-2x fa-trash"></i></a></td>
-                                        </tr>
-                                    </tbody>
-                                <?php endforeach; ?>
-
-
-
-                            <?php endif; ?>
-                        </table>
-                    </fieldset>
+                <form method="post" class='pull-left'role="form" id="form_modif_infos_famille" action="<?php echo base_url('admin_control/edit_famille') ?> "> 
+                    <input type="hidden" name="id_famille" value="<?php echo $infos_famille['resp_1'][0]->id_famille ?>">
+                    <button class='btn btn-file' type="submit" form="form_modif_infos_famille" >Modifier les informations</button>
                 </form>
+                <br/>
+                <br/>
+                <p><strong>Enfants: </strong></p>
+
+                <table id="liste_enfant_famille" class="table table-striped table-bordered">
+                    <thead>
+                        <tr class="info">
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Classe</th>
+                            <th>Régime alimentaire</th>
+                            <th>Allergies</th>
+                            <th>Type d'inscription</th>
+                            <th>Modifier</th>
+                            <th>Supprimer</th>
+                        </tr>
+                    </thead>
+
+                    <tfoot>
+                        <tr class="info">
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Classe</th>
+                            <th>Régime alimentaire</th>
+                            <th>Allergies</th>
+                            <th>Type d'inscription</th>
+                            <th>Modifier</th>
+                            <th>Supprimer</th>
+                        </tr>
+                    </tfoot>
+                    <tbody >
+                        <?php
+                        if ($infos_famille['enfants'] != null):
+                            foreach ($infos_famille['enfants'] as $row):
+                                ?>
+
+                                <tr>
+                                    <td><?php echo $row->nom ?></td>
+                                    <td><?php echo $row->prenom ?></td>
+                                    <td><?php echo $row->niveau . "  -  " . $row->nom_enseignant ?></td>
+                                    <td><?php echo $row->regime_alimentaire ?></td>
+                                    <td><?php echo $row->allergie ?></td>
+                                    <td> <?php echo $row->type_inscription ?></td>
+                                    <td><a href="<?php echo base_url("admin_control/modifier_info_enfant/" . $row->id_enfant); ?>">
+                                            <i class="fa fa-2x fa-pencil"></i></a></td>
+                                    <td><a href="<?php echo base_url("admin_control/supprimer_enfant/" . $row->id_enfant); ?>">
+                                            <i class="fa fa-2x fa-trash"></i></a></td>
+                                </tr>
+
+                            <?php endforeach; ?>
+
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+
             </div>
         </div>
     </div>
     <?php
+
+
+
 
 
 

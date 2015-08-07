@@ -249,3 +249,17 @@
     </div>
 
 </div>
+
+<div class="row">
+    <div class="panel panel-primary">
+        <div class="panel-heading text-center">
+            <h3 class="panel-title">Générer la facturation pour le mois</h3>
+        </div>
+
+        <div class="panel-body">
+            <p>Lancer la facturation: </p>
+            <a class="btn btn-warning" href="<?php echo base_url('admin_control/generer_factures'); ?>">Lancer</a>
+        </div>
+    </div>
+
+</div>

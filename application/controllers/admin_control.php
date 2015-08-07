@@ -43,6 +43,103 @@ class Admin_Control extends CI_Controller {
         }
     }
 
+    function edit_famille() {
+
+        $id_famille = $this->input->post("id_famille"); //on recupère l'id de la famille en post
+        $data['infos_famille'] = $this->admin_model->get_info_famille($id_famille);
+
+        if ($this->admin_model->is_famille($id_famille) == true) {
+            $this->template->load('layout', 'admin/edit_famille', $data);
+        } else {
+            $this->template->load('layout', 'view_404');
+        }
+    }
+
+    function enregistrer_infos_responsable() {
+
+        $this->form_validation->set_rules('dnom', 'Email', 'trim|required|min_length[2]|max_length[29]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('dprenom', 'trim|required|min_length[2]|max_length[29]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('demail', 'Email', 'trim|required|min_length[5]|max_length[52]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('dmobile', 'trim||min_length[10]|max_length[10]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('dtel_travail', 'trim|min_length[10]|max_length[10]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('daddress', 'trim|min_length[5]|max_length[150]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('dville', 'trim|min_length[5]|max_length[52]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('did_famille', 'trim|required|min_length[5]|max_length[52]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('did_resp', 'trim|required|min_length[5]|max_length[52]|encode_php_tags|xss_clean');
+
+        if ($this->form_validation->run() == TRUE) {
+
+            $data = array(
+                'nom' => $this->input->post('dnom'),
+                'prenom' => $this->input->post('dprenom'),
+                'adresse' => $this->input->post('daddress'),
+                'mail' => $this->input->post('demail'),
+                'adresse' => $this->input->post('daddress'),
+                'mail' => $this->input->post('demail'),
+                'tel_mobile' => $this->input->post('dmobile'),
+                'tel_travail' => $this->input->post('dtel_travail'),
+                'ville' => $this->input->post('dville'),
+            );
+
+            $id_famille = $this->input->post("did_famille");
+            $id_resp = $this->input->post("did_resp");
+
+            if ($this->admin_model->is_famille($id_famille)) {
+                $this->admin_model->set_infos_responsable($data, $id_resp); //sauvegarde les infos dans la base
+                $this->session->set_flashdata('message', 'Modification effectuée avec succès!');
+                $this->afficher_tuille_info($id_famille);
+            } else {
+                $this->session->set_flashdata('message', 'La modification a echoué');
+                $this->template->load('layout', 'view_404');
+            }
+        }
+    }
+
+    function modifier_info_enfant($id_enfant = '') {
+        if ($this->admin_model->is_enfant($id_enfant) == true) {
+
+            $data["infos_enfant"] = $this->admin_model->get_infos_enfant($id_enfant);
+            $data["liste_classe"] = $this->admin_model->get_liste_classes();
+            $this->template->load('layout', 'admin/edit_enfant_admin', $data);
+        } else {
+            $this->template->load('layout', 'view_404');
+        }
+    }
+
+    function sauvegarder_infos_enfant() {
+        $this->form_validation->set_rules('id_enfant', 'trim|required|min_length[2]|max_length[29]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('id_famille', 'trim|required|min_length[2]|max_length[29]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('nom_enfant', 'trim|required|min_length[2]|max_length[29]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('prenom_enfant', 'trim|required|min_length[5]|max_length[52]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('classe_enfant', 'trim||min_length[10]|max_length[10]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('select_regime', 'trim|min_length[10]|max_length[50]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('allergie', 'trim|min_length[5]|max_length[200]|encode_php_tags|xss_clean');
+
+        if ($this->form_validation->run() == TRUE) {
+
+            $id_enfant = $this->input->post("id_enfant");
+            $id_famille = $this->input->post('id_famille');
+
+            $data = array(
+                'nom' => $this->input->post('nom_enfant'),
+                'prenom' => $this->input->post('prenom_enfant'),
+                'classe' => $this->input->post('classe_enfant'),
+                'regime_alimentaire' => $this->input->post('select_regime'),
+                'allergie' => $this->input->post('allergie')
+            );
+
+
+            if ($this->admin_model->is_enfant($id_enfant) == true) {
+                $this->admin_model->set_infos_enfant($data, $id_enfant);
+                $this->session->set_flashdata('message', 'Modification effectuée avec succès!');
+                $this->afficher_tuille_info($id_famille);
+            } else {
+                $this->session->set_flashdata('message', 'La modification a echoué');
+                $this->template->load('layout', 'view_404');
+            }
+        }
+    }
+
     function supprimer_enfant($id_enfant = '') {
 
         if ($this->admin_model->is_enfant($id_enfant) == true) {
@@ -202,6 +299,7 @@ class Admin_Control extends CI_Controller {
 
     //permet de générer les factures (voir pour planifier la tache)
     public function generer_factures() {
+      
         $this->admin_model->generer_factures();
         $this->affiche_facturation();
     }

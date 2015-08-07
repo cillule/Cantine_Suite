@@ -1,13 +1,14 @@
-<?php if ($query->num_rows() > 0): //si on a déja des enfants inscrits                                                                                                                                 ?>
+<?php if ($query->num_rows() > 0): //si on a déja des enfants inscrits                                                                                                                                   ?>
 
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="panel panel-primary">
                 <div class="panel-heading text-center">
                     <div class="panel-title">Liste des enfants <i class="fa fa-user"></i></div>
                 </div>
                 <div class="panel-body">
-                    <table class="table table-hover table-responsive table-bordered">
+                    <table id="table_liste_enfants_parents" class="table table-hover table-responsive table-bordered">
+                        <thead>
                         <tr class="info ">
                             <th>Nom</th>
                             <th>Prénom</th>
@@ -15,30 +16,33 @@
                             <th>Régime alimentaire</th>
                             <th>Allergies</th>
                             <th>Type d'inscription</th>
+                            <th>Modifier Informations</th>
                             <th>Gérer inscription</th>
-
                         </tr>
+                        </thead>
+                        <tbody>
                         <?php foreach ($query->result() as $row): //pour chaque ligne de la requete?>
-                            <tr class="text-center">
-                                <td><?php echo $row->nom; ?></td>
-                                <td><?php echo $row->prenom; ?></td>
-                                <td><?php echo $row->niveau . " - " . $row->nom_enseignant; ?></td>
-                                <td><?php echo $row->regime_alimentaire; ?></td>
-                                <td><?php echo $row->allergie; ?></td>
-                                <td><?php echo $row->type_inscription; ?></td>
-                                <td>
-                                    <a href="<?php echo base_url("parents_control/afficher_Calendrier_Inscriptions/" . $row->id_enfant); ?>"  title="Voir_info">
-                                        <i class="fa fa-2x fa-calendar"></i>
-                                    </a>
-                                </td>
-
-                            <input type="hidden" name='id_enfant' value="<?php echo $row->id_enfant; ?>"/>
-
-
+                                <tr class="text-center">
+                                    <td><?php echo $row->nom; ?></td>
+                                    <td><?php echo $row->prenom; ?></td>
+                                    <td><?php echo $row->niveau . " - " . $row->nom_enseignant; ?></td>
+                                    <td><?php echo $row->regime_alimentaire; ?></td>
+                                    <td><?php echo $row->allergie; ?></td>
+                                    <td><?php echo $row->type_inscription; ?></td>
+                                    <td>
+                                        <a href="<?php echo base_url("parents_control/modifier_informations_enfant/" . $row->id_enfant); ?>">
+                                            <i class="fa fa-2x fa-pencil-square"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="<?php echo base_url("parents_control/afficher_Calendrier_Inscriptions/" . $row->id_enfant); ?>"  title="Voir_info">
+                                            <i class="fa fa-2x fa-calendar"></i>
+                                        </a>
+                                    </td>
                             </tr>
 
                         <?php endforeach; ?>
-
+                        </tbody>
                     </table>
 
 

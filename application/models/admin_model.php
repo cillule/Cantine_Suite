@@ -26,9 +26,10 @@ class Admin_model extends CI_Model {
 
         $id_resp1 = $row[0]->id_resp_1;
 
-        $this->db->select('id_responsable, nom, prenom, adresse,tel_mobile, tel_travail, ville')
+        $this->db->select('id_responsable, nom, prenom, adresse, tel_mobile, tel_travail, mail, ville, id_famille, nom_famille')
                 ->from('responsable')
-                ->where('id_responsable', $id_resp1);
+                ->where('id_responsable', $id_resp1)
+                ->join('famille', "famille.id_resp_1=responsable.id_responsable");
 
         $result["resp_1"] = $this->db->get()->result();
 
@@ -40,6 +41,12 @@ class Admin_model extends CI_Model {
         $result["enfants"] = $this->db->get()->result();
 
         return $result;
+    }
+
+    public function set_infos_responsable($data, $id_responsable) {
+
+        $this->db->where('id_responsable', $id_responsable);
+        $this->db->update('responsable', $data);
     }
 
     // delete_famille: détruire les données reliée à l'id_famille passé en paramètre dans le base Cantine
@@ -100,7 +107,6 @@ class Admin_model extends CI_Model {
 
     private function mail_ajout_famille($mail, $mdp) {
 
-
         $this->load->library('email');
 
         $this->email->from('admin@cantine-treffort.fr', 'Cantine');
@@ -112,7 +118,12 @@ class Admin_model extends CI_Model {
         $this->email->send();
     }
 
-// delete_enfant: détruire les données reliée à l'id_enfant passé en paramètre dans le base Cantine
+    public function set_infos_enfant($liste_infos, $id_enfant) {
+        $this->db->where('id_enfant', $id_enfant);
+        $this->db->update('enfant', $liste_infos);
+    }
+
+    // delete_enfant: détruire les données reliée à l'id_enfant passé en paramètre dans le base Cantine
     public function delete_enfant($id_enfant) {
 
         $this->db->delete('enfant', array('id_enfant' => $id_enfant)); //on supprime les enfants correspondants dans la table enfants
@@ -208,12 +219,21 @@ class Admin_model extends CI_Model {
     }
 
     public function generer_factures() {
+        $datecourante = new DateTime;
+        $moiscourant = $datecourante->format('n');
+        $anneecourante = $datecourante->format('Y');
 
+        if ($this->facture_mois_existante() == true) {//si la facturation a déja été lancée
+            //on supprime les factures existantes
+            $this->db->delete('facture', array("année" => $anneecourante, "mois" => $moiscourant));
+        }
+        
+        $where="YEAR(date)=".$anneecourante." AND MONTH(date)=".$moiscourant." AND  DATE_FORMAT( date, '%Y-%m-%d' ) <= '".$datecourante->format('Y-m-d')."'";
         $this->db->select('YEAR(date) as annee, MONTH(date) as mois, id_enfant_repas as id_enfant, sum(prix) as montant ')
                 ->from('repas')
-                ->group_by(array("YEAR(date)", "MONTH(date)", "id_enfant_repas"));
+                ->where($where)
+                ->group_by(array("YEAR(date)", "MONTH(date)", "id_enfant"));
         $listes_factures = $this->db->get()->result();
-
 
         foreach ($listes_factures as $it) {
 
@@ -222,9 +242,29 @@ class Admin_model extends CI_Model {
                 "mois" => $it->mois,
                 "année" => $it->annee,
                 "id_enfant" => $it->id_enfant,
+                "date_crea"=> $datecourante->format('Y-m-d')
             );
 
             $this->db->insert("facture", $to_insert);
+        }
+    }
+
+    private function facture_mois_existante() {
+
+        $datecourante = new DateTime;
+        $moiscourant = $datecourante->format('n');
+        $anneecourante = $datecourante->format('Y');
+
+        $this->db->select('* ')
+                ->from('facture')
+                ->where(array("année" => $anneecourante, "mois" => $moiscourant));
+
+        $result = $this->db->get()->result();
+
+        if (empty($result)) {
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -547,12 +587,29 @@ class Admin_model extends CI_Model {
         $this->db->select('famille.id_famille')
                 ->from('famille')
                 ->join('enfant', 'enfant.id_famille=famille.id_famille')
-                ->where('enfant.id_enfant',$id_enfant);
+                ->where('enfant.id_enfant', $id_enfant);
 
         $query = $this->db->get();
         $row = $query->result();
 
         return $row[0];
+    }
+
+    public function get_infos_enfant($id_enfant) {
+
+        $this->db->select('*')
+                ->from('enfant')
+                ->where('id_enfant', $id_enfant)
+                ->join('classe', "enfant.classe=classe.id_classe", "left");
+
+        $query = $this->db->get();
+        $row = $query->result();
+        if (!empty($row)) {
+            return $row[0];
+        } else {
+
+            return array();
+        }
     }
 
 }

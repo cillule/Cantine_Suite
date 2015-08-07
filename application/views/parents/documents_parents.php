@@ -12,7 +12,7 @@
                         <table class="table table-hover table-responsive table-bordered">
 
                             <tr class="text-center">
-                                <td>Anuelle</td>
+                                <td>Annuel</td>
                                 <td><?php echo $liste_tarif["prixAetM"]; ?> €</td> 
                             </tr>
                             <tr class="text-center">
@@ -20,7 +20,7 @@
                                 <td><?php echo $liste_tarif["prixHebdo"]; ?> €</td> 
                             </tr>
                             <tr class="text-center">
-                                <td>Hors délai</td>
+                                <td>Hors délais</td>
                                 <td><?php echo $liste_tarif["prixHD"]; ?> €</td> 
                             </tr>
                             <tr class="text-center">
