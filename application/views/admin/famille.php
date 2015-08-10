@@ -1,6 +1,6 @@
 <div class="row">
 
-    <div class="panel panel-primary">
+    <div class="panel panel-primary descAuto" id="div_liste_famille">
         <div class="panel-heading text-center">
             <h3 class="panel-title">Liste des familles inscrites <i class="fa fa-folder"></i></h3>
         </div>
@@ -47,7 +47,7 @@
 
 <?php if ($affiche_tuille == 1): //gestion de l'affichage de la tuille ;?>
     <div class="row">
-        <div class="panel panel-primary">
+        <div class="panel panel-primary descAuto" id="div_info_famille">
             <div class="panel-heading">
                 <h3 class="panel-title text-center"><span class="glyphicon glyphicon-info-sign"></span> Informations famille </h3>
             </div>

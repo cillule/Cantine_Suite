@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-primary">
+        <div class="panel panel-primary descAuto" id="div_modif_enfant">
             <div class="panel-heading text-center">
                 <div class="panel-title">Modifier les informations de <?php echo $infos_enfant->prenom." ".$infos_enfant->nom;  ?> <i class="fa fa-pencil-square"></i></div>
             </div>

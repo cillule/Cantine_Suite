@@ -19,7 +19,7 @@ class Cron_Control extends CI_Controller {
             exit();
         }
 
-        $this->cron_model->cron_gestion_facture();
+      
     }
 
 }

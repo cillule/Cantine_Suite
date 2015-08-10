@@ -1,6 +1,6 @@
 <div class="row">
 
-    <div class="panel panel-info">
+    <div class="panel panel-descAuto" id="div_cal_gestion_facture">
         <div class="panel-heading">
             <h3 class="panel-title"> <i class="fa fa-info-circle"></i> Repas pour le mois --  <?php echo$info_enfant['info_enfant']['prenom'] . "" . $info_enfant['info_enfant']['nom']; ?></h3>
         </div>

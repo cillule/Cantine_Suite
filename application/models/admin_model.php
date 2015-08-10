@@ -129,6 +129,8 @@ class Admin_model extends CI_Model {
         $this->db->delete('enfant', array('id_enfant' => $id_enfant)); //on supprime les enfants correspondants dans la table enfants
         $this->db->delete('repas', array('id_enfant_repas' => $id_enfant));
         $this->db->delete('facture', array('id_enfant' => $id_enfant));
+        $this->db->delete('facture', array('id_enfant' => $id_enfant));
+        $this->db->delete('schema_inscription_annuelle', array('schem_id_enfant' => $id_enfant));
     }
 
     public function is_enfant($id_enfant) {
@@ -232,7 +234,7 @@ class Admin_model extends CI_Model {
         $this->db->select('YEAR(date) as annee, MONTH(date) as mois, id_enfant_repas as id_enfant, sum(prix) as montant ')
                 ->from('repas')
                 ->where($where)
-                ->group_by(array("YEAR(date)", "MONTH(date)", "id_enfant"));
+                ->group_by( "id_enfant");
         $listes_factures = $this->db->get()->result();
 
         foreach ($listes_factures as $it) {

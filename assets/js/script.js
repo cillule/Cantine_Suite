@@ -267,7 +267,7 @@ $(document).ready(function() {
         var id_famille = $('#input_id_famille').val();
         var hostname = location.href;
 
-        var hostname_split = hostname.split("/"); 
+        var hostname_split = hostname.split("/");
         var url_retour = hostname_split[0] + "/" + hostname_split[1] + "/" + hostname_split[2] + "/" + hostname_split[3] + "/affiche_facturation_info/" + id_famille;
 
         $("#popupchoix_facturation").dialog({
@@ -344,4 +344,12 @@ $(document).ready(function() {
     }
     );
 
-}); 
+});
+
+
+$(document).ready(function() {
+    $('.descAuto').click(function() {
+        var id = this.id;
+        location.href = '#' + id;
+    });
+});

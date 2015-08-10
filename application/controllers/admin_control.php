@@ -309,11 +309,6 @@ class Admin_Control extends CI_Controller {
         $this->pdf_model->export_facture($id_facture);
     }
 
-    //permet d'exporter la facture au format Excel
-    public function export_facture_Excel($id_facture) {
-        $this->excel_model->export_facture($id_facture);
-    }
-
     public function generer_feuille_presence() {
         $date = $this->input->post("date_suivi_presence");
 

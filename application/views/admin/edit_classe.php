@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-primary">
+        <div class="panel panel-primary descAuto" id="div_edit_classe">
             <div class="panel-heading text-center">
                 <h3 class="panel-title">Edition de classe <i class="fa fa-user"></i></h3>
             </div>

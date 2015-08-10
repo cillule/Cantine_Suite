@@ -1,6 +1,6 @@
 <div class="row">
 
-    <div class="panel panel-primary">
+    <div class="panel panel-primary descAuto" id="div_select_famille_facuturation">
         <div class="panel-heading text-center">
             <h3 class="panel-title">Factures <i class="fa fa-euro"></i></h3>
         </div>
@@ -29,11 +29,13 @@
 <div class="row">
     <?php
     $somme_due = 0;
+    $num_div=0;
     if ($affiche_tuille == 1)://gestion de l'affichage de la tuille 
         if (!empty($infos_famille)) {
             foreach ($infos_famille as $key => $row):
+                $num_div=$num_div+1;
                 ?>
-                <div class="panel panel-info">
+                <div class="panel panel-info descAuto" id="div_info_facturation_enfant_<?php echo $num_div?>">
                     <div class="panel-heading">
                         <h3 class="panel-title"> <i class="fa fa-info-circle"></i> Factures de <?php echo $row['info_enfant']['prenom']; ?></h3>
                     </div>
@@ -76,7 +78,6 @@
                                             <td>
                                                 <a href="<?php echo base_url('admin_control/facture_reglee/' . $id_famille . '/' . $row2->id_facture); ?>" class="btn btn-success">Réglé</a> 
                                                 <a href="<?php echo base_url('admin_control/export_facture_PDF/' . $row2->id_facture); ?>"  class="btn btn-warning">Générer PDF</a> 
-                                                <a class="btn btn-danger" <a href="<?php echo base_url('admin_control/export_facture_Excel/' . $row2->id_facture); ?>" >Générer Excel</a>
                                             </td>
                                         </tr>
 
@@ -210,7 +211,7 @@
             <?php
         }
         ?>
-        <div class="panel panel-info">
+        <div class="panel panel-info descAuto" id="div_situation_facturation">
             <div class="panel-heading text-center">
                 <h3 class="panel-title"> Situation au <?php echo date("d-m-Y"); ?> <i class="fa fa-info-circle"></i></h3>
             </div> 
@@ -225,7 +226,7 @@
 </div>
 
 <div class="row">
-    <div class="panel panel-primary">
+    <div class="panel panel-primary descAuto" id="div_generer_recap_prelevement">
         <div class="panel-heading text-center">
             <h3 class="panel-title">Générer le récapitulatif des prélèvements <i class="fa fa-euro"></i></h3>
         </div>
@@ -251,7 +252,7 @@
 </div>
 
 <div class="row">
-    <div class="panel panel-primary">
+    <div class="panel panel-primary descAuto" id="div_generer_facturation_mois">
         <div class="panel-heading text-center">
             <h3 class="panel-title">Générer la facturation pour le mois</h3>
         </div>

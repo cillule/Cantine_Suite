@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="panel panel-primary">
+    <div class="panel panel-primary descAuto" id="div_modif_vacances">
         <div class="panel-heading text-center">
             <div class="panel-title">
                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Modification des Vacances Scolaires</a>
@@ -84,7 +84,7 @@
         </div>
     </div>
 
-    <div class="panel panel-primary">
+    <div class="panel panel-primary descAuto" id="div_liste_classes">
         <div class="panel-heading text-center">
             <div class="panel-title">
 
@@ -132,7 +132,7 @@
     </div>
     
     
-        <div class="panel panel-primary">
+        <div class="panel panel-primary descAuto" id="div_chgment_admin">
             <div class="panel-heading text-center">
                 <h3 class="panel-title text-capitalize"><a data-toggle="collapse" data-parent="#accordion" href="#collapse3"> Changement mot de passe côté admin</a> <i class="fa fa-shield"></i></h3>
             </div>

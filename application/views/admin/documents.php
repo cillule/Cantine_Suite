@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-6">
-        <div class="panel panel-primary">
+        <div class="panel panel-primary descAuto" id="div_modif_tarifs">
             <div class="panel-heading text-center">
                 <h3 class="panel-title">Modification des tarifs <i class="fa fa-euro"></i></h3>
             </div>
@@ -40,7 +40,7 @@
 
     <?php if ($query2->num_rows() > 0): ?> 
         <div class="col-md-6">
-            <div class="panel panel-primary">
+            <div class="panel panel-primary descAuto" id="div_documents">
                 <div class="panel-heading text-center">
                     <h3 class="panel-title">Gestion des documents <i class="fa fa-folder-open"></i></h3>
                 </div>
