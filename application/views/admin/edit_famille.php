@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col-md-8">
-        <div class="panel panel-primarydescAuto" id="div_edit_famille">
-            <div class="panel-heading text-center">
-                <div class="panel-title">Informations de <?php echo $infos_famille['resp_1'][0]->prenom + " " + $infos_famille['resp_1'][0]->nom ?> <i class="fa fa-user"></i></div>
+        <div class="panel panel-primary">
+            <div class="panel-heading text-center descAuto" id="div_edit_famille">
+                <div class="panel-title">Informations de <?php echo $infos_famille['resp_1'][0]->prenom . " " . $infos_famille['resp_1'][0]->nom ?> <i class="fa fa-user"></i></div>
             </div>
             <div class="panel-body">
                 <form role="form" method="post" action="<?php echo base_url('admin_control/enregistrer_infos_responsable'); ?>">

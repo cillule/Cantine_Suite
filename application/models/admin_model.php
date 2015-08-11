@@ -229,12 +229,12 @@ class Admin_model extends CI_Model {
             //on supprime les factures existantes
             $this->db->delete('facture', array("année" => $anneecourante, "mois" => $moiscourant));
         }
-        
-        $where="YEAR(date)=".$anneecourante." AND MONTH(date)=".$moiscourant." AND  DATE_FORMAT( date, '%Y-%m-%d' ) <= '".$datecourante->format('Y-m-d')."'";
+
+        $where = "YEAR(date)=" . $anneecourante . " AND MONTH(date)=" . $moiscourant . " AND  DATE_FORMAT( date, '%Y-%m-%d' ) <= '" . $datecourante->format('Y-m-d') . "'";
         $this->db->select('YEAR(date) as annee, MONTH(date) as mois, id_enfant_repas as id_enfant, sum(prix) as montant ')
                 ->from('repas')
                 ->where($where)
-                ->group_by( "id_enfant");
+                ->group_by("id_enfant");
         $listes_factures = $this->db->get()->result();
 
         foreach ($listes_factures as $it) {
@@ -244,7 +244,7 @@ class Admin_model extends CI_Model {
                 "mois" => $it->mois,
                 "année" => $it->annee,
                 "id_enfant" => $it->id_enfant,
-                "date_crea"=> $datecourante->format('Y-m-d')
+                "date_crea" => $datecourante->format('Y-m-d')
             );
 
             $this->db->insert("facture", $to_insert);
@@ -433,6 +433,8 @@ class Admin_model extends CI_Model {
     }
 
     public function insertMessage($idf, $intitule, $contenu) {
+
+        //insertion dans la be pourvisualisation du message dans l'application
         $data = array(
             'intitule' => $intitule,
             'contenu' => $contenu,
@@ -440,6 +442,22 @@ class Admin_model extends CI_Model {
             'id_recepteur' => $idf,
         );
         $this->db->insert('message', $data);
+        $resp=$this->get_infos_reponsable($idf);
+    
+        $this->envoyer_mail($resp->mail, $intitule, $contenu);
+    }
+
+    private function envoyer_mail($mail_destinataire, $sujet, $message) {
+
+        $this->load->library('email');
+
+        $this->email->from('admin@cantine-treffort.fr', 'Cantine');
+        $this->email->to($mail_destinataire);
+
+        $this->email->subject($sujet);
+        $this->email->message($message);
+
+        $this->email->send();
     }
 
     function recuperer_tarifs() {
@@ -595,6 +613,22 @@ class Admin_model extends CI_Model {
         $row = $query->result();
 
         return $row[0];
+    }
+
+    private function get_infos_reponsable($id_resp) {
+
+        $this->db->select('nom, prenom, adresse, ville, mail, tel_mobile, tel_travail')
+                ->from('responsable')
+                ->where('id_responsable', $id_resp);
+
+        $query = $this->db->get();
+        $row = $query->result();
+        if (!empty($row)) {
+            return $row[0];
+        } else {
+
+            return array();
+        }
     }
 
     public function get_infos_enfant($id_enfant) {

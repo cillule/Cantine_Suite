@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-primary descAuto" id="div_ajout_famille">
-            <div class="panel-heading text-center">
+        <div class="panel panel-primary">
+            <div class="panel-heading text-center descAuto" id="div_ajout_famille">
                 <h3 class="panel-title">Ajout d'une famille <i class="fa fa-user"></i></h3>
             </div>
             <div class="panel-body">

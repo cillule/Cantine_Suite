@@ -69,4 +69,11 @@ class Gestionnaire_Model extends CI_Model {
         }
     }
 
+    
+      public function enregistrer_nouveau_mdp($new_mdp) {
+
+        $mdp = password_hash($new_mdp, PASSWORD_BCRYPT);
+
+        $this->db->query("UPDATE responsable SET mdp='$mdp' WHERE id_responsable = 2 AND gestionnaire=1");
+    }
 }

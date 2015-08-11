@@ -1,7 +1,7 @@
 <div class="row">
         <div class="panel panel-primary">
             <div class="panel-heading text-center">
-                <div class="panel-title">Envoie de message <i class="fa fa-user"></i></div>
+                <div class="panel-title">Envoi de message <i class="fa fa-user"></i></div>
             </div>
             <div class="panel-body">
                 <form role="form" method="POST" action="<?php echo base_url('parents_control/envoi_message'); ?>">
@@ -19,15 +19,15 @@
                 </form>
             </div>
         </div>
-    <?php foreach ($message->result() as $row): ?>
+    <?php foreach ($liste_messages as $key => $message): ?>
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="pull-left">
-                        <b>Message de <?php echo $row->nom_famille; ?></b><br>
-                        <?php echo $row->contenu; ?>
+                        <b>Message de la Cantine</b><br>
+                        <?php echo $message->contenu; ?>
                 </div>
                 <div class="pull-right">
-                    <a href="<?php echo base_url('parents_control/supprimer_message/' . $row->id_message); ?>"<i class="fa fa-2x fa-trash"></i></a>
+                    <a href="<?php echo base_url('parents_control/supprimer_message/' . $message->id_message); ?>"<i class="fa fa-2x fa-trash"></i></a>
                 </div>
             </div>
         </div>

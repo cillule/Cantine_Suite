@@ -160,7 +160,7 @@ class Excel_model extends CI_Model {
         $this->mise_en_page();
 
         header('Content-type: application/vnd.ms-excel');
-        header("Content-Disposition: attachment; filename='tableau_suivi" . $mois . "/" . $annee);
+        header("Content-Disposition: attachment; filename='tableau_suivi" . $mois . "/" . $annee . ".xls");
         $writer = new PHPExcel_Writer_Excel5($this->workbook);
         $writer->save('php://output');
     }
@@ -293,7 +293,17 @@ class Excel_model extends CI_Model {
                     //array_push($tab_trie[1][$enfant->enseignant], $enfant);
                     break;
 
+                case "PETITE SECTION":
+                    $key = 1;
+                    //array_push($tab_trie[1][$enfant->enseignant], $enfant);
+                    break;
+
                 case "MS":
+                    $key = 2;
+                    // array_push($tab_trie[2][$enfant->enseignant], $enfant);
+                    break;
+                      
+                case "MOYENNE SECTION":
                     $key = 2;
                     // array_push($tab_trie[2][$enfant->enseignant], $enfant);
                     break;
@@ -565,7 +575,7 @@ class Excel_model extends CI_Model {
         $position_enfant = 1;
         foreach ($classe as $enfant) {
 
-          
+
             $this->sheet->setCellValueByColumnAndRow(0, $ligne, $position_enfant);
             $this->sheet->setCellValueByColumnAndRow(1, $ligne, strtoupper($enfant->nom));
             $this->sheet->setCellValueByColumnAndRow(2, $ligne, $enfant->prenom);
@@ -616,7 +626,7 @@ class Excel_model extends CI_Model {
         $this->creation_corps_echeancier();
 
         header('Content-type: application/vnd.ms-excel');
-        header("Content-Disposition: attachment; filename='recap_prelevement_" . $mois . "/" . $annee);
+        header("Content-Disposition: attachment; filename='recap_prelevement_" . $mois . "/" . $annee . ".xls");
         $writer = new PHPExcel_Writer_Excel5($this->workbook);
         $writer->save('php://output');
     }

@@ -222,3 +222,8 @@ div.DTTT { margin-bottom: 0.5em;  }
     position: relative;
     font-size: 1em;
 }
+
+.descAuto{
+    
+    z-index: -10;
+}

@@ -376,7 +376,7 @@ class Parents_model extends CI_Model {
                 ->from('message')
                 ->where(array('id_expediteur' => 0, 'id_recepteur' => $id_resp));
 
-        $result = $this->db->get();
+        $result = $this->db->get()->result();
         return $result;
     }
 

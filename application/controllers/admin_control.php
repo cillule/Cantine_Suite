@@ -250,7 +250,7 @@ class Admin_Control extends CI_Controller {
             $this->session->set_flashdata('message', 'Changement de mot de passe réussi');
             redirect(base_url("admin_control/reglages"));
         } else {
-            $this->session->set_flashdata('message', 'Les champs ne correspondent pas. ');
+            $this->form_validation->set_message('matches[password_1]');
             redirect(base_url("admin_control/reglages"));
         }
     }

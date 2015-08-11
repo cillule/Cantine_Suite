@@ -47,8 +47,8 @@
 
 <?php if ($affiche_tuille == 1): //gestion de l'affichage de la tuille ;?>
     <div class="row">
-        <div class="panel panel-primary descAuto" id="div_info_famille">
-            <div class="panel-heading">
+        <div class="panel panel-primary ">
+            <div class="panel-heading descAuto" id="div_info_famille">
                 <h3 class="panel-title text-center"><span class="glyphicon glyphicon-info-sign"></span> Informations famille </h3>
             </div>
             <div class="panel-body">

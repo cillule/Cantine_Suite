@@ -34,6 +34,8 @@ class Parents_Control extends CI_Controller {
         $this->form_validation->set_rules('daddress', 'trim|required|min_length[5]|max_length[150]|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('dville', 'trim|required|min_length[5]|max_length[52]|encode_php_tags|xss_clean');
 
+
+
         if ($this->form_validation->run() == TRUE) {
 
             $data = array(
@@ -52,18 +54,19 @@ class Parents_Control extends CI_Controller {
 
     public function changer_mdp() {
 
-        $this->form_validation->set_rules('password_1', 'Password', 'trim|min_length[8]|max_length[16]|encode_php_tags|xss_clean|required|matches[password_2]');
+        $this->form_validation->set_rules('password_1', 'Password', 'trim|min_length[8]|max_length[16]|encode_php_tags|xss_clean|required');
         $this->form_validation->set_rules('password_2', 'Password Confirmation', 'trim|min_length[8]|max_length[16]|encode_php_tags|xss_clean|required|matches[password_1]');
+
 
         if ($this->form_validation->run() == TRUE) {
 
-            $new_mdp = $this->input->post('password_1');
+            $new_mdp = $this->input->post('password_2');
             $this->parents_model->enregitrer_nouveau_mdp($new_mdp);
             $this->session->set_flashdata('message', 'Changement de mot de passe réussi');
             redirect(base_url("parents_control/info_parents"));
         } else {
-            $this->session->set_flashdata('message', 'Les champs ne correspondent pas. ');
-            redirect(base_url("parents_control/info_parents"));
+            $this->form_validation->set_message('matches[password_1]');
+            $this->info_parents();
         }
     }
 
@@ -221,7 +224,7 @@ class Parents_Control extends CI_Controller {
     }
 
     public function message() {
-        $data['message'] = $this->parents_model->get_message();
+        $data['liste_messages'] = $this->parents_model->get_message();
         $this->template->load('layout', 'parents/message_parents', $data);
     }
 

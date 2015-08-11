@@ -77,4 +77,25 @@ class Gestionnaire_Control extends CI_Controller {
         $this->excel_model->export_feuille_presence($annee . "-" . $mois . "-" . $jour);
     }
 
+    public function reglages() {
+
+        $this->template->load('layout', 'gestionnaire/reglages_gestionnaire');
+    }
+
+    public function sauvegarder_mdp() {
+
+        $this->form_validation->set_rules('password_1', 'Password', 'trim|min_length[8]|max_length[16]|encode_php_tags|xss_clean|required|matches[password_2]');
+        $this->form_validation->set_rules('password_2', 'Password Confirmation', 'trim|min_length[8]|max_length[16]|encode_php_tags|xss_clean|required|matches[password_1]');
+
+        if ($this->form_validation->run() == TRUE) {
+            $new_mdp = $this->input->post('password_1');
+            $this->gestionnaire_model->enregistrer_nouveau_mdp($new_mdp);
+            $this->session->set_flashdata('message', 'Changement de mot de passe réussi');
+            redirect(base_url('gestionnaire_control/reglages'));
+        } else {
+            $this->form_validation->set_message('matches[password_1]');
+            $this->reglages();
+        }
+    }
+
 }

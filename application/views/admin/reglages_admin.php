@@ -1,6 +1,6 @@
 <div class="row">
-    <div class="panel panel-primary descAuto" id="div_modif_vacances">
-        <div class="panel-heading text-center">
+    <div class="panel panel-primary">
+        <div class="panel-heading text-center descAuto" id="div_modif_vacances">
             <div class="panel-title">
                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Modification des Vacances Scolaires</a>
                 <i class="fa fa-sun-o"></i>
@@ -84,8 +84,8 @@
         </div>
     </div>
 
-    <div class="panel panel-primary descAuto" id="div_liste_classes">
-        <div class="panel-heading text-center">
+    <div class="panel panel-primary ">
+        <div class="panel-heading text-center descAuto" id="div_liste_classes">
             <div class="panel-title">
 
                 <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Liste des classes</a>
@@ -94,7 +94,7 @@
             </div>
         </div>
         <div id="collapse2" class="panel-collapse collapse">
-            
+
             <div class="panel-body">
                 <table class="table table-hover table-responsive table-bordered text-center">
                     <tr class="info">
@@ -130,33 +130,35 @@
 
         </div>
     </div>
-    
-    
-        <div class="panel panel-primary descAuto" id="div_chgment_admin">
-            <div class="panel-heading text-center">
-                <h3 class="panel-title text-capitalize"><a data-toggle="collapse" data-parent="#accordion" href="#collapse3"> Changement mot de passe côté admin</a> <i class="fa fa-shield"></i></h3>
-            </div>
-            <div id="collapse3" class="panel-collapse collapse">
-                <div class="panel-body">     
 
-                    <form role="form" method="post" action="<?php echo base_url('admin_control/changer_mdp'); ?>">
-                        <fieldset>
-                            <div class="form-group">    
-                                <label class="control-label" for="password_1">Entrer votre nouveau mot de passe: </label>
-                                <input type="password" name="password_1" class="form-control"  minlength="8" maxlength="16"  required="true">
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label" for="password_2">Répéter le mot de passe: </label>
-                                <input type="password" name="password_2"  class="form-control"  minlength="8" maxlength="16" required="true">
-                            </div>
-                            <input type="submit" name="submit" class="btn btn-success pull-right" value="Valider">
-                        </fieldset>
-                    </form>
-                    
-                </div>
+
+    <div class="panel panel-primary ">
+        <div class="panel-heading text-center descAuto" id="div_chgment_admin">
+            <h3 class="panel-title text-capitalize"><a data-toggle="collapse" data-parent="#accordion" href="#collapse3"> Changement mot de passe côté admin</a> <i class="fa fa-shield"></i></h3>
+        </div>
+        <div id="collapse3" class="panel-collapse collapse">
+            <div class="panel-body">     
+
+                <form role="form" method="post" action="<?php echo base_url('admin_control/changer_mdp'); ?>">
+                    <fieldset>
+                        <div class="form-group">    
+                            <label class="control-label" for="password_1">Entrer votre nouveau mot de passe: </label>
+                            <input type="password" name="password_1" class="form-control"  minlength="8" maxlength="16" pattern=".{0}|.{8,16}" required title="Mot de passe entre 8 et 16 caractères">
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="password_2">Répéter le mot de passe: </label>
+                            <input type="password" name="password_2"  class="form-control"  minlength="8" maxlength="16" pattern=".{0}|.{8,16}" required title="Mot de passe entre 8 et 16 caractères">
+                        </div>
+                        <br/>
+                        <div class="alert-warning"><?php echo form_error('password_2'); ?></div>
+
+                        <input type="submit" name="submit" class="btn btn-success pull-right" value="Valider">
+                    </fieldset>
+                </form>
+
             </div>
         </div>
-
+    </div>
 </div>
 
 
