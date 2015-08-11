@@ -160,7 +160,7 @@ class Excel_model extends CI_Model {
         $this->mise_en_page();
 
         header('Content-type: application/vnd.ms-excel');
-        header("Content-Disposition: attachment; filename='tableau_suivi" . $mois . "/" . $annee . ".xls'");
+        header("Content-Disposition: attachment; filename='tableau_suivi" . $mois . "/" . $annee);
         $writer = new PHPExcel_Writer_Excel5($this->workbook);
         $writer->save('php://output');
     }
@@ -345,8 +345,6 @@ class Excel_model extends CI_Model {
                 $tab_trie[$key][$enfant->nom_enseignant] = array();
             }
             array_push($tab_trie[$key][$enfant->nom_enseignant], $enfant);
-
-
             array_pop($liste);
             $i--;
         }
@@ -493,13 +491,13 @@ class Excel_model extends CI_Model {
 
     private function mise_en_page() {
 
-        $this->sheet->getColumnDimension('A')->setWidth(10);
+        $this->sheet->getColumnDimension('A')->setWidth(7);
         $this->sheet->getColumnDimension('B')->setWidth(15); //colonne Nom
         $this->sheet->getColumnDimension('C')->setWidth(15); //colonne Prenom
-        $this->sheet->getColumnDimension('D')->setWidth(25); //colonne Classe-Enseignant
+        $this->sheet->getColumnDimension('D')->setWidth(30); //colonne Classe-Enseignant
         $this->sheet->getColumnDimension('E')->setWidth(25); //colonne Regime
-        $this->sheet->getColumnDimension('F')->setWidth(20); //colonne Allergie
-        $this->sheet->getColumnDimension('G')->setWidth(20); //colonne Allergie
+        $this->sheet->getColumnDimension('F')->setWidth(25); //colonne Allergie
+        $this->sheet->getColumnDimension('G')->setWidth(20); //colonne Type Inscription
     }
 
 // </editor-fold>
@@ -519,6 +517,7 @@ class Excel_model extends CI_Model {
         header("Content-Disposition: attachment; filename='feuille_presence_" . $date . ".xls'");
         $writer = new PHPExcel_Writer_Excel5($this->workbook);
         $writer->save('php://output');
+        exit();
     }
 
     private function creation_feuille_presence($date) {
@@ -532,20 +531,20 @@ class Excel_model extends CI_Model {
         $liste = $this->db->get()->result();
 
         $ligne = 4;
+        $liste_triee = $this->tri_liste($liste);
+        $size = count($liste_triee);
+        $i = $size;
 
-        if (!empty($liste)) {
-
-
-            $liste_triee = $this->tri_liste($liste);
-
-            foreach ($liste_triee as $classe) {
-
+        while ($i != 0) {
+            $niveau = $liste_triee[$i];
+            foreach ($niveau as $classe) {
                 if (!empty($classe)) {
                     $this->ecriture_presence_classe($classe, $ligne);
                     $this->sheet->getStyle("A" . $ligne . ":D" . $ligne)->getBorders()->applyFromArray($this->allborders_fin);
                     $ligne = $ligne + count($classe) + 1;
                 }
             }
+            $i--;
         }
     }
 
@@ -566,6 +565,7 @@ class Excel_model extends CI_Model {
         $position_enfant = 1;
         foreach ($classe as $enfant) {
 
+          
             $this->sheet->setCellValueByColumnAndRow(0, $ligne, $position_enfant);
             $this->sheet->setCellValueByColumnAndRow(1, $ligne, strtoupper($enfant->nom));
             $this->sheet->setCellValueByColumnAndRow(2, $ligne, $enfant->prenom);
@@ -616,7 +616,7 @@ class Excel_model extends CI_Model {
         $this->creation_corps_echeancier();
 
         header('Content-type: application/vnd.ms-excel');
-        header("Content-Disposition: attachment; filename='recap_prelevement_" . $mois . "/" . $annee . ".xls'");
+        header("Content-Disposition: attachment; filename='recap_prelevement_" . $mois . "/" . $annee);
         $writer = new PHPExcel_Writer_Excel5($this->workbook);
         $writer->save('php://output');
     }
@@ -772,7 +772,7 @@ class Excel_model extends CI_Model {
         $this->db->select('id_enfant, nom, prenom, niveau, nom_enseignant, regime_alimentaire, allergie, type_inscription')
                 ->from('enfant')
                 ->join('classe', 'enfant.classe=classe.id_classe', "left")
-                ->order_by('classe.niveau, classe.nom_enseignant, nom');
+                ->order_by('classe.nom_enseignant desc, enfant.nom desc, enfant.prenom desc');
 
         return $this->db->get()->result();
     }
@@ -784,7 +784,9 @@ class Excel_model extends CI_Model {
                 ->join('enfant', 'enfant.id_enfant=facture.id_enfant')
                 ->join('famille', 'enfant.id_famille=famille.id_famille')
                 ->join('responsable', 'famille.id_resp_1=responsable.id_responsable')
-                ->where("facture.mois = " . $this->mois_tab . " AND facture.année = " . $this->annee_tab);
+                ->where("facture.mois = " . $this->mois_tab . " AND facture.année = " . $this->annee_tab)
+                ->order_by('resp_nom asc, resp_prenom asc, enf_nom asc, enf_prenom asc');
+        ;
 
         $result = $this->db->get()->result();
 
