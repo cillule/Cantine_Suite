@@ -299,7 +299,7 @@ class Admin_Control extends CI_Controller {
 
     //permet de générer les factures (voir pour planifier la tache)
     public function generer_factures() {
-      
+
         $this->admin_model->generer_factures();
         $this->affiche_facturation();
     }
@@ -329,10 +329,9 @@ class Admin_Control extends CI_Controller {
     }
 
     public function facture_reglee($id_famille, $id_facture) {
-        if ($this->admin_model->is_famille($id_famille) == true && $this->admin_model->is_facture($id_facture)) {
-            $id_famille = $this->input->post("select_famille");
+        if ($this->admin_model->is_famille($id_famille) == true && $this->admin_model->is_facture($id_facture) == true) {
             $this->admin_model->set_facture_reglee($id_facture);
-            $this->affiche_facturation_info();
+            $this->affiche_facturation_info($id_famille);
         } else {
             $this->template->load('layout', 'view_404');
         }
