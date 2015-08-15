@@ -71,9 +71,9 @@ class Parents_model extends CI_Model {
         $this->db->select('nom, adresse, prenom, tel_mobile, mail,tel_travail, ville')
                 ->from('responsable')
                 ->where('id_responsable', $this->id_resp);
-        $query = $this->db->get();
+        $query = $this->db->get()->result();
 
-        return $query;
+        return $query[0];
     }
 
     public function enregitrer_nouveau_mdp($new_mdp) {
@@ -104,15 +104,15 @@ class Parents_model extends CI_Model {
 
         $this->db->select('id_enfant, nom, prenom, niveau, nom_enseignant, regime_alimentaire,allergie,type_inscription')
                 ->from('enfant')
-                ->where(array('id_famille'=> $id_famille, "id_enfant"=>$id_enfant))
+                ->where(array('id_famille' => $id_famille, "id_enfant" => $id_enfant))
                 ->join('classe', 'enfant.classe=classe.id_classe', "left");
 
         $result = $this->db->get()->result();
 
         return $result[0];
     }
-    
-        public function set_enfant($liste_infos, $id_enfant){
+
+    public function set_enfant($liste_infos, $id_enfant) {
         $this->db->where('id_enfant', $id_enfant);
         $this->db->update('enfant', $liste_infos);
     }
@@ -339,6 +339,7 @@ class Parents_model extends CI_Model {
             'id_recepteur' => 0,
         );
         $this->db->insert('message', $data);
+        $this->envoyer_mail($intitule, $contenu);
     }
 
     function get_document() {
@@ -382,6 +383,21 @@ class Parents_model extends CI_Model {
 
     public function delete_message($id_message) {
         $this->db->delete('message', array('id_message' => $id_message));
+    }
+
+    private function envoyer_mail($sujet, $message) {
+
+        $infos_responsable = $this->recuperer_info_parents();
+
+        $this->load->library('email');
+
+        $this->email->from($infos_responsable->mail, 'Message de ' . $infos_responsable->prenom . " " . $infos_responsable->nom);
+        $this->email->to('cantinedetreffort@gmail.com');
+
+        $this->email->subject($sujet);
+        $this->email->message($message);
+
+        $this->email->send();
     }
 
 }

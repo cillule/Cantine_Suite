@@ -5,38 +5,38 @@
                 <div class="panel-title">Informations Responsable <i class="fa fa-user"></i></div>
             </div>
             <div class="panel-body">
-                <?php $row = $query->result(); ?>
+                
 
                 <form role="form" method="post" action="<?php echo base_url('Parents_Control/sauvegarder_infos_famille'); ?>">
                     <fieldset>
                         <div class="form-group">    
                             <label class="control-label" for="dname">Nom: </label>
-                            <input type="text" name="dname" class="form-control" value="<?php echo $row[0]->nom ?>" placeholder="Nom" required="false"  disabled>
+                            <input type="text" name="dname" class="form-control" value="<?php echo $query->nom ?>" placeholder="Nom" required="false"  disabled>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="dprenom">Prenom: </label>
-                            <input type="text" name="dprenom" class="form-control" value="<?php echo $row[0]->prenom ?>" placeholder="Prenom" required="false"  disabled>
+                            <input type="text" name="dprenom" class="form-control" value="<?php echo $query->prenom ?>" placeholder="Prenom" required="false"  disabled>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="demail">Mail: </label>
-                            <input type="email" name="demail" class="form-control" value="<?php echo $row[0]->mail ?>" placeholder="Email"  required="true">
+                            <input type="email" name="demail" class="form-control" value="<?php echo $query->mail ?>" placeholder="Email"  required="true">
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="dmobile">Téléphone Mobile: </label>
-                            <input type="text" name="dmobile" class="form-control" value="<?php echo $row[0]->tel_mobile ?>" placeholder="Numéro de téléphone" required="true" data-mask="99-99-99-99-99">
+                            <input type="text" name="dmobile" class="form-control" value="<?php echo $query->tel_mobile ?>" placeholder="Numéro de téléphone" required="true" data-mask="99-99-99-99-99">
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="dtel_travail">Téléphone Bureau: </label>
-                            <input type="text" name="dtel_travail" class="form-control" value="<?php echo $row[0]->tel_travail ?>" placeholder="Numéro de téléphone" required="true" data-mask="99-99-99-99-99">
+                            <input type="text" name="dtel_travail" class="form-control" value="<?php echo $query->tel_travail ?>" placeholder="Numéro de téléphone" required="true" data-mask="99-99-99-99-99">
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="daddress">Adresse: </label>
-                            <input type="text" name="daddress" class="form-control" value="<?php echo $row[0]->adresse ?>"  placeholder="Adresse" required="true">
+                            <input type="text" name="daddress" class="form-control" value="<?php echo $query->adresse ?>"  placeholder="Adresse" required="true">
                         </div>
 
                         <div class="form-group">
                             <label class="control-label" for="dville">Ville: </label>
-                            <input type="text" name="dville" class="form-control" value="<?php echo $row[0]->ville ?>" required="true">
+                            <input type="text" name="dville" class="form-control" value="<?php echo $query->ville ?>" required="true">
                         </div>
                         <input type="submit" name="submit" class="btn btn-success pull-right" value="Valider">
 

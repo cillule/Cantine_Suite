@@ -237,7 +237,7 @@ class Parents_Control extends CI_Controller {
     public function envoi_message() {
         $Intitule = $this->input->post('Intitule');
         $Contenu = $this->input->post('Contenu');
-        //$id_famille = $this->session->userdata('id_famille');
+       
 
         $this->form_validation->set_rules('Intitule', 'trim|required|min_length[2]|max_length[52]|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('Contenu', 'trim|max_length[350]|encode_php_tags|xss_clean');
