@@ -79,7 +79,6 @@ class Parents_model extends CI_Model {
     public function enregitrer_nouveau_mdp($new_mdp) {
 
         $mdp = password_hash($new_mdp, PASSWORD_BCRYPT);
-
         $this->db->query("UPDATE responsable set mdp='$mdp' where id_responsable = $this->id_resp");
     }
 

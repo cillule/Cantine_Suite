@@ -6,7 +6,7 @@
             </div>
             <div class="panel-body">
 
-                <form role="form" method="post" action="<?php echo base_url('Parents_Control/sauvegarder_infos_famille'); ?>">
+                <form role="form" method="post" action="<?php echo base_url('parents_control/sauvegarder_infos_famille'); ?>">
                     <fieldset>
                         <div class="form-group">    
                             <label class="control-label" for="dname">Nom: </label>
@@ -51,7 +51,7 @@
                 <div class="panel-title">Changer Mot de Passe <i class="fa fa-shield"></i></div>
             </div>
             <div class="panel-body">
-                <form role="form" method="post" action="<?php echo base_url('Parents_Control/changer_mdp'); ?>">
+                <form role="form" method="post" action="<?php echo base_url('parents_control/changer_mdp'); ?>">
                     <fieldset>
                         <div class="form-group">    
                             <label class="control-label" for="password_1">Entrer votre nouveau mot de passe: </label>
