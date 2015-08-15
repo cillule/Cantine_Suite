@@ -42,6 +42,13 @@
                     <span class="glyphicon glyphicon-info-sign"></span> <?php echo $this->session->flashdata('message'); ?>
                 </div>
             <?php } ?>
+            
+               <?php if ($this->session->flashdata('error') != null) { ?>
+                <div class="alert alert-warning alert-dismissible col-md-4 col-md-offset-4" role="alert">
+                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <span class="glyphicon glyphicon-info-sign"></span> <?php echo $this->session->flashdata('error'); ?>
+                </div>
+            <?php } ?>
         </footer>
 
         <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>

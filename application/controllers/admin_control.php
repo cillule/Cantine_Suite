@@ -250,7 +250,7 @@ class Admin_Control extends CI_Controller {
             $this->session->set_flashdata('message', 'Changement de mot de passe réussi');
             redirect(base_url("admin_control/reglages"));
         } else {
-            $this->session->set_flashdata('message', 'Les deux champs ne correspondent pas');
+            $this->session->set_flashdata('error', 'Les deux champs ne correspondent pas');
             redirect(base_url("admin_control/reglages"));
         }
     }
@@ -281,13 +281,13 @@ class Admin_Control extends CI_Controller {
 
         $this->form_validation->set_rules('nom', '"nom"', 'trim|required|min_length[3]|max_length[52]|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('prenom', '"prenom"', 'trim|required|min_length[3]|max_length[52]|encode_php_tags|xss_clean');
-        $this->form_validation->set_rules('mail', '"mail"', 'trim|required|valid_email|min_length[5]|max_length[52]|encode_php_tags|xss_clean');
+        $this->form_validation->set_rules('mail', '"mail"', 'trim|required|valid_email|is_unique[responsable.mail]|min_length[5]|max_length[52]|encode_php_tags|xss_clean');
 
         if ($this->form_validation->run() == true) {
             $this->admin_model->add_famille($nom, $mail, $prenom);
             $this->session->set_flashdata('message', "Famille ajoutée avec succès!");
         } else {
-            $this->session->set_flashdata('message', "Echec lors de l'ajout de la famille!");
+            $this->session->set_flashdata('error', "Echec lors de l'ajout de la famille. <br/>   Vérifiez que l'adresse mail n'est pas déja utilisée");
         }
         redirect(base_url("admin_control"));
     }

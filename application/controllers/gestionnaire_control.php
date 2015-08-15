@@ -93,7 +93,7 @@ class Gestionnaire_Control extends CI_Controller {
             $this->session->set_flashdata('message', 'Changement de mot de passe réussi');
             redirect(base_url('gestionnaire_control/reglages'));
         } else {
-            $this->form_validation->set_message('matches[password_1]');
+             $this->session->set_flashdata('error', 'Les deux champs ne correspondent pas');
             $this->reglages();
         }
     }

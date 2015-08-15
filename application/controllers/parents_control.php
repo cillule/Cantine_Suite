@@ -65,8 +65,8 @@ class Parents_Control extends CI_Controller {
             $this->session->set_flashdata('message', 'Changement de mot de passe réussi');
             redirect(base_url("parents_control/info_parents"));
         } else {
-            $this->form_validation->set_message('matches[password_1]');
-            $this->info_parents();
+            $this->session->set_flashdata('error', 'Les deux champs ne correspondent pas');
+            redirect(base_url("parents_control/info_parents"));
         }
     }
 
@@ -97,7 +97,6 @@ class Parents_Control extends CI_Controller {
 
         $this->form_validation->set_rules('nom', '"nom"', 'trim|required|min_length[2]|max_length[52]|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('prenom', '"prenom"', 'trim|required|min_length[2]|max_length[52]|encode_php_tags|xss_clean');
-        //$this->form_validation->set_rules('select_classe', '"select_classe"', 'trim|required|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('allergie', '"allergie"', 'trim|max_length[250]|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('select_regime', '"select_regime"', 'trim|required|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('select_abonnement', '"select_abonnement"', 'trim|encode_php_tags|xss_clean');
@@ -237,7 +236,7 @@ class Parents_Control extends CI_Controller {
     public function envoi_message() {
         $Intitule = $this->input->post('Intitule');
         $Contenu = $this->input->post('Contenu');
-       
+
 
         $this->form_validation->set_rules('Intitule', 'trim|required|min_length[2]|max_length[52]|encode_php_tags|xss_clean');
         $this->form_validation->set_rules('Contenu', 'trim|max_length[350]|encode_php_tags|xss_clean');
