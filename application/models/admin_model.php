@@ -109,7 +109,7 @@ class Admin_model extends CI_Model {
 
         $this->load->library('email');
 
-        $this->email->from('admin@cantine-treffort.fr', 'Cantine');
+        $this->email->from('cantinedetreffort@gmail.com', 'Cantine');
         $this->email->to($mail);
 
         $this->email->subject('Inscription Cantine');
@@ -231,7 +231,7 @@ class Admin_model extends CI_Model {
         }
 
         $where = "YEAR(date)=" . $anneecourante . " AND MONTH(date)=" . $moiscourant . " AND  DATE_FORMAT( date, '%Y-%m-%d' ) <= '" . $datecourante->format('Y-m-d') . "'";
-        $this->db->select('YEAR(date) as annee, MONTH(date) as mois, id_enfant_repas as id_enfant, sum(prix) as montant ')
+        $this->db->select('YEAR(date) as annee, MONTH(date) as mois, id_enfant_repas as id_enfant, sum(prix) as montant, hors_delais, pas_inscrit')
                 ->from('repas')
                 ->where($where)
                 ->group_by("id_enfant");
@@ -248,6 +248,39 @@ class Admin_model extends CI_Model {
             );
 
             $this->db->insert("facture", $to_insert);
+        }
+    }
+
+    private function set_tarif_repas() {
+
+        $datecourante = new DateTime;
+        $liste_tarif = $this->recuperer_tarifs();
+
+        $where = "DATE_FORMAT( date, '%Y-%m-%d' ) > '" . $datecourante->format('Y-m-d') . "'";
+        $this->db->select('*')
+                ->from('repas')
+                ->where($where);
+        $liste_repas = $this->db->get()->result();
+
+        foreach ($liste_repas as $repas) {
+
+            if ($repas->hors_delais == 1) {
+                $prix_repas = $liste_tarif["prixHD"];
+            }
+            if ($repas->pas_inscrit == 1) {
+                $prix_repas = $liste_tarif["prixPasIns"];
+            }
+
+            if ($repas->hors_delais == 0 && $repas->pas_inscrit == 0) {
+                $prix_repas = $liste_tarif["prixHebdo"];
+            }
+
+            $data = array(
+                'prix' => $prix_repas
+            );
+
+            $this->db->where(array("date" => $repas->date, "id_enfant_repas" => $repas->id_enfant_repas));
+            $this->db->update('repas', $data);
         }
     }
 
@@ -274,7 +307,7 @@ class Admin_model extends CI_Model {
 
         //a utiliser pour tache planifiée -> -> -> $this->db->select('YEAR(date) as annee, MONTH(date) as mois, sum(prix) as somme ')->from('repas')->where('id_enfant', $id_enfant)->group_by(array("YEAR(date)", "MONTH(date)"));
 
-        $this->db->select('* ')->from('facture')->where('id_enfant', $id_enfant);
+        $this->db->select('*')->from('facture')->where('id_enfant', $id_enfant);
 
         $to_return = $this->db->get()->result();
 
@@ -442,8 +475,8 @@ class Admin_model extends CI_Model {
             'id_recepteur' => $idf,
         );
         $this->db->insert('message', $data);
-        $resp=$this->get_infos_reponsable($idf);
-    
+        $resp = $this->get_infos_reponsable($idf);
+
         $this->envoyer_mail($resp->mail, $intitule, $contenu);
     }
 
@@ -451,7 +484,7 @@ class Admin_model extends CI_Model {
 
         $this->load->library('email');
 
-        $this->email->from('admin@cantine-treffort.fr', 'Cantine');
+        $this->email->from('cantinedetreffort@gmail.com', 'Cantine');
         $this->email->to($mail_destinataire);
 
         $this->email->subject($sujet);
@@ -486,6 +519,8 @@ class Admin_model extends CI_Model {
             $this->db->where('tarif_id', $key);
             $this->db->update('tarifs', $data);
         }
+
+        $this->set_tarif_repas(); //mise à jour des tarifs dans la table repas 
     }
 
     public function load_document() {

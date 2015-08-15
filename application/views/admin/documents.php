@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-6">
-        <div class="panel panel-primary descAuto" id="div_modif_tarifs">
-            <div class="panel-heading text-center">
+        <div class="panel panel-primary ">
+            <div class="panel-heading text-center descAuto" id="div_modif_tarifs">
                 <h3 class="panel-title">Modification des tarifs <i class="fa fa-euro"></i></h3>
             </div>
             <div class="panel-body">

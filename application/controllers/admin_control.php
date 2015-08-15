@@ -250,7 +250,7 @@ class Admin_Control extends CI_Controller {
             $this->session->set_flashdata('message', 'Changement de mot de passe réussi');
             redirect(base_url("admin_control/reglages"));
         } else {
-            $this->form_validation->set_message('matches[password_1]');
+            $this->session->set_flashdata('message', 'Les deux champs ne correspondent pas');
             redirect(base_url("admin_control/reglages"));
         }
     }
@@ -446,7 +446,6 @@ class Admin_Control extends CI_Controller {
 
             foreach ($liste_date_serialise as $date) {
                 $date_deserialisee = unserialize($date);
-
                 array_push($liste_date_deserialisee, $date_deserialisee["date"]);
             }
 
