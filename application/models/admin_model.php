@@ -62,10 +62,17 @@ class Admin_model extends CI_Model {
         $id_resp1 = $row[0]->id_resp_1;
 
         $this->db->delete('responsable', array('id_responsable' => $id_resp1));
-
         $this->db->delete('famille', array('id_famille' => $id_famille)); //on supprime les entrées correspondantes dans la table famille
+        
+        $this->db->select('id_enfant')
+                ->from('enfant')
+                ->where('id_famille', $id_famille);
 
-        $this->db->delete('enfant', array('id_famille' => $id_famille)); //on supprime les enfants correspondants dans la table enfants
+        $result = $this->db->get()->result();//on récupère tout les enfants de la famille
+
+        foreach ($result as $enfant) {//pour chaque enfant de la famille..
+            $this->delete_enfant($enfant->id_enfant);//..on efface toute les informations les concernant
+        }
     }
 
     // add_famille: Ajouter une famille
@@ -128,7 +135,6 @@ class Admin_model extends CI_Model {
 
         $this->db->delete('enfant', array('id_enfant' => $id_enfant)); //on supprime les enfants correspondants dans la table enfants
         $this->db->delete('repas', array('id_enfant_repas' => $id_enfant));
-        $this->db->delete('facture', array('id_enfant' => $id_enfant));
         $this->db->delete('facture', array('id_enfant' => $id_enfant));
         $this->db->delete('schema_inscription_annuelle', array('schem_id_enfant' => $id_enfant));
     }
@@ -681,6 +687,37 @@ class Admin_model extends CI_Model {
 
             return array();
         }
+    }
+
+    public function get_liste_factures() {
+
+        $this->db->select('id_facture, facture.montant, facture.mois, facture.année, facture.reglee, famille.nom_famille, enfant.nom as enf_nom, enfant.prenom as enf_prenom')
+                ->from('facture')
+                ->join('enfant', "facture.id_enfant=enfant.id_enfant")
+                ->join('famille', "famille.id_famille=enfant.id_famille")
+                ->join('responsable', "famille.id_resp_1=responsable.id_responsable")
+                ->order_by('famille.nom_famille');
+        $result = $this->db->get()->result();
+
+        return $result;
+    }
+
+    public function set_etat_facture($id_facture) {
+
+        $this->db->select('*')
+                ->from('facture')
+                ->where('id_facture', $id_facture);
+
+        $result = $this->db->get()->result();
+
+        if ($result[0]->reglee == 1) {
+            $data = array('reglee' => 0);
+        } else {
+            $data = array('reglee' => 1);
+        }
+
+        $this->db->where('id_facture', $id_facture);
+        $this->db->update('facture', $data);
     }
 
 }

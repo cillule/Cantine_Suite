@@ -472,4 +472,20 @@ class Admin_Control extends CI_Controller {
         $this->template->load('layout', 'admin/edit_facturation', $data);
     }
 
+    function affiche_liste_factures() {
+
+        $data["liste_factures"] = $this->admin_model->get_liste_factures();
+        $this->template->load('layout', 'admin/liste_factures', $data);
+    }
+
+    public function change_etat_facture() {
+
+        $id_facture = $this->input->post('id_facture');
+        $this->form_validation->set_rules('id_facture', '"id_enfant"', 'trim|numeric|required|encode_php_tags|xss_clean');
+
+        if ($this->form_validation->run() == TRUE) {
+            $this->admin_model->set_etat_facture($id_facture);
+        }
+    }
+
 }

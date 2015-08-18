@@ -29,13 +29,13 @@
 <div class="row">
     <?php
     $somme_due = 0;
-    $num_div=0;
+    $num_div = 0;
     if ($affiche_tuille == 1)://gestion de l'affichage de la tuille 
         if (!empty($infos_famille)) {
             foreach ($infos_famille as $key => $row):
-                $num_div=$num_div+1;
+                $num_div = $num_div + 1;
                 ?>
-                <div class="panel panel-info descAuto" id="div_info_facturation_enfant_<?php echo $num_div?>">
+                <div class="panel panel-info descAuto" id="div_info_facturation_enfant_<?php echo $num_div ?>">
                     <div class="panel-heading">
                         <h3 class="panel-title"> <i class="fa fa-info-circle"></i> Factures de <?php echo $row['info_enfant']['prenom']; ?></h3>
                     </div>
@@ -140,7 +140,7 @@
                                                             echo $d;
                                                             echo "</td>";
                                                             break;
-                                                        
+
                                                         case 1://repas normal
                                                             //cellule verte 
                                                             echo "<td style='background-color: #3AF70A'>";
@@ -194,11 +194,11 @@
                         endforeach;
                     endforeach;
                     ?>
-                        <form method="post" class="pull-right" role="form" id="form_edit_facturation_<?php echo $key ?>" action="<?php echo base_url('admin_control/affiche_edit_facturation/' . $key); ?> "> 
-                            <input type="hidden" name="id_famille" value="<?php echo $id_famille ?>">
-                            <button class='btn btn-success' type="submit" form="form_edit_facturation_<?php echo $key ?>" >Gérer la facturation</button>
-                        </form>
-                    
+                    <form method="post" class="pull-right" role="form" id="form_edit_facturation_<?php echo $key ?>" action="<?php echo base_url('admin_control/affiche_edit_facturation/' . $key); ?> "> 
+                        <input type="hidden" name="id_famille" value="<?php echo $id_famille ?>">
+                        <button class='btn btn-success' type="submit" form="form_edit_facturation_<?php echo $key ?>" >Gérer la facturation</button>
+                    </form>
+
                 </div>
                 <?php
             endforeach;
@@ -252,15 +252,34 @@
 </div>
 
 <div class="row">
-    <div class="panel panel-primary descAuto" id="div_generer_facturation_mois">
-        <div class="panel-heading text-center">
-            <h3 class="panel-title">Générer la facturation pour le mois</h3>
-        </div>
+    <div class="col-md-6">
+        <div class="panel panel-primary descAuto" id="div_generer_facturation_mois">
+            <div class="panel-heading text-center">
+                <h3 class="panel-title">Générer la facturation pour le mois</h3>
+            </div>
 
-        <div class="panel-body">
-            <p>Lancer la facturation: </p>
-            <a class="btn btn-warning" href="<?php echo base_url('admin_control/generer_factures'); ?>">Lancer</a>
+            <div class="panel-body text-center">
+                <p>Lancer la facturation: 
+                    <a class="btn btn-warning" href="<?php echo base_url('admin_control/generer_factures'); ?>">Lancer</a>
+                </p>
+            </div>
         </div>
     </div>
 
+
+
+    <div class="col-md-6">
+        <div class="panel panel-primary descAuto" id="div_voir_facture">
+            <div class="panel-heading text-center">
+                <h3 class="panel-title">Listing facture</h3>
+            </div>
+
+            <div class="panel-body text-center">
+                <p>Voir les factures:
+                    <a class="btn btn-success" href="<?php echo base_url('admin_control/affiche_liste_factures'); ?>">Voir</a>
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
+
