@@ -49,6 +49,25 @@ class Admin_model extends CI_Model {
         $this->db->update('responsable', $data);
     }
 
+    public function set_mdp_famille($id_famille) {
+
+        //on recupère le mail du responsable de la famille 
+        $infos_famille = $this->get_info_famille($id_famille);
+        $infos_responsable = $infos_famille["resp_1"][0];
+
+        //on genère un mdp au hasard et on le crypte
+        $mdp_non_crypte = $this->generer_mot_de_passe();
+        $mdp = password_hash($mdp_non_crypte, PASSWORD_BCRYPT);
+
+        //on le sauvegarde dans la base de données
+        $this->db->where('id_responsable', $infos_responsable->id_responsable);
+        $this->db->update('responsable', array('mdp' => $mdp));
+        
+        //et on envoie un mail pour prévenir le parent
+        $message="Bonjour, <br/> Votre mot de passe a été restauré, voici votre nouveau mot de passe: <strong>".$mdp_non_crypte." </strong>";
+        $this->envoyer_mail($infos_responsable->mail, "Cantine: Restauration de votre mot de passe", $message);
+    }
+
     // delete_famille: détruire les données reliée à l'id_famille passé en paramètre dans le base Cantine
     public function delete_famille($id_famille) {
 
@@ -63,15 +82,15 @@ class Admin_model extends CI_Model {
 
         $this->db->delete('responsable', array('id_responsable' => $id_resp1));
         $this->db->delete('famille', array('id_famille' => $id_famille)); //on supprime les entrées correspondantes dans la table famille
-        
+
         $this->db->select('id_enfant')
                 ->from('enfant')
                 ->where('id_famille', $id_famille);
 
-        $result = $this->db->get()->result();//on récupère tout les enfants de la famille
+        $result = $this->db->get()->result(); //on récupère tout les enfants de la famille
 
         foreach ($result as $enfant) {//pour chaque enfant de la famille..
-            $this->delete_enfant($enfant->id_enfant);//..on efface toute les informations les concernant
+            $this->delete_enfant($enfant->id_enfant); //..on efface toute les informations les concernant
         }
     }
 

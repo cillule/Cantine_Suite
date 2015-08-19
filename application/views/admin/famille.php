@@ -1,7 +1,7 @@
 <div class="row">
 
-    <div class="panel panel-primary descAuto" id="div_liste_famille">
-        <div class="panel-heading text-center">
+    <div class="panel panel-primary">
+        <div class="panel-heading text-center descAuto" id="div_liste_famille">
             <h3 class="panel-title">Liste des familles inscrites <i class="fa fa-folder"></i></h3>
         </div>
         <div class="panel-body">
@@ -60,12 +60,23 @@
                 <p><strong>Téléphone portable:</strong><br/> <?php echo $infos_famille['resp_1'][0]->tel_mobile ?></strong></p>
                 <p><strong>Téléphone travail:</strong> <br/><?php echo $infos_famille['resp_1'][0]->tel_travail ?></strong></p>
 
-                <form method="post" class='pull-left'role="form" id="form_modif_infos_famille" action="<?php echo base_url('admin_control/edit_famille') ?> "> 
+                <form method="post" class='pull-left' role="form" id="form_modif_infos_famille" action="<?php echo base_url('admin_control/edit_famille') ?> "> 
                     <input type="hidden" name="id_famille" value="<?php echo $infos_famille['resp_1'][0]->id_famille ?>">
-                    <button class='btn btn-file' type="submit" form="form_modif_infos_famille" >Modifier les informations</button>
+                    <button class='btn btn-success' type="submit" form="form_modif_infos_famille" >Modifier les informations</button>
                 </form>
+
                 <br/>
                 <br/>
+
+                <form method="post" class='pull-left' role="form" id="form_chg_mdp_famille" action="<?php echo base_url('admin_control/changement_mdp_famille') ?> "> 
+                    <input type="hidden" name="id_famille" value="<?php echo $infos_famille['resp_1'][0]->id_famille ?>">
+                    <button class='btn btn-warning' type="submit" form="form_chg_mdp_famille" >Attribuer un nouveau mot de passe</button>
+                </form>
+
+                <br/>
+                <br/>
+                <br/>
+
                 <p><strong>Enfants: </strong></p>
 
                 <table id="liste_enfant_famille" class="table table-striped table-bordered">
@@ -123,6 +134,12 @@
         </div>
     </div>
     <?php
+
+
+
+
+
+
 
 
 

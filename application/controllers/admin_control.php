@@ -55,6 +55,25 @@ class Admin_Control extends CI_Controller {
         }
     }
 
+    function changement_mdp_famille() {
+
+        $this->form_validation->set_rules('id_famille', 'trim|required|encode_php_tags|xss_clean');
+
+
+        if ($this->form_validation->run() == TRUE) {
+
+            $id_famille = $this->input->post("id_famille"); //on recupère l'id de la famille en post
+
+            if ($this->admin_model->is_famille($id_famille) == true) {
+                $this->admin_model->set_mdp_famille($id_famille);
+            } else {
+                $this->template->load('layout', 'view_404');
+            }
+        } else {
+            
+        }
+    }
+
     function enregistrer_infos_responsable() {
 
         $this->form_validation->set_rules('dnom', 'Email', 'trim|required|min_length[2]|max_length[29]|encode_php_tags|xss_clean');
